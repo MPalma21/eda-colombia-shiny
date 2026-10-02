@@ -3,24 +3,27 @@ from shiny import module, ui, render, reactive
 import pandas as pd
 import plotly.express as px
 from services.stats_service import compute_dataset_overview, compute_column_diagnostics
+from components.banner import render_context_banner
 
 
 @module.ui
 def summary_ui():
     return ui.div(
-        ui.output_ui("metrics_grid"),
+        ui.output_ui("context_banner_container"),
+        ui.output_ui("kpi_value_boxes"),
         ui.layout_columns(
             ui.card(
-                ui.card_header("Metadatos de la Fuente"),
+                ui.card_header("Metadatos de la Fuente Oficial"),
                 ui.output_ui("metadata_content"),
                 full_screen=True
             ),
             ui.card(
                 ui.card_header("Diagnostico por Columna"),
-                ui.output_ui("diagnostics_table"),
+                ui.output_data_frame("diagnostics_grid"),
                 full_screen=True
             ),
-            col_widths=[5, 7]
+            col_widths=[5, 7],
+            class_="mb-3"
         ),
         ui.card(
             ui.card_header("Distribucion de Valores Faltantes"),
@@ -40,39 +43,57 @@ def summary_server(input, output, session, df_react, meta_react):
 
     @output
     @render.ui
-    def metrics_grid():
+    def context_banner_container():
+        return render_context_banner(df_react(), meta_react())
+
+    @output
+    @render.ui
+    def kpi_value_boxes():
         df = df_react()
         if df.empty:
-            return ui.div(
-                ui.p("Seleccione o ingrese un dataset en el panel lateral para iniciar el analisis exploratorio.",
-                     class_="text-muted text-center py-5")
+            return ui.card(
+                ui.div(
+                    ui.h5("Sin conjunto de datos cargado", class_="fw-bold text-secondary mb-2"),
+                    ui.p(
+                        "Seleccione un dataset sugerido en el panel lateral o ingrese el identificador de un recurso de datos.gov.co, "
+                        "luego haga clic en 'Cargar Dataset' para inicializar el analisis.",
+                        class_="text-muted mb-0"
+                    ),
+                    class_="text-center py-4"
+                ),
+                class_="mb-3"
             )
-        
+
         m = dataset_metrics()
-        missing_tile_class = "tile-red" if m["missing_pct"] > 15 else ("tile-amber" if m["missing_pct"] > 5 else "tile-green")
+        missing_theme = "danger" if m["missing_pct"] > 15 else ("warning" if m["missing_pct"] > 5 else "success")
 
         return ui.layout_columns(
-            ui.div(
-                ui.div(f"{m['rows']:,}", class_="tile-num"),
-                ui.div("Total Registros", class_="tile-label"),
-                class_="metric-tile tile-blue"
+            ui.value_box(
+                "Total Registros",
+                f"{m['rows']:,}",
+                theme="primary",
+                class_="kpi-box"
             ),
-            ui.div(
-                ui.div(f"{m['cols']}", class_="tile-num"),
-                ui.div("Variables", class_="tile-label"),
-                class_="metric-tile tile-teal"
+            ui.value_box(
+                "Variables Totales",
+                str(m['cols']),
+                theme="teal",
+                class_="kpi-box"
             ),
-            ui.div(
-                ui.div(f"{m['num_cols']}", class_="tile-num"),
-                ui.div("Variables Numericas", class_="tile-label"),
-                class_="metric-tile tile-blue"
+            ui.value_box(
+                "Variables Numericas",
+                str(m['num_cols']),
+                theme="primary",
+                class_="kpi-box"
             ),
-            ui.div(
-                ui.div(f"{m['missing_pct']}%", class_="tile-num"),
-                ui.div("Datos Faltantes", class_="tile-label"),
-                class_=f"metric-tile {missing_tile_class}"
+            ui.value_box(
+                "Datos Faltantes",
+                f"{m['missing_pct']}%",
+                theme=missing_theme,
+                class_="kpi-box"
             ),
-            col_widths=[3, 3, 3, 3]
+            col_widths=[3, 3, 3, 3],
+            class_="mb-3"
         )
 
     @output
@@ -95,17 +116,14 @@ def summary_server(input, output, session, df_react, meta_react):
         )
 
     @output
-    @render.ui
-    def diagnostics_table():
+    @render.data_frame
+    def diagnostics_grid():
         df = df_react()
         if df.empty:
-            return ui.span()
+            return render.DataGrid(pd.DataFrame(), height="240px")
         
         diag_df = compute_column_diagnostics(df)
-        return ui.div(
-            ui.HTML(diag_df.to_html(index=False, classes="custom-table", border=0)),
-            style="max-height: 280px; overflow-y: auto;"
-        )
+        return render.DataGrid(diag_df, filters=False, height="260px")
 
     @output
     @render.ui

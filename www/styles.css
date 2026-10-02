@@ -1,7 +1,13 @@
-/* Estilos Positron IDE Theme - EDA Colombia */
+/* ==========================================================================
+   Positron IDE & Posit UI/UX Guidelines - Theme Stylesheet
+   ========================================================================== */
+
 :root {
     --posit-blue: #447099;
-    --posit-blue-hover: #36597a;
+    --posit-blue-dark: #315373;
+    --posit-blue-light: #5b87b0;
+    
+    --posit-slate-950: #090d16;
     --posit-slate-900: #0f172a;
     --posit-slate-800: #1e293b;
     --posit-slate-700: #334155;
@@ -10,149 +16,158 @@
     --posit-slate-300: #cbd5e1;
     --posit-slate-200: #e2e8f0;
     --posit-slate-100: #f1f5f9;
-    --posit-slate-50: #f8fafc;
+    --posit-slate-50:  #f8fafc;
     
     --positron-teal: #2585a6;
     --positron-cyan: #0284c7;
     
-    --status-success: #059669;
-    --status-warning: #d97706;
-    --status-error: #dc2626;
+    --semantic-success: #059669;
+    --semantic-warning: #d97706;
+    --semantic-danger:  #dc2626;
     
-    --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', 'Menlo', monospace;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
 }
 
 body {
     background-color: var(--posit-slate-50);
-    font-family: var(--font-ui);
+    font-family: var(--font-sans);
     color: var(--posit-slate-800);
     -webkit-font-smoothing: antialiased;
 }
 
-/* Header al estilo de la barra de título de Positron */
-.app-header {
-    background-color: var(--posit-slate-900);
+/* 1. Navbar con estilo Positron IDE */
+.navbar {
+    background-color: var(--posit-slate-900) !important;
     border-bottom: 1px solid var(--posit-slate-700);
-    padding: 14px 22px;
-    border-radius: 6px;
-    color: #ffffff;
-    margin-bottom: 18px;
+    padding: 8px 16px;
 }
 
-.app-header h1 {
-    font-size: 1.35rem;
+.navbar-brand {
+    color: #ffffff !important;
+    font-size: 1.05rem;
     font-weight: 600;
-    margin: 0;
     letter-spacing: -0.01em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-.app-header p {
-    font-size: 0.85rem;
-    color: var(--posit-slate-300);
-    margin: 4px 0 0 0;
+.navbar .nav-link {
+    color: var(--posit-slate-300) !important;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 6px 14px !important;
+    border-radius: 4px;
+    transition: all 0.15s ease-in-out;
 }
 
+.navbar .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.navbar .nav-link.active {
+    color: #ffffff !important;
+    background-color: var(--posit-blue) !important;
+}
+
+/* Badge de API */
 .badge-tag {
-    background-color: var(--posit-slate-700);
-    color: #f1f5f9;
+    background-color: var(--posit-slate-800);
+    color: #93c5fd;
     font-size: 0.72rem;
     font-weight: 500;
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 4px;
     font-family: var(--font-mono);
-    border: 1px solid var(--posit-slate-600);
+    border: 1px solid var(--posit-slate-700);
 }
 
-/* Paneles y Tarjetas */
+/* 2. Context Banner (Seccion 2 de la guia) */
+.context-banner {
+    background-color: #ffffff;
+    border: 1px solid var(--posit-slate-200);
+    border-left: 4px solid var(--posit-blue);
+    border-radius: 6px;
+    padding: 10px 16px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.context-banner-idle {
+    border-left-color: var(--posit-slate-500);
+    background-color: var(--posit-slate-100);
+}
+
+.context-banner-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--posit-slate-900);
+}
+
+.context-banner-subtitle {
+    font-size: 0.82rem;
+    color: var(--posit-slate-600);
+}
+
+.badge-context {
+    background-color: var(--posit-slate-100);
+    color: var(--posit-slate-700);
+    border: 1px solid var(--posit-slate-300);
+    font-size: 0.76rem;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.badge-status-ok {
+    background-color: #ecfdf5;
+    color: var(--semantic-success);
+    border: 1px solid #a7f3d0;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* 3. Tarjetas (Cards) */
 .card {
     background-color: #ffffff;
     border: 1px solid var(--posit-slate-200);
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .card-header {
     background-color: #ffffff;
     border-bottom: 1px solid var(--posit-slate-200);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     color: var(--posit-slate-800);
     padding: 10px 16px;
 }
 
-/* Métricas numéricas estilo Positron */
-.metric-tile {
-    padding: 14px 16px;
-    border-radius: 6px;
-    text-align: left;
-    border: 1px solid var(--posit-slate-200);
-    background-color: #ffffff;
+/* 4. Value Boxes (bslib) */
+.bslib-value-box {
+    border-radius: 6px !important;
+    border: 1px solid var(--posit-slate-200) !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
 }
 
-.metric-tile .tile-num {
-    font-size: 1.7rem;
-    font-weight: 700;
-    line-height: 1.1;
-    font-family: var(--font-mono);
-    color: var(--posit-slate-900);
+.bslib-value-box .value-box-title {
+    font-size: 0.78rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 600 !important;
+    opacity: 0.9;
 }
 
-.metric-tile .tile-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    color: var(--posit-slate-500);
-    margin-top: 4px;
+.bslib-value-box .value-box-value {
+    font-size: 1.85rem !important;
+    font-family: var(--font-mono) !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
 }
 
-.metric-tile.tile-blue   { border-top: 3px solid var(--posit-blue); }
-.metric-tile.tile-teal   { border-top: 3px solid var(--positron-teal); }
-.metric-tile.tile-amber  { border-top: 3px solid var(--status-warning); }
-.metric-tile.tile-red    { border-top: 3px solid var(--status-error); }
-.metric-tile.tile-green  { border-top: 3px solid var(--status-success); }
-
-/* Botones con estilo Posit / Positron */
-.btn-primary {
-    background-color: var(--posit-blue);
-    border-color: var(--posit-blue);
-    color: #ffffff;
-    font-weight: 500;
-    font-size: 0.88rem;
-    border-radius: 4px;
-    padding: 8px 16px;
-    transition: background-color 0.15s ease-in-out;
-}
-
-.btn-primary:hover, .btn-primary:focus {
-    background-color: var(--posit-blue-hover);
-    border-color: var(--posit-blue-hover);
-    color: #ffffff;
-}
-
-/* Alertas y Feedback */
-.alert-box {
-    padding: 10px 12px;
-    border-radius: 4px;
-    font-size: 0.84rem;
-    line-height: 1.45;
-}
-
-.alert-info-box {
-    background-color: var(--posit-slate-100);
-    border-left: 3px solid var(--posit-blue);
-    color: var(--posit-slate-700);
-}
-
-.status-success { color: var(--status-success); font-weight: 500; }
-.status-warning { color: var(--status-warning); font-weight: 500; }
-.status-error   { color: var(--status-error);   font-weight: 500; }
-
-/* Tablas con formato de consola / IDE */
+/* 5. Tablas y controles */
 .custom-table {
     width: 100%;
     font-size: 0.82rem;
@@ -165,7 +180,7 @@ body {
     font-weight: 600;
     padding: 7px 10px;
     border-bottom: 1px solid var(--posit-slate-300);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -176,32 +191,36 @@ body {
     color: var(--posit-slate-800);
 }
 
-.custom-table tbody tr:hover {
-    background-color: #f8fafc;
+.status-success { color: var(--semantic-success); font-weight: 500; }
+.status-warning { color: var(--semantic-warning); font-weight: 500; }
+.status-error   { color: var(--semantic-danger);  font-weight: 500; }
+
+.alert-box {
+    padding: 9px 12px;
+    border-radius: 4px;
+    font-size: 0.83rem;
+    line-height: 1.45;
 }
 
-/* Pestañas de Navegación */
-.nav-tabs {
-    border-bottom: 1px solid var(--posit-slate-200);
+.alert-info-box {
+    background-color: var(--posit-slate-100);
+    border-left: 3px solid var(--posit-blue);
+    color: var(--posit-slate-700);
 }
 
-.nav-tabs .nav-link {
-    color: var(--posit-slate-600);
-    font-size: 0.88rem;
+.btn-primary {
+    background-color: var(--posit-blue);
+    border-color: var(--posit-blue);
+    color: #ffffff;
     font-weight: 500;
-    border: none;
-    padding: 10px 16px;
-    border-bottom: 2px solid transparent;
+    font-size: 0.88rem;
+    border-radius: 4px;
+    padding: 7px 14px;
+    transition: background-color 0.15s ease-in-out;
 }
 
-.nav-tabs .nav-link:hover {
-    color: var(--posit-blue);
-    border-bottom-color: var(--posit-slate-300);
-}
-
-.nav-tabs .nav-link.active {
-    color: var(--posit-blue);
-    font-weight: 600;
-    background: transparent;
-    border-bottom: 2px solid var(--posit-blue);
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--posit-blue-dark);
+    border-color: var(--posit-blue-dark);
+    color: #ffffff;
 }

@@ -25,15 +25,7 @@ from modules.mod_stats import stats_ui, stats_server
 # INTERFAZ DE USUARIO (UI ENSAMBLADA)
 # -------------------------------------------------------------
 app_ui = ui.page_navbar(
-    # Panel lateral global para fuentes y seleccion de datos
-    sidebar=ui.sidebar(
-        loader_ui("loader_mod"),
-        width=300,
-        bg="#f8fafc",
-        open="desktop"
-    ),
-    
-    # Destinos principales de navegacion
+    # Destinos principales de navegacion (argumentos posicionales)
     ui.nav_panel("Resumen", summary_ui("summary_mod")),
     ui.nav_panel("Datos", table_ui("table_mod")),
     ui.nav_panel("Distribuciones", distributions_ui("dist_mod")),
@@ -49,6 +41,15 @@ app_ui = ui.page_navbar(
         ui.span("datos.gov.co", class_="badge-tag ms-2"),
         class_="d-flex align-items-center"
     ),
+    
+    # Panel lateral global para fuentes y seleccion de datos
+    sidebar=ui.sidebar(
+        loader_ui("loader_mod"),
+        width=300,
+        bg="#f8fafc",
+        open="desktop"
+    ),
+    
     header=ui.tags.head(
         ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")
     ),

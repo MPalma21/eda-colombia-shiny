@@ -29,11 +29,13 @@ def timeseries_server(input, output, session, df_react):
         if not date_cols:
             return ui.p("No se detectaron variables de fecha u hora en este dataset.", class_="status-warning")
 
-        return ui.row(
-            ui.column(4, ui.input_select("date_variable", "Variable Temporal (Fecha):", choices=date_cols)),
-            ui.column(4, ui.input_select("metric_variable", "Variable Numerica:", choices=num_cols)),
-            ui.column(4, ui.input_select("aggregation_type", "Agregacion:",
-                                        choices=["Suma", "Promedio", "Conteo", "Maximo"]))
+        return ui.layout_columns(
+            ui.input_select("date_variable", "Variable Temporal (Fecha):", choices=date_cols),
+            ui.input_select("metric_variable", "Variable Numerica:", choices=num_cols),
+            ui.input_select("aggregation_type", "Agregacion:",
+                            choices=["Suma", "Promedio", "Conteo", "Maximo"]),
+            col_widths={"sm": 12, "md": 4},
+            class_="mb-3 g-2"
         )
 
     @output

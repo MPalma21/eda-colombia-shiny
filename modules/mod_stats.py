@@ -28,7 +28,8 @@ def stats_ui():
                 ui.output_data_frame("cat_summary_grid"),
                 full_screen=True
             ),
-            col_widths=[6, 6]
+            col_widths={"sm": 12, "md": 6},
+            class_="g-3"
         )
     )
 

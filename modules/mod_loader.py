@@ -59,7 +59,7 @@ def loader_ui():
                     ui.span("Autor del Proyecto", class_="sidebar-badge-author"),
                     class_="mb-1"
                 ),
-                ui.div("Miguel Angel Palma", class_="fw-bold text-slate-800", style="font-size: 0.88rem;"),
+                ui.div("Miguelangel Palma", class_="fw-bold text-slate-800", style="font-size: 0.88rem;"),
                 ui.div("Economista & Cientifico de Datos", class_="text-slate-500", style="font-size: 0.75rem;"),
                 ui.div(
                     ui.tags.a(

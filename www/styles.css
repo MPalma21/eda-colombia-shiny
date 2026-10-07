@@ -1,7 +1,7 @@
 /* ==========================================================================
    Diseno de UI para Shiny - Design System Oficial
    Analisis Exploratorio en Datos Abiertos (datos.gov.co)
-   Desarrollado por Miguel Angel Palma
+   Desarrollado por Miguelangel Palma
    ========================================================================== */
 
 :root {
@@ -58,7 +58,7 @@ body {
 }
 
 /* ==========================================================================
-   1. NAVBAR & BRANDING SUPERIOR
+   1. NAVBAR & NAVEGACION SUPERIOR
    ========================================================================== */
 .navbar {
     background-color: var(--surface-navbar) !important;
@@ -69,7 +69,7 @@ body {
 
 .navbar-brand {
     padding: 0 !important;
-    margin-right: 24px !important;
+    margin-right: 20px !important;
 }
 
 .navbar-app-title {
@@ -87,35 +87,39 @@ body {
     letter-spacing: 0.02em;
 }
 
+/* Pestanas de navegacion en Navbar */
 .navbar .nav-link {
     color: var(--text-subtle) !important;
     font-size: 0.88rem;
     font-weight: 500;
-    padding: 7px 14px !important;
+    padding: 8px 14px !important;
     border-radius: var(--radius-sm);
+    background: transparent !important;
+    border-bottom: 2px solid transparent;
     transition: all 0.15s ease-in-out;
 }
 
 .navbar .nav-link:hover {
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .navbar .nav-link.active {
     color: #ffffff !important;
-    background-color: var(--brand-primary) !important;
+    background-color: rgba(255, 255, 255, 0.09) !important;
+    border-bottom: 2px solid #38bdf8 !important;
+    border-radius: 6px 6px 0 0;
     font-weight: 600;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Botones de autor en el navbar */
 .btn-navbar-link {
-    background-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(255, 255, 255, 0.07) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
     color: #f1f5f9 !important;
     font-size: 0.78rem !important;
     font-weight: 500 !important;
-    padding: 5px 11px !important;
+    padding: 5px 12px !important;
     border-radius: var(--radius-sm) !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -136,9 +140,9 @@ body {
 .context-banner {
     background-color: var(--surface-card);
     border: 1px solid var(--border-subtle);
-    border-left: 4px solid var(--brand-primary);
+    border-left: 3px solid var(--brand-primary);
     border-radius: var(--radius-card);
-    padding: 12px 18px;
+    padding: 10px 16px;
     box-shadow: var(--shadow-card);
 }
 
@@ -148,13 +152,13 @@ body {
 }
 
 .context-banner-title {
-    font-size: 0.96rem;
+    font-size: 0.94rem;
     font-weight: 700;
     color: var(--text-primary);
 }
 
 .context-banner-subtitle {
-    font-size: 0.82rem;
+    font-size: 0.81rem;
     color: var(--text-muted);
 }
 
@@ -180,26 +184,29 @@ body {
 }
 
 /* ==========================================================================
-   3. VALUE BOXES & KPIS NATIVOS
+   3. VALUE BOXES & KPIS NATIVOS (BLANCO EJECUTIVO)
    ========================================================================== */
 .bslib-value-box {
-    border-radius: var(--radius-card) !important;
+    background-color: #ffffff !important;
+    color: var(--text-primary) !important;
     border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--radius-card) !important;
     box-shadow: var(--shadow-card) !important;
+    padding: 14px 18px !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .bslib-value-box:hover {
     box-shadow: var(--shadow-elevated) !important;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
 .bslib-value-box .value-box-title {
-    font-size: 0.76rem !important;
+    font-size: 0.74rem !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.06em !important;
     font-weight: 600 !important;
-    color: var(--text-muted);
+    color: var(--text-muted) !important;
 }
 
 .bslib-value-box .value-box-value {
@@ -207,11 +214,51 @@ body {
     font-family: var(--font-mono) !important;
     font-weight: 700 !important;
     line-height: 1.15 !important;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
+}
+
+/* Badges con iconos sutiles dentro de Value Boxes */
+.kpi-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+}
+
+.kpi-badge-blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.kpi-badge-slate {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.kpi-badge-teal {
+    background-color: #f0fdfa;
+    color: #0f766e;
+}
+
+.kpi-badge-semantic {
+    background-color: #ecfdf5;
+    color: #059669;
+}
+
+.kpi-missing-mid .kpi-badge-semantic {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.kpi-missing-high .kpi-badge-semantic {
+    background-color: #fef2f2;
+    color: #dc2626;
 }
 
 /* ==========================================================================
-   4. TARJETAS (CARDS) Y CONTENIDO
+   4. METADATOS Y TARJETAS (CARDS)
    ========================================================================== */
 .card {
     background-color: var(--surface-card);
@@ -224,13 +271,59 @@ body {
 .card-header {
     background-color: #ffffff;
     border-bottom: 1px solid var(--border-subtle);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     color: var(--text-primary);
-    padding: 12px 18px;
+    padding: 11px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.metadata-item-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-subtle);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.metadata-item-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.badge-entity {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.badge-category {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid var(--border-muted);
+    font-size: 0.76rem;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.metadata-item-desc {
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    background-color: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
 }
 
 .empty-state-card {
@@ -239,10 +332,38 @@ body {
 }
 
 /* ==========================================================================
-   5. BARRA LATERAL (SIDEBAR) & FORMULARIOS
+   5. MINI KPIS DE DISTRIBUCIONES
+   ========================================================================== */
+.mini-kpi-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 9px 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-kpi-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.mini-kpi-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   6. BARRA LATERAL (SIDEBAR) & FORMULARIOS
    ========================================================================== */
 .sidebar-section-title {
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -252,7 +373,7 @@ body {
 }
 
 .sidebar-description {
-    font-size: 0.81rem;
+    font-size: 0.80rem;
     color: var(--text-muted);
     line-height: 1.4;
     margin-bottom: 12px;
@@ -270,7 +391,7 @@ body {
 }
 
 .sidebar-author-link {
-    font-size: 0.78rem;
+    font-size: 0.77rem;
     color: var(--brand-primary);
     text-decoration: none;
     font-weight: 500;
@@ -281,12 +402,30 @@ body {
     color: var(--brand-primary-hover);
 }
 
+.sidebar-controls-group input.form-control,
+.sidebar-controls-group select.form-select {
+    border: 1px solid var(--border-muted);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background-color: #ffffff;
+    padding: 7px 10px;
+    color: var(--text-primary);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sidebar-controls-group input.form-control:focus,
+.sidebar-controls-group select.form-select:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+    outline: none;
+}
+
 .btn-load-dataset {
     background-color: var(--brand-primary);
     border-color: var(--brand-primary);
     color: #ffffff;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     border-radius: var(--radius-sm);
     box-shadow: 0 1px 2px rgba(30, 64, 175, 0.2);
     transition: all 0.15s ease-in-out;
@@ -299,43 +438,24 @@ body {
     box-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
 }
 
-/* ==========================================================================
-   6. TABLAS & ESTILOS AUXILIARES
-   ========================================================================== */
-.custom-table {
-    width: 100%;
-    font-size: 0.83rem;
-    border-collapse: collapse;
-}
+.status-success { color: var(--semantic-success); font-weight: 600; }
+.status-warning { color: var(--semantic-warning); font-weight: 600; }
+.status-error   { color: var(--semantic-danger);  font-weight: 600; }
 
-.custom-table thead th {
-    background-color: #f8fafc;
-    color: var(--text-secondary);
-    font-weight: 600;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border-muted);
-    font-size: 0.77rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.custom-table tbody td {
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-}
-
-.custom-table tbody tr:hover {
+.alert-status-box {
+    padding: 8px 10px;
+    border-radius: 6px;
     background-color: #f1f5f9;
+    border: 1px solid var(--border-subtle);
 }
 
 /* ==========================================================================
-   7. FOOTER DISCRETO Y PROFESIONAL
+   7. FOOTER DISCRETO
    ========================================================================== */
 .app-footer {
     background-color: #ffffff;
     border-top: 1px solid var(--border-subtle);
-    font-size: 0.81rem;
+    font-size: 0.80rem;
     color: var(--text-muted);
 }
 
@@ -353,7 +473,7 @@ body {
 .footer-link {
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
@@ -365,7 +485,28 @@ body {
     text-decoration: underline;
 }
 
-.text-slate-800 { color: #1e293b; }
-.text-slate-700 { color: #334155; }
-.text-slate-500 { color: #64748b; }
-.text-slate-400 { color: #94a3b8; }
+/* ==========================================================================
+   8. AJUSTES RESPONSIVOS (DIMENSIONES)
+   ========================================================================== */
+@media (max-width: 991.98px) {
+    .navbar-app-title {
+        font-size: 0.95rem;
+    }
+    .navbar-app-subtitle {
+        display: none;
+    }
+    .context-banner-title {
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .bslib-value-box .value-box-value {
+        font-size: 1.5rem !important;
+    }
+    .footer-container {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start !important;
+    }
+}

@@ -29,12 +29,14 @@ def comparisons_server(input, output, session, df_react):
         if not cat_cols or not num_cols:
             return ui.p("Se requiere al menos una variable numerica y una categorica.", class_="status-warning")
 
-        return ui.row(
-            ui.column(3, ui.input_select("num_target", "Variable Numerica (Y):", choices=num_cols)),
-            ui.column(3, ui.input_select("cat_group", "Variable Categorica (X):", choices=cat_cols)),
-            ui.column(3, ui.input_select("comp_style", "Tipo de Visualizacion:",
-                                        choices=["Barras (Promedio)", "Box Plot por Grupo", "Violin por Grupo", "Conteo de Registros"])),
-            ui.column(3, ui.input_numeric("top_categories", "Maximo de categorias:", value=12, min=3, max=30))
+        return ui.layout_columns(
+            ui.input_select("num_target", "Variable Numerica (Y):", choices=num_cols),
+            ui.input_select("cat_group", "Variable Categorica (X):", choices=cat_cols),
+            ui.input_select("comp_style", "Tipo de Visualizacion:",
+                            choices=["Barras (Promedio)", "Box Plot por Grupo", "Violin por Grupo", "Conteo de Registros"]),
+            ui.input_numeric("top_categories", "Maximo de categorias:", value=12, min=3, max=30),
+            col_widths={"sm": 12, "md": 6, "lg": 3},
+            class_="mb-3 g-2"
         )
 
     @output

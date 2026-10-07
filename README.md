@@ -2,7 +2,7 @@
 
 > Plataforma analitica interactiva para el portal nacional [datos.gov.co](https://www.datos.gov.co/), desarrollada con **Shiny for Python** bajo los estandares oficiales de ingenieria de software y diseno de UI de **Posit PBC**.
 
-**Autor:** Miguel Angel Palma  
+**Autor:** Miguelangel Palma  
 - **LinkedIn:** [miguelangelpr](https://www.linkedin.com/in/miguelangelpr)  
 - **GitHub:** [MPalma21](https://github.com/MPalma21)  
 - **Despliegue:** [Posit Connect Cloud](https://connect.posit.cloud)  

@@ -8,10 +8,11 @@ from services.stats_service import classify_columns
 def table_ui():
     return ui.card(
         ui.card_header("Exploracion de Datos"),
-        ui.row(
-            ui.column(6, ui.input_text("search_query", "Busqueda global rapida:", placeholder="Filtrar registros por texto...")),
-            ui.column(6, ui.output_ui("category_filter_ui")),
-            class_="mb-2"
+        ui.layout_columns(
+            ui.input_text("search_query", "Busqueda global rapida:", placeholder="Filtrar registros por texto..."),
+            ui.output_ui("category_filter_ui"),
+            col_widths={"sm": 12, "md": 6},
+            class_="mb-2 g-2"
         ),
         ui.output_ui("table_info_bar"),
         ui.output_data_frame("main_data_grid"),

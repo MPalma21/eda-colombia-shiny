@@ -32,12 +32,14 @@ def distributions_server(input, output, session, df_react):
         if not num_cols:
             return ui.p("El dataset no contiene columnas numericas para este analisis.", class_="status-warning")
 
-        return ui.row(
-            ui.column(4, ui.input_select("dist_variable", "Variable Numerica:", choices=num_cols)),
-            ui.column(3, ui.input_select("chart_kind", "Tipo de Grafico:",
-                                        choices=["Histograma + KDE", "Diagrama de Caja (Box Plot)", "Grafico de Violin", "Funcion Empirica (ECDF)"])),
-            ui.column(2, ui.input_numeric("bins_count", "Intervalos (Bins):", value=30, min=5, max=100)),
-            ui.column(3, ui.input_select("group_by_cat", "Segmentar por Categoria (opcional):", choices=["(Ninguna)"] + cat_cols))
+        return ui.layout_columns(
+            ui.input_select("dist_variable", "Variable Numerica:", choices=num_cols),
+            ui.input_select("chart_kind", "Tipo de Grafico:",
+                            choices=["Histograma + KDE", "Diagrama de Caja (Box Plot)", "Grafico de Violin", "Funcion Empirica (ECDF)"]),
+            ui.input_numeric("bins_count", "Intervalos (Bins):", value=30, min=5, max=100),
+            ui.input_select("group_by_cat", "Segmentar por Categoria (opcional):", choices=["(Ninguna)"] + cat_cols),
+            col_widths={"sm": 12, "md": 6, "lg": 3},
+            class_="mb-3 g-2"
         )
 
     @output
@@ -60,14 +62,14 @@ def distributions_server(input, output, session, df_react):
         if series.empty:
             return ui.p("Sin observaciones numericas suficientes en la variable seleccionada.", class_="text-muted")
 
-        positron_palette = ["#1d4ed8", "#0284c7", "#0f766e", "#4f46e5", "#d97706", "#059669"]
+        brand_palette = ["#1d4ed8", "#0284c7", "#0f766e", "#4f46e5", "#d97706", "#059669"]
 
         if chart_kind == "Histograma + KDE":
             fig = px.histogram(
                 df, x=var, nbins=bins, color=color_param,
                 marginal="box", title=f"Distribucion de {var}",
                 barmode="overlay", opacity=0.8,
-                color_discrete_sequence=positron_palette
+                color_discrete_sequence=brand_palette
             )
             if color_param is None and len(series) > 5:
                 try:
@@ -86,21 +88,21 @@ def distributions_server(input, output, session, df_react):
             fig = px.box(
                 df, y=var, x=color_param, color=color_param,
                 title=f"Box Plot: {var}", points="outliers",
-                color_discrete_sequence=positron_palette
+                color_discrete_sequence=brand_palette
             )
 
         elif chart_kind == "Grafico de Violin":
             fig = px.violin(
                 df, y=var, x=color_param, color=color_param,
                 box=True, title=f"Violin Plot: {var}",
-                color_discrete_sequence=positron_palette
+                color_discrete_sequence=brand_palette
             )
 
         else:
             fig = px.ecdf(
                 df, x=var, color=color_param,
                 title=f"Curva Empirica Acumulada (ECDF): {var}",
-                color_discrete_sequence=positron_palette
+                color_discrete_sequence=brand_palette
             )
 
         fig.update_layout(
@@ -113,11 +115,31 @@ def distributions_server(input, output, session, df_react):
         fig.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
 
         metrics_html = f"""
-        <div class="row g-2 mt-2">
-            <div class="col"><div class="metric-tile tile-blue"><div class="tile-num">{series.mean():,.2f}</div><div class="tile-label">Media</div></div></div>
-            <div class="col"><div class="metric-tile tile-teal"><div class="tile-num">{series.median():,.2f}</div><div class="tile-label">Mediana</div></div></div>
-            <div class="col"><div class="metric-tile tile-blue"><div class="tile-num">{series.std():,.2f}</div><div class="tile-label">Desv. Estandar</div></div></div>
-            <div class="col"><div class="metric-tile tile-amber"><div class="tile-num">{float(stats.skew(series)):.2f}</div><div class="tile-label">Sesgo (Skewness)</div></div></div>
+        <div class="row g-2 mt-3">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="mini-kpi-card">
+                    <span class="mini-kpi-label">Media Aritmetica</span>
+                    <span class="mini-kpi-val">{series.mean():,.2f}</span>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="mini-kpi-card">
+                    <span class="mini-kpi-label">Mediana (Q2)</span>
+                    <span class="mini-kpi-val">{series.median():,.2f}</span>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="mini-kpi-card">
+                    <span class="mini-kpi-label">Desv. Estandar</span>
+                    <span class="mini-kpi-val">{series.std():,.2f}</span>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="mini-kpi-card">
+                    <span class="mini-kpi-label">Coef. Sesgo (Skew)</span>
+                    <span class="mini-kpi-val">{float(stats.skew(series)):.2f}</span>
+                </div>
+            </div>
         </div>
         """
 

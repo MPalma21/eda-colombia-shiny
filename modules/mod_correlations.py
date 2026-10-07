@@ -29,11 +29,13 @@ def correlations_server(input, output, session, df_react):
         if len(num_cols) < 2:
             return ui.p("Se requieren al menos dos columnas numericas para el calculo de correlacion.", class_="status-warning")
 
-        return ui.row(
-            ui.column(6, ui.input_select("corr_method", "Coeficiente:",
-                                        choices=["pearson", "spearman", "kendall"])),
-            ui.column(6, ui.input_select("corr_view", "Visualizacion:",
-                                        choices=["Mapa de Calor (Heatmap)", "Matriz de Dispersion (Scatter Matrix)"]))
+        return ui.layout_columns(
+            ui.input_select("corr_method", "Coeficiente de Correlacion:",
+                            choices=["pearson", "spearman", "kendall"]),
+            ui.input_select("corr_view", "Tipo de Visualizacion:",
+                            choices=["Mapa de Calor (Heatmap)", "Matriz de Dispersion (Scatter Matrix)"]),
+            col_widths={"sm": 12, "md": 6},
+            class_="mb-3 g-2"
         )
 
     @reactive.calc

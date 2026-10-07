@@ -49,38 +49,6 @@ def loader_ui():
             ),
             ui.output_ui("status_feedback"),
             class_="sidebar-controls-group"
-        ),
-        
-        # Grupo 2: Tarjeta informativa del autor y proyecto
-        ui.div(
-            ui.hr(class_="my-3 text-slate-300"),
-            ui.div(
-                ui.div(
-                    ui.span("Autor del Proyecto", class_="sidebar-badge-author"),
-                    class_="mb-1"
-                ),
-                ui.div("Miguelangel Palma", class_="fw-bold text-slate-800", style="font-size: 0.88rem;"),
-                ui.div("Economista & Cientifico de Datos", class_="text-slate-500", style="font-size: 0.75rem;"),
-                ui.div(
-                    ui.tags.a(
-                        "LinkedIn: miguelangelpr",
-                        href="https://www.linkedin.com/in/miguelangelpr",
-                        target="_blank",
-                        rel="noopener noreferrer",
-                        class_="sidebar-author-link d-block mt-1"
-                    ),
-                    ui.tags.a(
-                        "GitHub: MPalma21",
-                        href="https://github.com/MPalma21",
-                        target="_blank",
-                        rel="noopener noreferrer",
-                        class_="sidebar-author-link d-block"
-                    ),
-                    class_="mt-1"
-                ),
-                class_="sidebar-author-card p-2 rounded bg-slate-50 border border-slate-200"
-            ),
-            class_="sidebar-footer-author mt-2"
         )
     )
 

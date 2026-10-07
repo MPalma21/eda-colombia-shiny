@@ -39,7 +39,7 @@ def summary_ui():
                 ui.output_data_frame("diagnostics_grid"),
                 full_screen=True
             ),
-            col_widths={"sm": 12, "md": 12, "lg": 5, "xl": 5},
+            col_widths={"sm": (12, 12), "lg": (5, 7)},
             class_="mb-3 g-3"
         ),
         ui.card(

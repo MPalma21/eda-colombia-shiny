@@ -21,7 +21,7 @@ def render_app_footer() -> ui.Tag:
             # Seccion izquierda: Creditos con espaciado correcto y nombre Miguelangel
             ui.div(
                 ui.span("Analisis Exploratorio en Datos Abiertos", class_="fw-semibold text-slate-800 me-2"),
-                ui.span("·", class_="text-slate-400 me-2"),
+                ui.span(ui.HTML("&bull;"), class_="text-slate-400 me-2"),
                 ui.span("Desarrollado por ", class_="text-slate-500 me-1"),
                 ui.span("Miguelangel Palma", class_="fw-semibold text-slate-700"),
                 class_="footer-left d-flex align-items-center flex-wrap mb-2 mb-lg-0"
@@ -31,8 +31,7 @@ def render_app_footer() -> ui.Tag:
             ui.div(
                 ui.span("Python 3.11", class_="footer-badge me-2"),
                 ui.span("Shiny for Python", class_="footer-badge me-2"),
-                ui.span("datos.gov.co", class_="footer-badge me-2"),
-                ui.span("Posit Connect Cloud", class_="footer-badge"),
+                ui.span("datos.gov.co", class_="footer-badge"),
                 class_="footer-center d-flex align-items-center flex-wrap mb-2 mb-lg-0"
             ),
             
@@ -56,7 +55,7 @@ def render_app_footer() -> ui.Tag:
                 ),
                 ui.tags.a(
                     ui.HTML(SVG_POSIT),
-                    "Posit Connect Cloud",
+                    "Posit Connect: MPalma21",
                     href="https://connect.posit.cloud",
                     target="_blank",
                     rel="noopener noreferrer",

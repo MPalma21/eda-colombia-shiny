@@ -55,6 +55,9 @@ body {
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.01em;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==========================================================================
@@ -69,7 +72,7 @@ body {
 
 .navbar-brand {
     padding: 0 !important;
-    margin-right: 20px !important;
+    margin-right: 24px !important;
 }
 
 .navbar-app-title {
@@ -112,28 +115,6 @@ body {
     font-weight: 600;
 }
 
-/* Botones de autor en el navbar */
-.btn-navbar-link {
-    background-color: rgba(255, 255, 255, 0.07) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
-    color: #f1f5f9 !important;
-    font-size: 0.78rem !important;
-    font-weight: 500 !important;
-    padding: 5px 12px !important;
-    border-radius: var(--radius-sm) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    transition: all 0.15s ease-in-out;
-    text-decoration: none !important;
-}
-
-.btn-navbar-link:hover {
-    background-color: rgba(255, 255, 255, 0.18) !important;
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    color: #ffffff !important;
-    transform: translateY(-1px);
-}
-
 /* ==========================================================================
    2. CONTEXT BANNER
    ========================================================================== */
@@ -144,6 +125,7 @@ body {
     border-radius: var(--radius-card);
     padding: 10px 16px;
     box-shadow: var(--shadow-card);
+    margin-bottom: 18px !important;
 }
 
 .context-banner-idle {
@@ -258,14 +240,30 @@ body {
 }
 
 /* ==========================================================================
-   4. METADATOS Y TARJETAS (CARDS)
+   4. TARJETAS (CARDS) Y PREVENCION DE SOLAPAMIENTOS
    ========================================================================== */
+.main {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(100vh - 65px) !important;
+    overflow-y: auto !important;
+    padding: 16px 20px 0 20px !important;
+}
+
+.tab-content {
+    flex: 1 0 auto !important;
+    padding-bottom: 32px !important;
+    width: 100% !important;
+}
+
 .card {
     background-color: var(--surface-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
-    margin-bottom: 16px;
+    margin-bottom: 24px !important;
+    position: relative;
+    overflow: visible;
 }
 
 .card-header {
@@ -278,6 +276,20 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.js-plotly-plot, .plotly, .plot-container {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+shiny-data-frame {
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 .metadata-item-label {
@@ -331,6 +343,10 @@ body {
     background-color: #f8fafc;
 }
 
+.summary-container {
+    padding-bottom: 12px;
+}
+
 /* ==========================================================================
    5. MINI KPIS DE DISTRIBUCIONES
    ========================================================================== */
@@ -377,29 +393,6 @@ body {
     color: var(--text-muted);
     line-height: 1.4;
     margin-bottom: 12px;
-}
-
-.sidebar-badge-author {
-    background-color: #e0e7ff;
-    color: var(--brand-indigo);
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.sidebar-author-link {
-    font-size: 0.77rem;
-    color: var(--brand-primary);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.sidebar-author-link:hover {
-    text-decoration: underline;
-    color: var(--brand-primary-hover);
 }
 
 .sidebar-controls-group input.form-control,
@@ -450,13 +443,19 @@ body {
 }
 
 /* ==========================================================================
-   7. FOOTER DISCRETO
+   7. FOOTER DISCRETO Y SEPARADO (UNICO LUGAR DE AUTORIA)
    ========================================================================== */
 .app-footer {
     background-color: #ffffff;
     border-top: 1px solid var(--border-subtle);
     font-size: 0.80rem;
     color: var(--text-muted);
+    margin-top: auto !important;
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    clear: both;
+    flex-shrink: 0 !important;
 }
 
 .footer-badge {
@@ -486,11 +485,17 @@ body {
 }
 
 /* ==========================================================================
-   8. AJUSTES RESPONSIVOS (DIMENSIONES)
+   8. AJUSTES RESPONSIVOS MULTI-DIMENSION (LAPTOP, TABLET, MOVIL)
    ========================================================================== */
+@media (max-width: 1199.98px) {
+    .navbar-app-title {
+        font-size: 0.98rem;
+    }
+}
+
 @media (max-width: 991.98px) {
     .navbar-app-title {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
     }
     .navbar-app-subtitle {
         display: none;
@@ -498,15 +503,25 @@ body {
     .context-banner-title {
         max-width: 100% !important;
     }
+    .main {
+        padding: 12px 14px 0 14px !important;
+    }
 }
 
 @media (max-width: 767.98px) {
     .bslib-value-box .value-box-value {
-        font-size: 1.5rem !important;
+        font-size: 1.45rem !important;
     }
     .footer-container {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         align-items: flex-start !important;
+    }
+    .footer-right {
+        margin-top: 4px;
+        gap: 8px;
+    }
+    .card {
+        margin-bottom: 16px !important;
     }
 }

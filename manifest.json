@@ -29,7 +29,7 @@
       "checksum": "4c1f6f5e8ed513d83a8b2c8e8f14767f"
     },
     "app.py": {
-      "checksum": "a1d6f6e5dbae5858c29bb16991061984"
+      "checksum": "f246a13838eb714d16bcc50ec60771ff"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -38,7 +38,7 @@
       "checksum": "3ff8796c4ef93bed7e81b33ca6c38ed5"
     },
     "components/footer.py": {
-      "checksum": "6302a63df771f1b5583329b7412ea8a7"
+      "checksum": "3ec5664e66cbff7a51e8d2b19996452a"
     },
     "config.py": {
       "checksum": "8e589806ace14682b0c487a9235a28c8"
@@ -56,13 +56,13 @@
       "checksum": "f92850b22f8addf00700c79e17f7776b"
     },
     "modules/mod_loader.py": {
-      "checksum": "a1870a38e0cf75fb9f1e80b909ef3d60"
+      "checksum": "65e56abc3953a36c9f4c02366b37751e"
     },
     "modules/mod_stats.py": {
       "checksum": "81ecdc7acd38578a2da08dbd578b84f9"
     },
     "modules/mod_summary.py": {
-      "checksum": "317e1f25c64fc19dde7c40aceea7bb89"
+      "checksum": "21cc672d4cf215efabbc9b19d0d1ffcc"
     },
     "modules/mod_table.py": {
       "checksum": "a9d1de4addc0cb320a3e3d9bab8f643c"
@@ -89,7 +89,7 @@
       "checksum": "31b3e8fb1b598a46f0b3d18510ce3be6"
     },
     "www/styles.css": {
-      "checksum": "61d1a9f9b20524b255bd5d09f3529454"
+      "checksum": "85df25359bc2917e02527fe90e873889"
     }
   }
 }

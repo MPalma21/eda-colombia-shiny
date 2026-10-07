@@ -71,14 +71,14 @@ def timeseries_server(input, output, session, df_react):
                 title=f"{agg_choice} de {metric_col} a lo largo del tiempo",
                 markers=len(resampled) <= 80
             )
-            fig.update_traces(line_color="#447099", line_width=2.2)
+            fig.update_traces(line_color="#1d4ed8", line_width=2.4)
 
             if len(resampled) >= 6:
                 resampled["Media_Movil"] = resampled[metric_col].rolling(window=5, min_periods=1).mean()
                 fig.add_scatter(
                     x=resampled[date_col], y=resampled["Media_Movil"],
                     name="Tendencia Suavizada", mode="lines",
-                    line=dict(color="#d97706", dash="dash", width=2)
+                    line=dict(color="#0284c7", dash="dash", width=2.2)
                 )
 
             fig.update_layout(

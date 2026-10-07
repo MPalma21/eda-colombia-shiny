@@ -5,6 +5,17 @@ import plotly.express as px
 from services.stats_service import compute_dataset_overview, compute_column_diagnostics
 from components.banner import render_context_banner
 
+# Iconos vectoriales compactos para Value Boxes
+SVG_ICON_ROWS = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="14" x2="21" y2="14"/></svg>"""
+
+SVG_ICON_COLS = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/></svg>"""
+
+SVG_ICON_NUM = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="19" x2="20" y2="19"/><polyline points="4 15 9 9 14 13 20 5"/></svg>"""
+
+SVG_ICON_MISSING = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>"""
+
+SVG_EMPTY_BOX = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="1.5" class="text-slate-400 mb-2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>"""
+
 
 @module.ui
 def summary_ui():
@@ -18,7 +29,7 @@ def summary_ui():
                 full_screen=True
             ),
             ui.card(
-                ui.card_header("Diagnostico por Columna"),
+                ui.card_header("Diagnostico por Columna y Completitud"),
                 ui.output_data_frame("diagnostics_grid"),
                 full_screen=True
             ),
@@ -26,7 +37,7 @@ def summary_ui():
             class_="mb-3"
         ),
         ui.card(
-            ui.card_header("Distribucion de Valores Faltantes"),
+            ui.card_header("Distribucion de Valores Faltantes por Variable"),
             ui.output_ui("missing_chart"),
             full_screen=True
         )
@@ -53,15 +64,16 @@ def summary_server(input, output, session, df_react, meta_react):
         if df.empty:
             return ui.card(
                 ui.div(
-                    ui.h5("Sin conjunto de datos cargado", class_="fw-bold text-secondary mb-2"),
+                    ui.HTML(SVG_EMPTY_BOX),
+                    ui.h5("Sin conjunto de datos cargado", class_="fw-bold text-slate-700 mb-2"),
                     ui.p(
-                        "Seleccione un dataset sugerido en el panel lateral o ingrese el identificador de un recurso de datos.gov.co, "
-                        "luego haga clic en 'Cargar Dataset' para inicializar el analisis.",
-                        class_="text-muted mb-0"
+                        "Seleccione una coleccion verificada en el panel lateral o ingrese el identificador de un recurso de datos.gov.co, "
+                        "luego haga clic en 'Cargar y Analizar Datos' para desplegar metricas.",
+                        class_="text-slate-500 mb-0 max-w-md mx-auto"
                     ),
-                    class_="text-center py-4"
+                    class_="text-center py-5"
                 ),
-                class_="mb-3"
+                class_="mb-3 empty-state-card"
             )
 
         m = dataset_metrics()
@@ -71,26 +83,30 @@ def summary_server(input, output, session, df_react, meta_react):
             ui.value_box(
                 "Total Registros",
                 f"{m['rows']:,}",
+                showcase=ui.HTML(SVG_ICON_ROWS),
                 theme="primary",
-                class_="kpi-box"
+                class_="kpi-box-custom"
             ),
             ui.value_box(
                 "Variables Totales",
                 str(m['cols']),
-                theme="teal",
-                class_="kpi-box"
+                showcase=ui.HTML(SVG_ICON_COLS),
+                theme="info",
+                class_="kpi-box-custom"
             ),
             ui.value_box(
                 "Variables Numericas",
                 str(m['num_cols']),
+                showcase=ui.HTML(SVG_ICON_NUM),
                 theme="primary",
-                class_="kpi-box"
+                class_="kpi-box-custom"
             ),
             ui.value_box(
                 "Datos Faltantes",
                 f"{m['missing_pct']}%",
+                showcase=ui.HTML(SVG_ICON_MISSING),
                 theme=missing_theme,
-                class_="kpi-box"
+                class_="kpi-box-custom"
             ),
             col_widths=[3, 3, 3, 3],
             class_="mb-3"
@@ -109,7 +125,7 @@ def summary_server(input, output, session, df_react, meta_react):
         author = author_info.get("displayName", "No especificado") if isinstance(author_info, dict) else "No especificado"
 
         return ui.tags.table(
-            ui.tags.tr(ui.tags.th("Titulo:", style="width: 130px;"), ui.tags.td(name)),
+            ui.tags.tr(ui.tags.th("Titulo Oficial:", style="width: 140px;"), ui.tags.td(name)),
             ui.tags.tr(ui.tags.th("Entidad / Autor:"), ui.tags.td(author)),
             ui.tags.tr(ui.tags.th("Descripcion:"), ui.tags.td(desc[:350] + ("..." if len(desc) > 350 else ""))),
             class_="table table-sm custom-table mb-0"

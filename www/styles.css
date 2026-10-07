@@ -1,226 +1,371 @@
 /* ==========================================================================
-   Positron IDE & Posit UI/UX Guidelines - Theme Stylesheet
+   Diseno de UI para Shiny - Design System Oficial
+   Analisis Exploratorio en Datos Abiertos (datos.gov.co)
+   Desarrollado por Miguel Angel Palma
    ========================================================================== */
 
 :root {
-    --posit-blue: #447099;
-    --posit-blue-dark: #315373;
-    --posit-blue-light: #5b87b0;
+    /* Paleta Principal Corporativa */
+    --brand-primary: #1e40af;
+    --brand-primary-hover: #1d4ed8;
+    --brand-accent: #0284c7;
+    --brand-teal: #0f766e;
+    --brand-indigo: #4338ca;
     
-    --posit-slate-950: #090d16;
-    --posit-slate-900: #0f172a;
-    --posit-slate-800: #1e293b;
-    --posit-slate-700: #334155;
-    --posit-slate-600: #475569;
-    --posit-slate-500: #64748b;
-    --posit-slate-300: #cbd5e1;
-    --posit-slate-200: #e2e8f0;
-    --posit-slate-100: #f1f5f9;
-    --posit-slate-50:  #f8fafc;
+    /* Superficies y Neutros */
+    --surface-bg: #f8fafc;
+    --surface-card: #ffffff;
+    --surface-navbar: #0f172a;
+    --surface-sidebar: #f8fafc;
     
-    --positron-teal: #2585a6;
-    --positron-cyan: #0284c7;
+    /* Bordes y Divisiones */
+    --border-subtle: #e2e8f0;
+    --border-muted: #cbd5e1;
+    --border-focus: #3b82f6;
     
+    /* Tipografia y Jerarquia */
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-subtle: #94a3b8;
+    
+    /* Semantica de Estado */
     --semantic-success: #059669;
+    --semantic-success-bg: #ecfdf5;
     --semantic-warning: #d97706;
-    --semantic-danger:  #dc2626;
+    --semantic-warning-bg: #fffbeb;
+    --semantic-danger: #dc2626;
+    --semantic-danger-bg: #fef2f2;
+    --semantic-info: #0284c7;
+    --semantic-info-bg: #f0f9ff;
     
+    /* Fuentes y Radios */
     --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', 'Menlo', monospace;
+    --radius-card: 8px;
+    --radius-sm: 6px;
+    --radius-full: 9999px;
+    --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    --shadow-elevated: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
 }
 
 body {
-    background-color: var(--posit-slate-50);
+    background-color: var(--surface-bg);
     font-family: var(--font-sans);
-    color: var(--posit-slate-800);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
-}
-
-/* 1. Navbar con estilo Positron IDE */
-.navbar {
-    background-color: var(--posit-slate-900) !important;
-    border-bottom: 1px solid var(--posit-slate-700);
-    padding: 8px 16px;
-}
-
-.navbar-brand {
-    color: #ffffff !important;
-    font-size: 1.05rem;
-    font-weight: 600;
     letter-spacing: -0.01em;
 }
 
+/* ==========================================================================
+   1. NAVBAR & BRANDING SUPERIOR
+   ========================================================================== */
+.navbar {
+    background-color: var(--surface-navbar) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 20px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.navbar-brand {
+    padding: 0 !important;
+    margin-right: 24px !important;
+}
+
+.navbar-app-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+}
+
+.navbar-app-subtitle {
+    color: var(--text-subtle);
+    font-size: 0.74rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
 .navbar .nav-link {
-    color: var(--posit-slate-300) !important;
+    color: var(--text-subtle) !important;
     font-size: 0.88rem;
     font-weight: 500;
-    padding: 6px 14px !important;
-    border-radius: 4px;
+    padding: 7px 14px !important;
+    border-radius: var(--radius-sm);
     transition: all 0.15s ease-in-out;
 }
 
 .navbar .nav-link:hover {
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .navbar .nav-link.active {
     color: #ffffff !important;
-    background-color: var(--posit-blue) !important;
+    background-color: var(--brand-primary) !important;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Badge de API */
-.badge-tag {
-    background-color: var(--posit-slate-800);
-    color: #93c5fd;
-    font-size: 0.72rem;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    border: 1px solid var(--posit-slate-700);
+/* Botones de autor en el navbar */
+.btn-navbar-link {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: #f1f5f9 !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    padding: 5px 11px !important;
+    border-radius: var(--radius-sm) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none !important;
 }
 
-/* 2. Context Banner (Seccion 2 de la guia) */
+.btn-navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   2. CONTEXT BANNER
+   ========================================================================== */
 .context-banner {
-    background-color: #ffffff;
-    border: 1px solid var(--posit-slate-200);
-    border-left: 4px solid var(--posit-blue);
-    border-radius: 6px;
-    padding: 10px 16px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--brand-primary);
+    border-radius: var(--radius-card);
+    padding: 12px 18px;
+    box-shadow: var(--shadow-card);
 }
 
 .context-banner-idle {
-    border-left-color: var(--posit-slate-500);
-    background-color: var(--posit-slate-100);
+    border-left-color: var(--text-muted);
+    background-color: #f8fafc;
 }
 
 .context-banner-title {
-    font-size: 0.95rem;
+    font-size: 0.96rem;
     font-weight: 700;
-    color: var(--posit-slate-900);
+    color: var(--text-primary);
 }
 
 .context-banner-subtitle {
     font-size: 0.82rem;
-    color: var(--posit-slate-600);
+    color: var(--text-muted);
 }
 
 .badge-context {
-    background-color: var(--posit-slate-100);
-    color: var(--posit-slate-700);
-    border: 1px solid var(--posit-slate-300);
+    background-color: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-muted);
     font-size: 0.76rem;
     font-family: var(--font-mono);
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 4px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
 }
 
 .badge-status-ok {
-    background-color: #ecfdf5;
+    background-color: var(--semantic-success-bg);
     color: var(--semantic-success);
     border: 1px solid #a7f3d0;
     font-size: 0.76rem;
     font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 4px;
+    padding: 4px 9px;
+    border-radius: var(--radius-sm);
 }
 
-/* 3. Tarjetas (Cards) */
-.card {
-    background-color: #ffffff;
-    border: 1px solid var(--posit-slate-200);
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
-}
-
-.card-header {
-    background-color: #ffffff;
-    border-bottom: 1px solid var(--posit-slate-200);
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--posit-slate-800);
-    padding: 10px 16px;
-}
-
-/* 4. Value Boxes (bslib) */
+/* ==========================================================================
+   3. VALUE BOXES & KPIS NATIVOS
+   ========================================================================== */
 .bslib-value-box {
-    border-radius: 6px !important;
-    border: 1px solid var(--posit-slate-200) !important;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+    border-radius: var(--radius-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: var(--shadow-card) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bslib-value-box:hover {
+    box-shadow: var(--shadow-elevated) !important;
+    transform: translateY(-1px);
 }
 
 .bslib-value-box .value-box-title {
-    font-size: 0.78rem !important;
+    font-size: 0.76rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
     font-weight: 600 !important;
-    opacity: 0.9;
+    color: var(--text-muted);
 }
 
 .bslib-value-box .value-box-value {
     font-size: 1.85rem !important;
     font-family: var(--font-mono) !important;
     font-weight: 700 !important;
-    line-height: 1.1 !important;
+    line-height: 1.15 !important;
+    color: var(--text-primary);
 }
 
-/* 5. Tablas y controles */
+/* ==========================================================================
+   4. TARJETAS (CARDS) Y CONTENIDO
+   ========================================================================== */
+.card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    margin-bottom: 16px;
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.empty-state-card {
+    border: 1px dashed var(--border-muted);
+    background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   5. BARRA LATERAL (SIDEBAR) & FORMULARIOS
+   ========================================================================== */
+.sidebar-section-title {
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.sidebar-description {
+    font-size: 0.81rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.sidebar-badge-author {
+    background-color: #e0e7ff;
+    color: var(--brand-indigo);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.sidebar-author-link {
+    font-size: 0.78rem;
+    color: var(--brand-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar-author-link:hover {
+    text-decoration: underline;
+    color: var(--brand-primary-hover);
+}
+
+.btn-load-dataset {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 2px rgba(30, 64, 175, 0.2);
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-load-dataset:hover {
+    background-color: var(--brand-primary-hover);
+    border-color: var(--brand-primary-hover);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
+}
+
+/* ==========================================================================
+   6. TABLAS & ESTILOS AUXILIARES
+   ========================================================================== */
 .custom-table {
     width: 100%;
-    font-size: 0.82rem;
+    font-size: 0.83rem;
     border-collapse: collapse;
 }
 
 .custom-table thead th {
-    background-color: var(--posit-slate-100);
-    color: var(--posit-slate-700);
+    background-color: #f8fafc;
+    color: var(--text-secondary);
     font-weight: 600;
-    padding: 7px 10px;
-    border-bottom: 1px solid var(--posit-slate-300);
-    font-size: 0.76rem;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border-muted);
+    font-size: 0.77rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
 .custom-table tbody td {
-    padding: 7px 10px;
-    border-bottom: 1px solid var(--posit-slate-200);
-    color: var(--posit-slate-800);
-}
-
-.status-success { color: var(--semantic-success); font-weight: 500; }
-.status-warning { color: var(--semantic-warning); font-weight: 500; }
-.status-error   { color: var(--semantic-danger);  font-weight: 500; }
-
-.alert-box {
     padding: 9px 12px;
-    border-radius: 4px;
-    font-size: 0.83rem;
-    line-height: 1.45;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
 }
 
-.alert-info-box {
-    background-color: var(--posit-slate-100);
-    border-left: 3px solid var(--posit-blue);
-    color: var(--posit-slate-700);
+.custom-table tbody tr:hover {
+    background-color: #f1f5f9;
 }
 
-.btn-primary {
-    background-color: var(--posit-blue);
-    border-color: var(--posit-blue);
-    color: #ffffff;
+/* ==========================================================================
+   7. FOOTER DISCRETO Y PROFESIONAL
+   ========================================================================== */
+.app-footer {
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.81rem;
+    color: var(--text-muted);
+}
+
+.footer-badge {
+    background-color: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 0.88rem;
+    padding: 2px 6px;
     border-radius: 4px;
-    padding: 7px 14px;
-    transition: background-color 0.15s ease-in-out;
 }
 
-.btn-primary:hover, .btn-primary:focus {
-    background-color: var(--posit-blue-dark);
-    border-color: var(--posit-blue-dark);
-    color: #ffffff;
+.footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s ease;
 }
+
+.footer-link:hover {
+    color: var(--brand-primary);
+    text-decoration: underline;
+}
+
+.text-slate-800 { color: #1e293b; }
+.text-slate-700 { color: #334155; }
+.text-slate-500 { color: #64748b; }
+.text-slate-400 { color: #94a3b8; }

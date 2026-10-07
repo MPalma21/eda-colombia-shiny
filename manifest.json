@@ -26,16 +26,19 @@
       "checksum": "f590d545d242672c2a9fa4b9a5f2b358"
     },
     "README.md": {
-      "checksum": "21660063edb42dcc2d73f049d61b2811"
+      "checksum": "f4e2071558515ba0a84064c588a12d85"
     },
     "app.py": {
-      "checksum": "319b348f8512609189daead471f59880"
+      "checksum": "a1d6f6e5dbae5858c29bb16991061984"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
     },
     "components/banner.py": {
-      "checksum": "85fffab80580c37d411ee80b70bac513"
+      "checksum": "84720b208ae2f0f3e84ad2652bb9e7b4"
+    },
+    "components/footer.py": {
+      "checksum": "f0c27266b439d5590db6dbaaebc1ebc6"
     },
     "config.py": {
       "checksum": "8e589806ace14682b0c487a9235a28c8"
@@ -44,28 +47,28 @@
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
     },
     "modules/mod_comparisons.py": {
-      "checksum": "7e1e25fdd1d48e5167ae1e6c25db631b"
+      "checksum": "062f8566bddd27d92abaf9affec01da3"
     },
     "modules/mod_correlations.py": {
-      "checksum": "d321987f07f5d61abdd39608d2202d9f"
+      "checksum": "07a8c92abd7bd2f5f0af0a1568467e6f"
     },
     "modules/mod_distributions.py": {
-      "checksum": "d7b9b496b227be82bf89bb60b72dbc6c"
+      "checksum": "abfe3aa655e0db338d5d63d781760b2c"
     },
     "modules/mod_loader.py": {
-      "checksum": "de6be48385af53b9a7957909b3352ffc"
+      "checksum": "ffd6b10e9aa90626f3489706a6be2fec"
     },
     "modules/mod_stats.py": {
       "checksum": "276c05037dd5eddb6857edf96e2d238c"
     },
     "modules/mod_summary.py": {
-      "checksum": "4b4decd67fcb3a2c272128993d0fe12d"
+      "checksum": "c4a409df288c35bde2d7ab5bc66669df"
     },
     "modules/mod_table.py": {
       "checksum": "d306be7e2dd1ff310617327ecbb41026"
     },
     "modules/mod_timeseries.py": {
-      "checksum": "de01bbbb7ff493f9cba8e3f60ee5cff8"
+      "checksum": "7c61e3bb05fed2eb8defce3b3256f947"
     },
     "pyproject.toml": {
       "checksum": "5e4e72a1d33199a9565c63634ec0a5cd"
@@ -86,7 +89,7 @@
       "checksum": "31b3e8fb1b598a46f0b3d18510ce3be6"
     },
     "www/styles.css": {
-      "checksum": "c181e6e221086b5b5e741d3ed1cdee97"
+      "checksum": "7fac1b97c70587e00a33faa992b6348d"
     }
   }
 }

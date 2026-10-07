@@ -56,7 +56,7 @@ def comparisons_server(input, output, session, df_react):
         subset = df[df[cat_col].isin(top_keys)].copy()
         subset[cat_col] = subset[cat_col].astype(str)
 
-        positron_palette = ["#447099", "#2585a6", "#64748b", "#d97706", "#059669", "#dc2626"]
+        positron_palette = ["#1d4ed8", "#0284c7", "#0f766e", "#4f46e5", "#d97706", "#059669"]
 
         if style == "Barras (Promedio)":
             agg = subset.groupby(cat_col, as_index=False)[num_col].mean().sort_values(by=num_col, ascending=False)

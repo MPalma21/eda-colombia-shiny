@@ -78,7 +78,7 @@ def correlations_server(input, output, session, df_react):
                 df,
                 dimensions=sample_cols,
                 title="Matriz de Dispersion (Variables numericas principales)",
-                color_discrete_sequence=["#447099"]
+                color_discrete_sequence=["#1d4ed8"]
             )
             fig.update_traces(diagonal_visible=False)
             fig.update_layout(height=540, margin=dict(t=50, b=40, l=40, r=40))

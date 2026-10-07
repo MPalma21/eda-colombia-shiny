@@ -8,36 +8,80 @@ from services.api_service import fetch_dataset
 @module.ui
 def loader_ui():
     return ui.div(
-        ui.h5("Fuente de Datos", style="font-size: 0.95rem; font-weight: 600; margin-bottom: 12px;"),
+        # Grupo 1: Seleccion de dataset
         ui.div(
-            "Indique el ID del recurso (ej: gt2j-8ykr) o la URL completa de datos.gov.co, o elija un conjunto de datos sugerido.",
-            class_="alert-box alert-info-box"
+            ui.span("Parametros de Consulta", class_="sidebar-section-title"),
+            ui.p(
+                "Consulte colecciones abiertas publicadas por entidades oficiales del Estado colombiano via SODA API.",
+                class_="sidebar-description"
+            ),
+            class_="mb-3"
         ),
-        ui.input_select(
-            "sample_ds",
-            "Dataset sugerido:",
-            choices=list(SAMPLE_DATASETS.keys()),
+        
+        ui.div(
+            ui.input_select(
+                "sample_ds",
+                "Colecciones verificadas:",
+                choices=list(SAMPLE_DATASETS.keys()),
+            ),
+            ui.input_text(
+                "resource_id",
+                "ID o URL de datos.gov.co:",
+                placeholder="Ejemplo: mcec-87by",
+                value=""
+            ),
+            ui.div(
+                "Indique el codigo alfanumerico (ej: mcec-87by) o la URL completa.",
+                class_="form-text text-muted small mt-n2 mb-3"
+            ),
+            ui.input_numeric(
+                "n_rows",
+                "Limite de registros:",
+                value=DEFAULT_FETCH_ROWS,
+                min=50,
+                max=DEFAULT_MAX_ROWS,
+                step=500
+            ),
+            ui.input_action_button(
+                "btn_load",
+                "Cargar y Analizar Datos",
+                class_="btn btn-primary w-100 py-2 mt-2 mb-2 btn-load-dataset"
+            ),
+            ui.output_ui("status_feedback"),
+            class_="sidebar-controls-group"
         ),
-        ui.input_text(
-            "resource_id",
-            "ID o URL del recurso:",
-            placeholder="Ejemplo: gt2j-8ykr",
-            value=""
-        ),
-        ui.input_numeric(
-            "n_rows",
-            "Limite de registros:",
-            value=DEFAULT_FETCH_ROWS,
-            min=50,
-            max=DEFAULT_MAX_ROWS,
-            step=500
-        ),
-        ui.input_action_button(
-            "btn_load",
-            "Cargar Dataset",
-            class_="btn btn-primary w-100 mt-2 mb-2"
-        ),
-        ui.output_ui("status_feedback")
+        
+        # Grupo 2: Tarjeta informativa del autor y proyecto
+        ui.div(
+            ui.hr(class_="my-3 text-slate-300"),
+            ui.div(
+                ui.div(
+                    ui.span("Autor del Proyecto", class_="sidebar-badge-author"),
+                    class_="mb-1"
+                ),
+                ui.div("Miguel Angel Palma", class_="fw-bold text-slate-800", style="font-size: 0.88rem;"),
+                ui.div("Economista & Cientifico de Datos", class_="text-slate-500", style="font-size: 0.75rem;"),
+                ui.div(
+                    ui.tags.a(
+                        "LinkedIn: miguelangelpr",
+                        href="https://www.linkedin.com/in/miguelangelpr",
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        class_="sidebar-author-link d-block mt-1"
+                    ),
+                    ui.tags.a(
+                        "GitHub: MPalma21",
+                        href="https://github.com/MPalma21",
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        class_="sidebar-author-link d-block"
+                    ),
+                    class_="mt-1"
+                ),
+                class_="sidebar-author-card p-2 rounded bg-slate-50 border border-slate-200"
+            ),
+            class_="sidebar-footer-author mt-2"
+        )
     )
 
 
@@ -70,7 +114,7 @@ def loader_server(input, output, session):
             return
 
         rv_status.set("loading")
-        rv_msg.set("Consultando API Socrata...")
+        rv_msg.set("Descargando y parseando datos desde API Socrata...")
 
         try:
             limit = int(input.n_rows() or DEFAULT_FETCH_ROWS)
@@ -78,7 +122,7 @@ def loader_server(input, output, session):
 
             if df.empty:
                 rv_status.set("error")
-                rv_msg.set("La API respondio pero no se encontraron registros disponibles.")
+                rv_msg.set("La API respondio exitosamente pero la coleccion no contiene registros.")
                 return
 
             rv_df.set(df)
@@ -104,6 +148,9 @@ def loader_server(input, output, session):
             "loading": "status-warning"
         }.get(status, "")
 
-        return ui.p(msg, class_=f"{css_class} mt-2 mb-0", style="font-size: 0.82rem;")
+        return ui.div(
+            ui.p(msg, class_=f"{css_class} mb-0", style="font-size: 0.82rem;"),
+            class_="alert-status-box mt-2"
+        )
 
     return rv_df, rv_meta

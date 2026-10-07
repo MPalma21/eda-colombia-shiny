@@ -1,8 +1,11 @@
-# EDA Colombia Open Data - Shiny for Python
+# Analisis Exploratorio en Datos Abiertos
 
-Aplicacion de Analisis Exploratorio de Datos (EDA) generica e interactiva, disenada para consumir la API Socrata del portal de datos abiertos del Estado colombiano ([datos.gov.co](https://www.datos.gov.co/)).
+> Plataforma analitica interactiva para el portal nacional [datos.gov.co](https://www.datos.gov.co/), desarrollada con **Shiny for Python** bajo los estandares oficiales de ingenieria de software y diseno de UI de **Posit PBC**.
 
-La aplicacion ha sido desarrollada siguiendo los estandares de ingenieria de software de **Posit PBC** (`posit-dev/py-shiny`, `posit-dev/py-shiny-templates`) y el paradigma arquitectonico de la plantilla empresarial **Tapyr (Appsilon)**. Cuenta con una interfaz sobria inspirada en el entorno de desarrollo **Positron IDE**, libre de emojis o distracciones visuales.
+**Autor:** Miguel Angel Palma  
+- **LinkedIn:** [miguelangelpr](https://www.linkedin.com/in/miguelangelpr)  
+- **GitHub:** [MPalma21](https://github.com/MPalma21)  
+- **Despliegue:** [Posit Connect Cloud](https://connect.posit.cloud)  
 
 ---
 

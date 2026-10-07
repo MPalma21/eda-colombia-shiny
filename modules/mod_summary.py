@@ -172,7 +172,7 @@ def summary_server(input, output, session, df_react, meta_react):
             labels={"x": "Variable", "y": "Valores Nulos"},
             title="Conteo de valores nulos por variable",
             color=null_counts.values,
-            color_continuous_scale=["#cbd5e1", "#dc2626"]
+            color_continuous_scale=["#c5d8c8", "#b94f46"]
         )
         fig.update_layout(
             height=260,
@@ -181,6 +181,6 @@ def summary_server(input, output, session, df_react, meta_react):
             plot_bgcolor="white",
             paper_bgcolor="white"
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#f1f5f9")
-        fig.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9")
+        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
         return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))

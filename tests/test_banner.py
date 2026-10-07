@@ -1,14 +1,20 @@
-"""Comprobaciones del banner compartido en ambos estados de la sesión."""
+"""Comprobaciones de la cabecera y el banner contextual."""
 import pandas as pd
 
+from app import app_ui
 from components.banner import render_context_banner
 
 
-def test_idle_banner_contains_author_links():
+def test_navbar_contains_author_links_and_context_banner_does_not():
+    navbar = str(app_ui)
     html = str(render_context_banner(pd.DataFrame(), {}))
     assert "Explora los datos abiertos de Colombia" in html
-    assert "Miguelangel Palma" in html
-    assert "https://github.com/MPalma21" in html
+    assert "Miguelangel Palma" in navbar
+    assert "https://github.com/MPalma21" in navbar
+    assert "navbar-credits" in navbar
+    assert "Miguelangel Palma" not in html
+    assert "navbar-context" in html
+    assert "context-banner" not in html
 
 
 def test_active_banner_explains_loaded_scope():
@@ -20,7 +26,7 @@ def test_active_banner_explains_loaded_scope():
     assert "Serie de prueba" in html
     assert "2 de 20 registros" in html
     assert "Filtro de origen: Bogotá" in html
-    assert "Miguelangel Palma" in html
+    assert "Miguelangel Palma" not in html
 
 
 def test_sample_banner_limits_claim_to_downloaded_rows():

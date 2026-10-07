@@ -68,7 +68,7 @@ def correlations_server(input, output, session, df_react):
                 corr,
                 text_auto=True,
                 aspect="auto",
-                color_continuous_scale="Blues",
+                color_continuous_scale=[[0, "#b46b5e"], [0.5, "#f4f1e8"], [1, "#176b5b"]],
                 zmin=-1, zmax=1,
                 title="Matriz de Correlacion"
             )
@@ -83,7 +83,7 @@ def correlations_server(input, output, session, df_react):
                 plot_df,
                 dimensions=sample_cols,
                 title="Matriz de Dispersion (Variables numericas principales)",
-                color_discrete_sequence=["#1d4ed8"]
+                color_discrete_sequence=["#176b5b"]
             )
             fig.update_traces(diagonal_visible=False)
             fig.update_layout(height=540, margin=dict(t=50, b=40, l=40, r=40))

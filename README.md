@@ -118,7 +118,7 @@ Shiny APP Python/
    - `mod_loader.py` emite las variables reactivas `df_react` y `meta_react`.
    - Todos los modulos suscritos reciben la actualizacion y ejecutan sus calculos reactivos. La descarga se ejecuta fuera del hilo principal con `ExtendedTask`, para mantener la interfaz responsiva.
    - Tras descargar, el panel lateral permite elegir una columna y un periodo de fechas, y seleccionar una muestra aleatoria reproducible de las filas descargadas. El alcance elegido se aplica a todas las vistas y a la exportacion.
-   - El banner compartido indica el numero de filas analizadas, el total conocido del recurso y el alcance del periodo o muestra. La carga distribuida mejora la cobertura por ID, pero sus bloques no constituyen una muestra aleatoria simple. Una muestra posterior corresponde solo a las filas descargadas, no al recurso completo.
+   - La cabecera integra el contexto del recurso: numero de filas analizadas, total conocido y alcance del periodo o muestra. Los creditos del autor y sus enlaces aparecen en texto pequeno junto al titulo. La carga distribuida mejora la cobertura por ID, pero sus bloques no constituyen una muestra aleatoria simple. Una muestra posterior corresponde solo a las filas descargadas, no al recurso completo.
 
 ---
 

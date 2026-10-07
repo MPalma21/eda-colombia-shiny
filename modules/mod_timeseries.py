@@ -82,14 +82,14 @@ def timeseries_server(input, output, session, df_react):
                 title=f"{agg_choice} de {metric_col} a lo largo del tiempo",
                 markers=len(resampled) <= 80
             )
-            fig.update_traces(line_color="#1d4ed8", line_width=2.4)
+            fig.update_traces(line_color="#176b5b", line_width=2.4)
 
             if len(resampled) >= 6:
                 resampled["Media_Movil"] = resampled[metric_col].rolling(window=5, min_periods=1).mean()
                 fig.add_scatter(
                     x=resampled[date_col], y=resampled["Media_Movil"],
                     name="Tendencia Suavizada", mode="lines",
-                    line=dict(color="#0284c7", dash="dash", width=2.2)
+                    line=dict(color="#d3a454", dash="dash", width=2.2)
                 )
 
             fig.update_layout(
@@ -98,8 +98,8 @@ def timeseries_server(input, output, session, df_react):
                 plot_bgcolor="white",
                 paper_bgcolor="white"
             )
-            fig.update_xaxes(showgrid=True, gridcolor="#f1f5f9")
-            fig.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+            fig.update_xaxes(showgrid=True, gridcolor="#edf2e9")
+            fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
             return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
 
         except Exception as exc:

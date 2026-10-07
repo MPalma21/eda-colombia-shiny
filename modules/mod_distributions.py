@@ -62,7 +62,7 @@ def distributions_server(input, output, session, df_react):
         if series.empty:
             return ui.p("Sin observaciones numericas suficientes en la variable seleccionada.", class_="text-muted")
 
-        brand_palette = ["#1d4ed8", "#0284c7", "#0f766e", "#4f46e5", "#d97706", "#059669"]
+        brand_palette = ["#176b5b", "#d3a454", "#6a7f57", "#9b6b84", "#c67452", "#238a73"]
 
         if chart_kind == "Histograma + KDE":
             fig = px.histogram(
@@ -79,7 +79,7 @@ def distributions_server(input, output, session, df_react):
                     fig.add_trace(go.Scatter(
                         x=kde_x, y=kde(kde_x) * scale,
                         mode="lines", name="KDE",
-                        line=dict(color="#dc2626", width=2)
+                        line=dict(color="#b94f46", width=2)
                     ))
                 except Exception:
                     pass
@@ -111,8 +111,8 @@ def distributions_server(input, output, session, df_react):
             plot_bgcolor="white",
             paper_bgcolor="white"
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#f1f5f9")
-        fig.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9")
+        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
 
         metrics_html = f"""
         <div class="row g-2 mt-3">

@@ -6,7 +6,7 @@ Disenado siguiendo la guia oficial de Posit 'UI & UX Best Practices':
 - Subtitulo descriptivo de plataforma
 - Barra lateral retractil con controles de consulta (sidebar)
 - Tarjetas con jerarquia visual limpia y soporte de pantalla completa (full_screen=True)
-- Banner contextual compartido con autoria y enlaces del proyecto
+- Creditos y enlaces en la barra superior; banner contextual para el recurso
 - Flujo de documento normal (fillable=False) para evitar solapamientos entre tarjetas
 - Componentes desacoplados en modulos y servicios
 """
@@ -42,27 +42,35 @@ app_ui = ui.page_navbar(
     
     # Identidad de marca, titulo y subtitulo en el navbar
     title=ui.div(
-        ui.tags.img(src="logo.svg", alt="Logo EDA Colombia", height="30px", class_="me-2 flex-shrink-0"),
         ui.div(
-            ui.div("Analisis Exploratorio en Datos Abiertos", class_="navbar-app-title"),
-            ui.div(ui.HTML("Plataforma analitica interactiva &bull; datos.gov.co"), class_="navbar-app-subtitle"),
-            class_="d-flex flex-column justify-content-center"
+            ui.tags.img(src="logo.svg", alt="Logo EDA Colombia", class_="navbar-logo flex-shrink-0"),
+            ui.div(
+                ui.div("Analisis Exploratorio en Datos Abiertos", class_="navbar-app-title"),
+                ui.div(ui.HTML("Plataforma analitica interactiva &bull; datos.gov.co"), class_="navbar-app-subtitle"),
+                ui.div(
+                    ui.span("Desarrollado por Miguelangel Palma", class_="navbar-author-name"),
+                    ui.tags.a("LinkedIn", href="https://www.linkedin.com/in/miguelangelpr", target="_blank", rel="noopener noreferrer"),
+                    ui.tags.a("GitHub", href="https://github.com/MPalma21", target="_blank", rel="noopener noreferrer"),
+                    ui.tags.a("Posit Connect", href="https://connect.posit.cloud", target="_blank", rel="noopener noreferrer"),
+                    class_="navbar-credits",
+                ),
+                class_="navbar-brand-copy d-flex flex-column justify-content-center"
+            ),
+            class_="navbar-brand-content d-flex align-items-center"
         ),
-        class_="d-flex align-items-center py-1"
+        ui.output_ui("global_context_banner"),
+        class_="navbar-brand-stack",
     ),
     
     # Panel lateral global para fuentes y seleccion de datos
     sidebar=ui.sidebar(
         loader_ui("loader_mod"),
         width=310,
-        bg="#f8fafc",
+        bg="#eef3ed",
         open="desktop"
     ),
     
-    header=ui.TagList(
-        ui.tags.head(ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")),
-        ui.output_ui("global_context_banner")
-    ),
+    header=ui.tags.head(ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")),
     fillable=False,
     id="main_navbar"
 )

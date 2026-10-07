@@ -19,26 +19,20 @@
     }
   },
   "files": {
-    "requirements.txt": {
-      "checksum": "160e27bcbaf56e7d75730f7e0224aa53"
-    },
     ".gitignore": {
       "checksum": "f590d545d242672c2a9fa4b9a5f2b358"
     },
     "README.md": {
-      "checksum": "4c1f6f5e8ed513d83a8b2c8e8f14767f"
+      "checksum": "143d5e38a703f39484082db35154d7a4"
     },
     "app.py": {
-      "checksum": "f246a13838eb714d16bcc50ec60771ff"
+      "checksum": "20ce47af8d518acaf9f7df01f65db9d3"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
     },
     "components/banner.py": {
-      "checksum": "3ff8796c4ef93bed7e81b33ca6c38ed5"
-    },
-    "components/footer.py": {
-      "checksum": "3ec5664e66cbff7a51e8d2b19996452a"
+      "checksum": "89180d031d8879c09eb08f8e09d60521"
     },
     "config.py": {
       "checksum": "8e589806ace14682b0c487a9235a28c8"
@@ -50,46 +44,61 @@
       "checksum": "95bfc363bd01aac0335596a6deec9118"
     },
     "modules/mod_correlations.py": {
-      "checksum": "7250a205fec6dcf756624b24859133da"
+      "checksum": "c02c6e70a5ce57a0cc37b134b62fb41a"
     },
     "modules/mod_distributions.py": {
       "checksum": "f92850b22f8addf00700c79e17f7776b"
     },
     "modules/mod_loader.py": {
-      "checksum": "65e56abc3953a36c9f4c02366b37751e"
+      "checksum": "3ed66553be5182c606e166d30d4a9771"
     },
     "modules/mod_stats.py": {
-      "checksum": "81ecdc7acd38578a2da08dbd578b84f9"
+      "checksum": "dc55e6a49e5822f2403bf9c5b6e82931"
     },
     "modules/mod_summary.py": {
-      "checksum": "21cc672d4cf215efabbc9b19d0d1ffcc"
+      "checksum": "414c4eaf9bd1105cbf34fa85df2051d4"
     },
     "modules/mod_table.py": {
-      "checksum": "a9d1de4addc0cb320a3e3d9bab8f643c"
+      "checksum": "2f5dd1d91f859a3af452e72494e932f7"
     },
     "modules/mod_timeseries.py": {
-      "checksum": "aec928308f79f86287129e342e9e8aca"
+      "checksum": "839116972eb0cb7514b2e2f3f3505e4b"
     },
     "pyproject.toml": {
-      "checksum": "5e4e72a1d33199a9565c63634ec0a5cd"
+      "checksum": "0ece014e66715424b68bf5345cdaab7d"
+    },
+    "requirements.txt": {
+      "checksum": "c1eacc296b487f54ceb61f7f3afe0d6d"
     },
     "services/__init__.py": {
       "checksum": "ff5eeeedd9fc663333d3b44837d71af0"
     },
     "services/api_service.py": {
-      "checksum": "823ec5d59d65368f01b62ad70c71792a"
+      "checksum": "9da282e017ff3bad0b9233969ce8b590"
+    },
+    "services/scope_service.py": {
+      "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
     },
     "services/stats_service.py": {
-      "checksum": "2f3e4ef3037a755edcfb864504af58af"
+      "checksum": "7eae4d1461004d95449fd25883b1b810"
+    },
+    "services/table_service.py": {
+      "checksum": "0b8bed18859fc60e431eb65a49a8e5ba"
+    },
+    "tests/test_banner.py": {
+      "checksum": "b8c644217b5f909db62a5f3a04406037"
+    },
+    "tests/test_data_flow.py": {
+      "checksum": "360e51ec9a86f5a5dce9648b596afbbb"
     },
     "tests/test_services.py": {
-      "checksum": "6fc2465366ddfd026f0079834ca01b69"
+      "checksum": "e567b83a831ab4b269f502513d443abb"
     },
     "www/logo.svg": {
       "checksum": "31b3e8fb1b598a46f0b3d18510ce3be6"
     },
     "www/styles.css": {
-      "checksum": "85df25359bc2917e02527fe90e873889"
+      "checksum": "11248b00309b44937413ce11239cf8ab"
     }
   }
 }

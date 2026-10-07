@@ -2,7 +2,7 @@
 from shiny import module, ui, render, reactive
 import pandas as pd
 import plotly.express as px
-from services.stats_service import classify_columns, compute_correlation_matrix
+from services.stats_service import classify_columns, compute_correlation_matrix, sample_scatter_rows
 
 
 @module.ui
@@ -76,8 +76,11 @@ def correlations_server(input, output, session, df_react):
 
         else:
             sample_cols = num_cols[:6]
+            plot_df = sample_scatter_rows(df, sample_cols)
+            if plot_df.empty:
+                return ui.p("No hay filas completas para la matriz de dispersion.", class_="text-muted")
             fig = px.scatter_matrix(
-                df,
+                plot_df,
                 dimensions=sample_cols,
                 title="Matriz de Dispersion (Variables numericas principales)",
                 color_discrete_sequence=["#1d4ed8"]
@@ -86,4 +89,8 @@ def correlations_server(input, output, session, df_react):
             fig.update_layout(height=540, margin=dict(t=50, b=40, l=40, r=40))
 
         fig.update_layout(plot_bgcolor="white", paper_bgcolor="white")
-        return ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True}))
+        note = (
+            ui.p(f"Matriz de dispersion: {len(plot_df):,} de {len(df):,} filas cargadas (seleccion reproducible).", class_="text-muted small")
+            if view != "Mapa de Calor (Heatmap)" else ui.span()
+        )
+        return ui.div(note, ui.HTML(fig.to_html(full_html=False, include_plotlyjs="cdn", config={"responsive": True})))

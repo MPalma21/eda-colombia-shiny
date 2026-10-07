@@ -3,8 +3,6 @@ from shiny import module, ui, render, reactive
 import pandas as pd
 import plotly.express as px
 from services.stats_service import compute_dataset_overview, compute_column_diagnostics
-from components.banner import render_context_banner
-
 # Iconos vectoriales limpios envueltos en badges con fondos sutiles
 SVG_ICON_ROWS = """<div class="kpi-icon-badge kpi-badge-blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="14" x2="21" y2="14"/></svg></div>"""
 
@@ -14,13 +12,9 @@ SVG_ICON_NUM = """<div class="kpi-icon-badge kpi-badge-teal"><svg xmlns="http://
 
 SVG_ICON_MISSING = """<div class="kpi-icon-badge kpi-badge-semantic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></div>"""
 
-SVG_EMPTY_BOX = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" class="text-slate-400 mb-3"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>"""
-
-
 @module.ui
 def summary_ui():
     return ui.div(
-        ui.output_ui("context_banner_container"),
         ui.output_ui("kpi_value_boxes"),
         ui.layout_columns(
             ui.card(
@@ -64,27 +58,10 @@ def summary_server(input, output, session, df_react, meta_react):
 
     @output
     @render.ui
-    def context_banner_container():
-        return render_context_banner(df_react(), meta_react())
-
-    @output
-    @render.ui
     def kpi_value_boxes():
         df = df_react()
         if df.empty:
-            return ui.card(
-                ui.div(
-                    ui.HTML(SVG_EMPTY_BOX),
-                    ui.h5("Sin conjunto de datos activo", class_="fw-bold text-slate-800 mb-2"),
-                    ui.p(
-                        "Seleccione una coleccion verificada en el panel lateral o ingrese el identificador de un recurso de datos.gov.co, "
-                        "luego presione 'Cargar y Analizar Datos' para desplegar metricas.",
-                        class_="text-slate-500 mb-0 max-w-md mx-auto"
-                    ),
-                    class_="text-center py-5"
-                ),
-                class_="mb-3 empty-state-card"
-            )
+            return ui.span()
 
         m = dataset_metrics()
         missing_val = m["missing_pct"]

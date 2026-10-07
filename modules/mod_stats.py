@@ -11,25 +11,27 @@ from services.stats_service import (
 @module.ui
 def stats_ui():
     return ui.div(
+        ui.p(
+            "Revise primero el comportamiento de las variables numéricas y categóricas. "
+            "La prueba de normalidad aparece después como diagnóstico adicional. Un p-valor alto no demuestra normalidad.",
+            class_="text-muted mb-3"
+        ),
         ui.card(
-            ui.card_header("Estadisticas Descriptivas Cuantitativas"),
+            ui.card_header("Estadísticas descriptivas cuantitativas"),
             ui.output_data_frame("num_describe_grid"),
             full_screen=True,
             class_="mb-3"
         ),
-        ui.layout_columns(
-            ui.card(
-                ui.card_header("Prueba de Normalidad Shapiro-Wilk (Muestra n<=5000)"),
-                ui.output_data_frame("shapiro_grid"),
-                full_screen=True
-            ),
-            ui.card(
-                ui.card_header("Resumen de Variables Categoricas y Modas"),
-                ui.output_data_frame("cat_summary_grid"),
-                full_screen=True
-            ),
-            col_widths={"sm": 12, "md": 6},
-            class_="g-3"
+        ui.card(
+            ui.card_header("Resumen de variables categóricas y modas"),
+            ui.output_data_frame("cat_summary_grid"),
+            full_screen=True,
+            class_="mb-3"
+        ),
+        ui.card(
+            ui.card_header("Diagnóstico de normalidad: Shapiro-Wilk (muestra n≤5000)"),
+            ui.output_data_frame("shapiro_grid"),
+            full_screen=True
         )
     )
 

@@ -2,6 +2,7 @@
 from shiny import module, ui, render, reactive
 import pandas as pd
 from services.stats_service import classify_columns
+from services.table_service import filter_table_rows, to_safe_csv_bytes
 
 
 @module.ui
@@ -11,10 +12,12 @@ def table_ui():
         ui.layout_columns(
             ui.input_text("search_query", "Busqueda global rapida:", placeholder="Filtrar registros por texto..."),
             ui.output_ui("category_filter_ui"),
-            col_widths={"sm": 12, "md": 6},
+            ui.input_text("category_value", "Buscar valor de categoría:", placeholder="Texto de la columna elegida; vacío = todas"),
+            col_widths={"sm": 12, "md": 4},
             class_="mb-2 g-2"
         ),
         ui.output_ui("table_info_bar"),
+        ui.download_button("download_filtered", "Descargar CSV filtrado", class_="btn btn-outline-primary mb-3"),
         ui.output_data_frame("main_data_grid"),
         full_screen=True
     )
@@ -33,9 +36,8 @@ def table_server(input, output, session, df_react):
         if not cat_cols:
             return ui.span()
         
-        main_cat = cat_cols[0]
-        options = ["(Todos)"] + df[main_cat].dropna().astype(str).unique()[:50].tolist()
-        return ui.input_select("selected_category", f"Filtrar por {main_cat}:", choices=options)
+        options = {col: col for col in cat_cols}
+        return ui.input_select("category_column", "Columna categórica:", choices=options)
 
     @reactive.calc
     def filtered_df():
@@ -44,24 +46,15 @@ def table_server(input, output, session, df_react):
             return pd.DataFrame()
         
         _, _, cat_cols = classify_columns(df)
-        res = df.copy()
-
         query = (input.search_query() or "").strip()
-        if query:
-            match_mask = res.astype(str).apply(
-                lambda col: col.str.contains(query, case=False, na=False)
-            ).any(axis=1)
-            res = res[match_mask]
+        column = input.category_column() if cat_cols else ""
+        value = (input.category_value() or "").strip()
+        return filter_table_rows(df, query, column if column in cat_cols else "", value)
 
-        if cat_cols and hasattr(input, "selected_category"):
-            try:
-                selected = input.selected_category()
-                if selected and selected != "(Todos)":
-                    res = res[res[cat_cols[0]].astype(str) == selected]
-            except Exception:
-                pass
-
-        return res
+    @output
+    @render.download_button(filename="datos_filtrados.csv")
+    def download_filtered():
+        yield to_safe_csv_bytes(filtered_df())
 
     @output
     @render.ui

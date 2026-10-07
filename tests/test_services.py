@@ -81,6 +81,12 @@ def test_compute_normality_tests():
     assert "p-valor" in res.columns
 
 
+def test_normality_result_does_not_claim_proof(monkeypatch):
+    monkeypatch.setattr("services.stats_service.stats.shapiro", lambda values: (0.99, 0.4))
+    result = compute_normality_tests(pd.DataFrame({"valor": [1, 2, 3, 4]}))
+    assert result.iloc[0]["Resultado (α=0.05)"] == "No se rechaza normalidad"
+
+
 def test_compute_categorical_summary():
     """Valida el resumen de modas y frecuencias en columnas categóricas."""
     df = pd.DataFrame({

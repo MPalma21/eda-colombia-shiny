@@ -9,7 +9,7 @@ description = "Aplicación EDA para datos.gov.co construida con Shiny for Python
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "shiny>=1.0.0",
+    "shiny>=1.8.0",
     "shinywidgets>=0.8.0",
     "plotly>=5.15.0",
     "pandas>=2.0.0",

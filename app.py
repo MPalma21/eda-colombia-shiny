@@ -6,12 +6,12 @@ Disenado siguiendo la guia oficial de Posit 'UI & UX Best Practices':
 - Subtitulo descriptivo de plataforma
 - Barra lateral retractil con controles de consulta (sidebar)
 - Tarjetas con jerarquia visual limpia y soporte de pantalla completa (full_screen=True)
-- Footer discreto al pie de pagina (autor y enlaces concentrados exclusivamente aqui)
-- Flujo de documento normal (fillable=False) para evitar solapamientos entre tarjetas y footer
+- Banner contextual compartido con autoria y enlaces del proyecto
+- Flujo de documento normal (fillable=False) para evitar solapamientos entre tarjetas
 - Componentes desacoplados en modulos y servicios
 """
 from pathlib import Path
-from shiny import App, ui
+from shiny import App, ui, render
 from config import WWW_DIR
 
 # Modulos analiticos
@@ -25,7 +25,7 @@ from modules.mod_timeseries import timeseries_ui, timeseries_server
 from modules.mod_stats import stats_ui, stats_server
 
 # Componentes de interfaz
-from components.footer import render_app_footer
+from components.banner import render_context_banner
 
 # -------------------------------------------------------------
 # INTERFAZ DE USUARIO (UI ENSAMBLADA)
@@ -33,12 +33,12 @@ from components.footer import render_app_footer
 app_ui = ui.page_navbar(
     # Destinos principales de navegacion (argumentos posicionales)
     ui.nav_panel("Resumen", summary_ui("summary_mod")),
-    ui.nav_panel("Datos", table_ui("table_mod")),
+    ui.nav_panel("Estadísticas descriptivas", stats_ui("stats_mod")),
+    ui.nav_panel("Series de Tiempo", timeseries_ui("ts_mod")),
     ui.nav_panel("Distribuciones", distributions_ui("dist_mod")),
     ui.nav_panel("Correlaciones", correlations_ui("corr_mod")),
     ui.nav_panel("Comparaciones", comparisons_ui("comp_mod")),
-    ui.nav_panel("Series de Tiempo", timeseries_ui("ts_mod")),
-    ui.nav_panel("Estadisticas", stats_ui("stats_mod")),
+    ui.nav_panel("Datos", table_ui("table_mod")),
     
     # Identidad de marca, titulo y subtitulo en el navbar
     title=ui.div(
@@ -59,10 +59,10 @@ app_ui = ui.page_navbar(
         open="desktop"
     ),
     
-    header=ui.tags.head(
-        ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")
+    header=ui.TagList(
+        ui.tags.head(ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")),
+        ui.output_ui("global_context_banner")
     ),
-    footer=render_app_footer(),
     fillable=False,
     id="main_navbar"
 )
@@ -73,13 +73,18 @@ app_ui = ui.page_navbar(
 def server(input, output, session):
     df_react, meta_react = loader_server("loader_mod")
 
+    @output
+    @render.ui
+    def global_context_banner():
+        return render_context_banner(df_react(), meta_react())
+
     summary_server("summary_mod", df_react=df_react, meta_react=meta_react)
-    table_server("table_mod", df_react=df_react)
+    stats_server("stats_mod", df_react=df_react)
+    timeseries_server("ts_mod", df_react=df_react)
     distributions_server("dist_mod", df_react=df_react)
     correlations_server("corr_mod", df_react=df_react)
     comparisons_server("comp_mod", df_react=df_react)
-    timeseries_server("ts_mod", df_react=df_react)
-    stats_server("stats_mod", df_react=df_react)
+    table_server("table_mod", df_react=df_react)
 
 
 app = App(app_ui, server, static_assets=WWW_DIR)

@@ -73,6 +73,14 @@ body {
 .navbar-brand {
     padding: 0 !important;
     margin-right: 24px !important;
+    max-width: 100%;
+    white-space: normal;
+}
+
+.navbar-brand > .d-flex,
+.navbar-brand > .d-flex > .d-flex {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .navbar-app-title {
@@ -81,6 +89,7 @@ body {
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.015em;
+    overflow-wrap: anywhere;
 }
 
 .navbar-app-subtitle {
@@ -119,50 +128,137 @@ body {
    2. CONTEXT BANNER
    ========================================================================== */
 .context-banner {
-    background-color: var(--surface-card);
-    border: 1px solid var(--border-subtle);
-    border-left: 3px solid var(--brand-primary);
-    border-radius: var(--radius-card);
-    padding: 10px 16px;
-    box-shadow: var(--shadow-card);
-    margin-bottom: 18px !important;
+    background: linear-gradient(125deg, #ffffff 55%, #edf4ff 100%);
+    border: 1px solid #cbdaf2;
+    border-top: 4px solid var(--brand-primary);
+    border-radius: 14px;
+    padding: 26px 30px 20px;
+    box-shadow: var(--shadow-elevated);
+    margin: 18px 0 22px !important;
 }
 
 .context-banner-idle {
-    border-left-color: var(--text-muted);
-    background-color: #f8fafc;
+    background: linear-gradient(125deg, #ffffff 55%, #f1f5f9 100%);
+    border-top-color: #64748b;
+}
+
+.context-banner-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.context-banner-heading {
+    min-width: 0;
+}
+
+.context-banner-eyebrow {
+    display: block;
+    color: var(--brand-primary);
+    font-size: 0.73rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
 }
 
 .context-banner-title {
-    font-size: 0.94rem;
-    font-weight: 700;
+    font-size: clamp(1.4rem, 2.2vw, 2rem);
+    line-height: 1.2;
+    font-weight: 750;
     color: var(--text-primary);
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
 }
 
 .context-banner-subtitle {
-    font-size: 0.81rem;
-    color: var(--text-muted);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.context-banner-status {
+    flex-shrink: 0;
+    color: #047857;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: var(--radius-full);
+    padding: 7px 11px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.context-banner-idle .context-banner-status {
+    color: #475569;
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.context-banner-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
 }
 
 .badge-context {
-    background-color: #f1f5f9;
+    background-color: #ffffff;
     color: var(--text-secondary);
-    border: 1px solid var(--border-muted);
-    font-size: 0.76rem;
+    border: 1px solid #cbdaf2;
+    font-size: 0.8rem;
     font-family: var(--font-mono);
     font-weight: 600;
-    padding: 4px 8px;
+    padding: 6px 10px;
     border-radius: var(--radius-sm);
 }
 
-.badge-status-ok {
-    background-color: var(--semantic-success-bg);
-    color: var(--semantic-success);
-    border: 1px solid #a7f3d0;
-    font-size: 0.76rem;
+.context-banner-scope {
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    margin: 14px 0 0;
+}
+
+.context-banner-author {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    border-top: 1px solid #dbe5f3;
+    padding-top: 16px;
+    margin-top: 20px;
+}
+
+.context-banner-author-name-group,
+.context-banner-author-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.context-banner-author-label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.context-banner-author-name {
+    color: var(--text-primary);
+    font-size: 0.87rem;
+}
+
+.context-banner-author-links a {
+    color: var(--brand-primary);
+    font-size: 0.82rem;
     font-weight: 600;
-    padding: 4px 9px;
-    border-radius: var(--radius-sm);
+    text-decoration: none;
+}
+
+.context-banner-author-links a:hover {
+    text-decoration: underline;
 }
 
 /* ==========================================================================
@@ -254,6 +350,13 @@ body {
     flex: 1 0 auto !important;
     padding-bottom: 32px !important;
     width: 100% !important;
+    min-width: 0;
+}
+
+.tab-pane,
+.bslib-grid,
+.bslib-grid-item {
+    min-width: 0;
 }
 
 .card {
@@ -263,7 +366,8 @@ body {
     box-shadow: var(--shadow-card);
     margin-bottom: 24px !important;
     position: relative;
-    overflow: visible;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .card-header {
@@ -276,10 +380,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .card-body {
     padding: 16px;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.card-body .shiny-html-output,
+.card-body .shiny-input-container,
+.card-body .shiny-data-grid {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .js-plotly-plot, .plotly, .plot-container {
@@ -336,11 +453,6 @@ shiny-data-frame {
     padding: 10px 14px;
     border-radius: 6px;
     border: 1px solid var(--border-subtle);
-}
-
-.empty-state-card {
-    border: 1px dashed var(--border-muted);
-    background-color: #f8fafc;
 }
 
 .summary-container {
@@ -443,49 +555,7 @@ shiny-data-frame {
 }
 
 /* ==========================================================================
-   7. FOOTER DISCRETO Y SEPARADO (UNICO LUGAR DE AUTORIA)
-   ========================================================================== */
-.app-footer {
-    background-color: #ffffff;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 0.80rem;
-    color: var(--text-muted);
-    margin-top: auto !important;
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    clear: both;
-    flex-shrink: 0 !important;
-}
-
-.footer-badge {
-    background-color: #f1f5f9;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-    font-size: 0.72rem;
-    font-family: var(--font-mono);
-    font-weight: 500;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.footer-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.78rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    transition: color 0.15s ease;
-}
-
-.footer-link:hover {
-    color: var(--brand-primary);
-    text-decoration: underline;
-}
-
-/* ==========================================================================
-   8. AJUSTES RESPONSIVOS MULTI-DIMENSION (LAPTOP, TABLET, MOVIL)
+   7. AJUSTES RESPONSIVOS MULTI-DIMENSION (LAPTOP, TABLET, MOVIL)
    ========================================================================== */
 @media (max-width: 1199.98px) {
     .navbar-app-title {
@@ -500,9 +570,6 @@ shiny-data-frame {
     .navbar-app-subtitle {
         display: none;
     }
-    .context-banner-title {
-        max-width: 100% !important;
-    }
     .main {
         padding: 12px 14px 0 14px !important;
     }
@@ -512,14 +579,16 @@ shiny-data-frame {
     .bslib-value-box .value-box-value {
         font-size: 1.45rem !important;
     }
-    .footer-container {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start !important;
+    .context-banner {
+        padding: 21px 18px 18px;
     }
-    .footer-right {
-        margin-top: 4px;
-        gap: 8px;
+    .context-banner-top {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .context-banner-author {
+        align-items: flex-start;
+        flex-direction: column;
     }
     .card {
         margin-bottom: 16px !important;

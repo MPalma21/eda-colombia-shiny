@@ -1,8 +1,8 @@
 """Modulo de analisis de series temporales."""
-from shiny import module, ui, render
+from shiny import module, ui, render, reactive
 import pandas as pd
 import plotly.express as px
-from services.stats_service import classify_columns
+from services.stats_service import classify_columns, suggest_time_aggregation
 
 
 @module.ui
@@ -28,15 +28,24 @@ def timeseries_server(input, output, session, df_react):
         num_cols, date_cols, _ = classify_columns(df)
         if not date_cols:
             return ui.p("No se detectaron variables de fecha u hora en este dataset.", class_="status-warning")
+        if not num_cols:
+            return ui.p("Se requiere al menos una variable numerica para la serie temporal.", class_="status-warning")
 
         return ui.layout_columns(
             ui.input_select("date_variable", "Variable Temporal (Fecha):", choices=date_cols),
             ui.input_select("metric_variable", "Variable Numerica:", choices=num_cols),
             ui.input_select("aggregation_type", "Agregacion:",
-                            choices=["Suma", "Promedio", "Conteo", "Maximo"]),
+                            choices=["Promedio", "Suma", "Conteo", "Maximo"],
+                            selected=suggest_time_aggregation(num_cols[0])),
             col_widths={"sm": 12, "md": 4},
             class_="mb-3 g-2"
         )
+
+    @reactive.effect
+    def _suggest_for_metric():
+        metric = input.metric_variable()
+        if metric:
+            ui.update_select("aggregation_type", selected=suggest_time_aggregation(metric))
 
     @output
     @render.ui

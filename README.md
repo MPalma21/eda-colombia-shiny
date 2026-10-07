@@ -52,6 +52,8 @@ La aplicacion implementa una estricta separacion de responsabilidades en 4 capas
 [ Capa de Servicios y Logica de Negocio: services/ ]
         │
         ├─ api_service.py   -> Conexion HTTP a Socrata, parseo y casteo de tipos
+        ├─ scope_service.py -> Filtro temporal y muestra reproducible de las filas cargadas
+        ├─ table_service.py -> Filtros tabulares y exportacion CSV segura
         └─ stats_service.py -> Algoritmos matematicos y diagnostico estadistico
 ```
 
@@ -77,6 +79,8 @@ Shiny APP Python/
 ├── services/                  Capa de logica pura no reactiva (100% testeable).
 │   ├── __init__.py
 │   ├── api_service.py         Cliente REST para la API Socrata con validacion de URLs y IDs.
+│   ├── scope_service.py       Periodo y muestra reproducible sobre datos descargados.
+│   ├── table_service.py       Filtros de tabla y exportacion CSV segura.
 │   └── stats_service.py       Funciones puras de diagnostico, clasificacion y estadistica.
 │
 ├── modules/                   Modulos Shiny (componentes UI + Server encapsulados).
@@ -104,18 +108,23 @@ Shiny APP Python/
 
 1. **Seleccion o Entrada del Recurso**:
    - El usuario puede elegir un dataset de ejemplo precargado (hospitales, colegios, medicamentos, transito) o pegar cualquier URL / ID de recurso de `datos.gov.co` (por ejemplo, `gt2j-8ykr`).
-   - Se especifica el limite de registros deseado (desde 50 hasta 50,000 registros).
+   - Se puede aplicar una busqueda de texto en el recurso antes de descargar y especificar el limite de registros (desde 50 hasta 50,000). El modo de carga puede tomar las primeras filas por ID o repartir el limite entre cinco bloques distribuidos por el recurso.
 2. **Descarga y Casteo Tipologico Inteligente**:
-   - Al pulsar "Cargar Dataset", `services/api_service.py` ejecuta una llamada GET parametrizada a la API Socrata (`$limit` y `$offset`).
+   - Al pulsar "Cargar y Analizar Datos", `services/api_service.py` consulta la API Socrata con `$limit` y orden estable por `:id`. El modo inicial usa `$offset=0`; la cobertura distribuida consulta el total y reparte el limite entre cinco offsets. Si se indica una busqueda, usa `$q` antes del limite.
    - El servicio descarga simultaneamente los metadatos oficiales del recurso (nombre de entidad emisora, descripcion publica, fecha de corte).
-   - Se realiza una inferencia y conversion de tipos: conversion automatica de cadenas numericas a float/int y de estampas de tiempo a objetos datetime.
+   - Se consultan los tipos declarados en los metadatos para convertir numeros y fechas sin perder codigos de texto ni sustituir fechas invalidas por nulos. Sin metadatos se aplica una inferencia conservadora.
+   - Una consulta separada intenta obtener el total de filas que cumplen el filtro. Si falla, la carga de datos continua y se informa que el total no esta disponible.
 3. **Distribucion Reactiva del Dataset**:
    - `mod_loader.py` emite las variables reactivas `df_react` y `meta_react`.
-   - Todos los modulos suscritos reciben la actualizacion y ejecutan sus calculos memorizados (`@reactive.calc`), actualizando las graficas interactivas y tablas de diagnostico.
+   - Todos los modulos suscritos reciben la actualizacion y ejecutan sus calculos reactivos. La descarga se ejecuta fuera del hilo principal con `ExtendedTask`, para mantener la interfaz responsiva.
+   - Tras descargar, el panel lateral permite elegir una columna y un periodo de fechas, y seleccionar una muestra aleatoria reproducible de las filas descargadas. El alcance elegido se aplica a todas las vistas y a la exportacion.
+   - El banner compartido indica el numero de filas analizadas, el total conocido del recurso y el alcance del periodo o muestra. La carga distribuida mejora la cobertura por ID, pero sus bloques no constituyen una muestra aleatoria simple. Una muestra posterior corresponde solo a las filas descargadas, no al recurso completo.
 
 ---
 
 ## Modulos y Capacidades Analiticas
+
+La navegacion sigue una secuencia de EDA: contexto y calidad del recurso, estadisticas descriptivas, comportamiento temporal, distribuciones y relaciones entre variables y, al final, inspeccion de los registros.
 
 ### 1. Panel de Resumen (`mod_summary.py`)
 - **Tarjetas de diagnostico rapido**: Muestran el recuento total de registros, total de variables, numero de variables cuantitativas y porcentaje general de valores faltantes.
@@ -123,12 +132,18 @@ Shiny APP Python/
 - **Diagnostico por columna**: Tabla detallada con el tipo de dato inferido, recuento de valores unicos y porcentaje exacto de nulos por columna.
 - **Grafico de valores faltantes**: Grafica de barras en escala de grises/rojo que ordena visualmente que columnas presentan deficiencias de completitud.
 
-### 2. Vista de Datos (`mod_table.py`)
-- **Busqueda textual instantanea**: Filtra dinamicamente filas que contengan el termino ingresado en cualquier columna.
-- **Filtro de categoria dominante**: Selector que permite aislar categorias clave.
-- **Control de paginacion**: Permite regular cuantas filas renderizar simultaneamente para optimizar la respuesta del navegador.
+### 2. Estadisticas Descriptivas (`mod_stats.py`)
+- **Tabla Descriptiva Cuantitativa**: Conteo, media, desviacion, minimo, percentiles (5%, 25%, 50%, 75%, 95%) y maximo.
+- **Resumen Categorico**: Cardinalidad, moda y frecuencia relativa del elemento dominante.
+- **Diagnostico posterior de normalidad**: Prueba Shapiro-Wilk sobre hasta 5,000 registros, con estadistico W, p-valor y decision de rechazo de la hipotesis de normalidad. Un p-valor alto no demuestra que la distribucion sea normal.
 
-### 3. Distribuciones Univariadas (`mod_distributions.py`)
+### 3. Series de Tiempo y Tendencias (`mod_timeseries.py`)
+- Deteccion automatica de columnas temporales.
+- Agregacion configurable: Suma, Promedio, Conteo o Maximo. La sugerencia inicial usa promedio para medidas generales y suma para nombres de magnitudes aditivas.
+- Remuestreo automatico segun la extension del periodo (diario o mensual).
+- Inclusion de **Media Movil Suavizada** para identificar tendencias subyacentes.
+
+### 4. Distribuciones Univariadas (`mod_distributions.py`)
 - Visualizaciones interactivas construidas con Plotly:
   - **Histograma con curva KDE**: Estimacion de densidad Kernel sobrepuesta.
   - **Diagrama de Caja (Box Plot)**: Deteccion de valores atipicos (outliers) y cuartiles.
@@ -136,26 +151,22 @@ Shiny APP Python/
   - **Curva Empirica Acumulada (ECDF)**: Funcion de distribucion acumulada.
 - Tarjetas de momentos estadisticos al pie del grafico: Media, Mediana, Desviacion Estandar y Sesgo (Skewness).
 
-### 4. Matriz de Correlacion y Dispersion (`mod_correlations.py`)
+### 5. Matriz de Correlacion y Dispersion (`mod_correlations.py`)
 - Calculo parametrico de matrices de correlacion admitiendo metodos: **Pearson**, **Spearman** y **Kendall**.
 - **Mapa de Calor (Heatmap)** con escala de color centrada y valores numericos anotados.
 - **Matriz de Dispersion (Scatter Matrix)** para observar simultaneamente cruces bidimensionales entre variables continuas.
+- La matriz de dispersion usa hasta 1,500 filas completas seleccionadas de forma reproducible; la correlacion se calcula sobre todas las filas cargadas.
 
-### 5. Comparaciones por Categoria (`mod_comparisons.py`)
+### 6. Comparaciones por Categoria (`mod_comparisons.py`)
 - Cruce bivariado entre una variable cuantitativa continua y una variable cualitativa discreta.
 - Permite calcular promedios comparativos, conteos de frecuencia y distribuciones agrupadas en diagramas de caja o violin.
 - Incluye control de limite de categorias para no saturar el eje horizontal con variables de alta cardinalidad.
 
-### 6. Series de Tiempo y Tendencias (`mod_timeseries.py`)
-- Deteccion automatica de columnas temporales.
-- Agregacion configurable: Suma, Promedio, Conteo o Maximo.
-- Remuestreo automatico segun la extension del periodo (diario o mensual).
-- Inclusion de **Media Movil Suavizada** para identificar tendencias subyacentes.
-
-### 7. Estadisticas Descriptivas e Inferencia (`mod_stats.py`)
-- **Tabla Descriptiva Completa**: Conteo, media, desviacion, minimo, percentiles (5%, 25%, 50%, 75%, 95%) y maximo.
-- **Prueba de Normalidad de Shapiro-Wilk**: Evaluacion formal de normalidad estadistica (calculo del estadistico W y p-valor) sobre una muestra controlada de hasta 5,000 registros para determinar si los datos se distribuyen normalmente a un nivel $\alpha = 0.05$.
-- **Resumen Categorico**: Determinacion de cardinalidad, moda y frecuencia relativa del elemento dominante.
+### 7. Vista de Datos (`mod_table.py`)
+- **Busqueda textual instantanea**: Filtra dinamicamente filas que contengan el termino ingresado en cualquier columna.
+- **Descarga CSV**: Exporta las filas resultantes de la busqueda y el filtro categorico activos. Los textos que podrian interpretarse como formulas en hojas de calculo se exportan como texto.
+- **Filtro categórico**: Permite elegir cualquier columna categorica y buscar por texto entre todos sus valores, sin limitar el selector a las primeras 50 categorias.
+- **Control de paginacion**: Permite regular cuantas filas renderizar simultaneamente para optimizar la respuesta del navegador.
 
 ---
 
@@ -163,14 +174,14 @@ Shiny APP Python/
 
 La aplicacion utiliza el endpoint estandar de la API Socrata (SODA):
 ```text
-GET https://www.datos.gov.co/resource/{resource_id}.json?$limit={n}&$offset=0
+GET https://www.datos.gov.co/resource/{resource_id}.json?$limit={n}&$offset=0&$order=:id
 ```
 
 ### Como encontrar un dataset:
 1. Ingrese a [datos.gov.co](https://www.datos.gov.co/).
 2. Localice cualquier conjunto de datos publico.
 3. El ID del recurso es el codigo alfanumerico de 8 o 9 caracteres (ejemplo: `gt2j-8ykr` o `cfw2-7bit`) que aparece en la URL del conjunto de datos o en el boton "API".
-4. Puede ingresar tanto el ID corto (`gt2j-8ykr`) como la URL completa (`https://www.datos.gov.co/resource/gt2j-8ykr.json`). El analizador de `services/api_service.py` extraera el identificador automaticamente.
+4. Puede ingresar tanto el ID corto (`gt2j-8ykr`) como una URL HTTPS de `datos.gov.co` que termine en el identificador. El analizador valida el dominio y el formato del ID.
 
 ---
 

@@ -83,6 +83,24 @@ def compute_correlation_matrix(
     return df[num_cols].corr(method=method).round(3)
 
 
+def sample_scatter_rows(df: pd.DataFrame, columns: list[str], max_rows: int = 1500) -> pd.DataFrame:
+    """Limita solo la visualización, con selección reproducible de filas completas."""
+    rows = df[columns].dropna()
+    if len(rows) > max_rows:
+        rows = rows.sample(n=max_rows, random_state=42)
+    return rows
+
+
+def suggest_time_aggregation(column: str) -> str:
+    """Propone suma solo para magnitudes aditivas identificables por nombre."""
+    name = column.lower()
+    non_additive_terms = ("tasa", "precio", "porcentaje", "promedio", "valor", "índice", "indice", "trm")
+    if any(term in name for term in non_additive_terms):
+        return "Promedio"
+    additive_terms = ("cantidad", "conteo", "total", "monto", "importe", "volumen", "ventas", "unidades")
+    return "Suma" if any(term in name for term in additive_terms) else "Promedio"
+
+
 def compute_normality_tests(df: pd.DataFrame, max_cols: int = 10, sample_size: int = 5000) -> pd.DataFrame:
     """Ejecuta la prueba de normalidad Shapiro-Wilk sobre variables numéricas."""
     num_cols, _, _ = classify_columns(df)
@@ -99,7 +117,7 @@ def compute_normality_tests(df: pd.DataFrame, max_cols: int = 10, sample_size: i
                 "Variable": col,
                 "Estadístico W": round(float(stat), 4),
                 "p-valor": round(float(p_val), 4),
-                "¿Distribución Normal? (α=0.05)": "Sí (Normal)" if p_val > 0.05 else "No (No Normal)",
+                "Resultado (α=0.05)": "No se rechaza normalidad" if p_val >= 0.05 else "Se rechaza normalidad",
             })
         except Exception:
             continue

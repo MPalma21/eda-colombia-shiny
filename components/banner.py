@@ -1,60 +1,96 @@
-"""Componente reutilizable de Context Banner segun estandares Posit.
-
-Proporciona contexto inmediato sobre el dataset activo, entidad publicadora,
-recuento de registros y estado de la sesion analitica.
-"""
-from shiny import ui
+"""Banner compartido con contexto del recurso y créditos del proyecto."""
 import pandas as pd
+from shiny import ui
 
-SVG_CLOCK = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400 me-2 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>"""
 
-SVG_CHECK = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" class="text-emerald-600 me-2 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>"""
+def _author_credits() -> ui.Tag:
+    return ui.div(
+        ui.div(
+            ui.span("DESARROLLADO POR", class_="context-banner-author-label"),
+            ui.strong("Miguelangel Palma", class_="context-banner-author-name"),
+            class_="context-banner-author-name-group",
+        ),
+        ui.div(
+            ui.tags.a("LinkedIn", href="https://www.linkedin.com/in/miguelangelpr", target="_blank", rel="noopener noreferrer"),
+            ui.tags.a("GitHub", href="https://github.com/MPalma21", target="_blank", rel="noopener noreferrer"),
+            ui.tags.a("Posit Connect", href="https://connect.posit.cloud", target="_blank", rel="noopener noreferrer"),
+            class_="context-banner-author-links",
+        ),
+        class_="context-banner-author",
+    )
+
+
+def _dataset_scope(meta: dict, n_rows: int) -> str:
+    total = meta.get("_eda_total_rows")
+    query = meta.get("_eda_query", "")
+    loaded = meta.get("_eda_loaded_rows", n_rows)
+    if isinstance(total, int):
+        scope = (
+            f"Análisis de {n_rows:,} de {total:,} registros"
+            if n_rows < total else f"Análisis de los {n_rows:,} registros disponibles"
+        )
+    else:
+        scope = f"Análisis de {n_rows:,} registros cargados; total del recurso no disponible"
+    if loaded != n_rows:
+        scope += f" · {loaded:,} filas descargadas"
+    if query:
+        scope += f" · Filtro de origen: {query}"
+    if meta.get("_eda_period_label"):
+        scope += f" · Período: {meta['_eda_period_label']}"
+    if isinstance(total, int) and loaded < total:
+        if meta.get("_eda_fetch_mode") == "spread":
+            scope += ". Descarga en bloques distribuidos por ID; no es una muestra aleatoria simple."
+        else:
+            scope += ". La descarga contiene las primeras filas por ID."
+    if meta.get("_eda_sample_active"):
+        scope += " Muestra aleatoria reproducible solo entre las filas descargadas."
+    return scope
 
 
 def render_context_banner(df: pd.DataFrame, meta: dict) -> ui.Tag:
-    """Genera una barra contextual sobria ubicada en la parte superior del espacio analitico."""
-    if df.empty:
-        return ui.div(
+    """Muestra el estado de la sesión en todas las vistas del análisis."""
+    has_source = not df.empty or meta.get("_eda_loaded_rows", 0) > 0
+    if has_source:
+        title = meta.get("name") or "Conjunto de datos activo"
+        author_info = meta.get("tableAuthor") or {}
+        publisher = (
+            author_info.get("displayName") or "Entidad no especificada"
+            if isinstance(author_info, dict) else "Entidad no especificada"
+        )
+        eyebrow = "CONJUNTO DE DATOS ACTIVO"
+        description = f"Publicado por {publisher}"
+        status = "Datos cargados" if not df.empty else "Sin filas en la selección"
+        context = ui.div(
             ui.div(
-                ui.div(
-                    ui.HTML(SVG_CLOCK),
-                    ui.span("Estado de la sesion:", class_="fw-bold text-slate-700 me-2"),
-                    ui.span(
-                        "Sin datos activos. Elija un recurso en el panel lateral y presione 'Cargar y Analizar Datos'.",
-                        class_="text-slate-500"
-                    ),
-                    class_="d-flex align-items-center flex-wrap"
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                ui.span(f"{len(df):,} registros", class_="badge badge-context"),
+                ui.span(f"{len(df.columns)} variables", class_="badge badge-context"),
+                class_="context-banner-metrics",
             ),
-            class_="context-banner context-banner-idle mb-3"
+            ui.p(_dataset_scope(meta, len(df)), class_="context-banner-scope"),
+        )
+    else:
+        title = "Explora los datos abiertos de Colombia"
+        eyebrow = "PLATAFORMA DE ANÁLISIS EXPLORATORIO"
+        description = "Carga un recurso de datos.gov.co para conocer su calidad, estadísticas y tendencias."
+        status = "Sin datos activos"
+        context = ui.p(
+            "Elige una colección en el panel lateral o ingresa el ID de un recurso para comenzar.",
+            class_="context-banner-scope",
         )
 
-    title = meta.get("name", "Conjunto de datos activo")
-    author_info = meta.get("tableAuthor", {})
-    author = author_info.get("displayName", "Entidad no especificada") if isinstance(author_info, dict) else "Entidad no especificada"
-    n_rows, n_cols = df.shape
-
-    return ui.div(
+    return ui.tags.section(
         ui.div(
-            # Bloque izquierdo: Identificacion del dataset
             ui.div(
-                ui.div(
-                    ui.HTML(SVG_CHECK),
-                    ui.span(title, class_="context-banner-title me-2 text-truncate", style="max-width: 520px;"),
-                    class_="d-flex align-items-center flex-wrap"
-                ),
-                ui.span(f"Entidad emisora: {author}", class_="context-banner-subtitle text-slate-500 mt-1 mt-md-0"),
-                class_="d-flex flex-column flex-md-row align-items-md-center flex-wrap gap-md-2"
+                ui.span(eyebrow, class_="context-banner-eyebrow"),
+                ui.h1(title, class_="context-banner-title"),
+                ui.p(description, class_="context-banner-subtitle"),
+                class_="context-banner-heading",
             ),
-            # Bloque derecho: Metadatos rapidos de recuento
-            ui.div(
-                ui.span(f"{n_rows:,} registros", class_="badge badge-context"),
-                ui.span(f"{n_cols} variables", class_="badge badge-context"),
-                ui.span("API Socrata OK", class_="badge badge-status-ok"),
-                class_="d-flex align-items-center flex-wrap gap-2 mt-2 mt-lg-0"
-            ),
-            class_="d-flex justify-content-between align-items-center flex-wrap gap-2"
+            ui.span(status, class_="context-banner-status"),
+            class_="context-banner-top",
         ),
-        class_="context-banner mb-3"
+        context,
+        _author_credits(),
+        class_=f"context-banner mb-3{' context-banner-idle' if not has_source else ''}",
+        aria_label="Contexto del análisis",
     )

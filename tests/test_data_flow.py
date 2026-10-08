@@ -4,8 +4,8 @@ import pytest
 import requests
 from datetime import date
 
-from services.api_service import extract_resource_id, fetch_dataset, _spread_windows
-from services.stats_service import classify_columns, sample_scatter_rows, suggest_time_aggregation
+from services.api_service import extract_resource_id, fetch_dataset, _spread_windows, _convert_columns
+from services.stats_service import classify_columns, compute_column_diagnostics, sample_scatter_rows, suggest_time_aggregation
 from services.scope_service import apply_analysis_scope
 from services.table_service import filter_table_rows, to_safe_csv_bytes
 
@@ -21,6 +21,25 @@ class FakeResponse:
 
     def json(self):
         return self.payload
+
+
+def test_socrata_structured_fields_can_be_diagnosed():
+    df = pd.DataFrame({
+        "urlproceso": [{"url": "https://www.colombiacompra.gov.co/1"}, None],
+        "ubicacion": [{"latitude": "4.6", "longitude": "-74.1"}, None],
+        "valor": [100, 200],
+    })
+    metadata = {"columns": [
+        {"fieldName": "urlproceso", "dataTypeName": "url"},
+        {"fieldName": "ubicacion", "dataTypeName": "location"},
+        {"fieldName": "valor", "dataTypeName": "number"},
+    ]}
+
+    converted = _convert_columns(df, metadata)
+
+    assert converted.loc[0, "urlproceso"] == "https://www.colombiacompra.gov.co/1"
+    assert isinstance(converted.loc[0, "ubicacion"], str)
+    assert len(compute_column_diagnostics(converted)) == 3
 
 
 @pytest.mark.parametrize("value", [

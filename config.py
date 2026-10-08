@@ -13,14 +13,12 @@ DEFAULT_MAX_ROWS = 50_000
 DEFAULT_FETCH_ROWS = 5_000
 API_TIMEOUT_SECONDS = 30
 
-# Datasets mas famosos y consultados de datos.gov.co (100% activos y verificados)
+# Colecciones tabulares verificadas para EDA: volumen alto y mezcla de medidas
+# numericas con variables categoricas. El selector conserva la entrada manual.
 SAMPLE_DATASETS = {
     "Selecciona un dataset de ejemplo...": "",
-    "Tasa de Cambio Representativa del Mercado (TRM Historico)": "mcec-87by",
-    "SECOP II - Contratos Electronicos del Estado": "jbjy-vk9h",
-    "Casos Positivos de COVID-19 en Colombia": "gt2j-8ykr",
-    "Codigo Unico de Medicamentos Vigentes (INVIMA)": "i7cb-raxc",
-    "SECOP II - Procesos de Contratacion Publica": "p6dx-8zbt",
-    "Puestos de Votacion y Censo Electoral (Registraduria)": "iuwx-frrw",
-    "Beneficiarios Mas Familias en Accion": "xfif-myr2",
+    "Saber 11 2020-2 - puntajes y contexto escolar": "rnvb-vnyh",
+    "SECOP II - contratos, montos y modalidades": "jbjy-vk9h",
+    "SECOP II - procesos, precios y competencia": "p6dx-8zbt",
+    "COVID-19 - edad, sexo y ubicacion": "gt2j-8ykr",
 }

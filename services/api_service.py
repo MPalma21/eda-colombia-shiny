@@ -3,6 +3,7 @@
 Funciones puras de Python sin dependencias de Shiny ni contexto reactivo.
 """
 from typing import Any
+import json
 import re
 from urllib.parse import urlparse
 import requests
@@ -28,6 +29,14 @@ def extract_resource_id(input_value: str) -> str:
     return val.lower()
 
 
+def _flatten_structured_value(value: Any) -> Any:
+    if isinstance(value, dict):
+        return value.get("url") or json.dumps(value, ensure_ascii=False, sort_keys=True)
+    if isinstance(value, list):
+        return json.dumps(value, ensure_ascii=False)
+    return value
+
+
 def _convert_columns(df: pd.DataFrame, metadata: dict[str, Any]) -> pd.DataFrame:
     """Respeta tipos declarados; evita perder ceros iniciales o fechas inválidas."""
     declared = {
@@ -36,6 +45,10 @@ def _convert_columns(df: pd.DataFrame, metadata: dict[str, Any]) -> pd.DataFrame
         if isinstance(col, dict)
     }
     for col in df.columns:
+        # Socrata entrega campos URL y ubicacion como objetos. Las vistas de
+        # Shiny y el diagnostico de cardinalidad requieren valores escalares.
+        if df[col].map(lambda value: isinstance(value, (dict, list))).any():
+            df[col] = df[col].map(_flatten_structured_value)
         kind = declared.get(col, "")
         if kind in {"number", "money", "percent", "double"}:
             converted = pd.to_numeric(df[col], errors="coerce")

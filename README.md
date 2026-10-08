@@ -107,7 +107,7 @@ Shiny APP Python/
 ## Flujo de Funcionamiento de la Aplicacion
 
 1. **Seleccion o Entrada del Recurso**:
-   - El usuario puede elegir un dataset de ejemplo precargado (hospitales, colegios, medicamentos, transito) o pegar cualquier URL / ID de recurso de `datos.gov.co` (por ejemplo, `gt2j-8ykr`).
+   - El usuario puede elegir una colección sugerida para EDA o pegar cualquier URL / ID de recurso de `datos.gov.co` (por ejemplo, `gt2j-8ykr`). Las sugerencias se eligieron por su volumen y por combinar medidas numéricas con categorías.
    - Se puede aplicar una busqueda de texto en el recurso antes de descargar y especificar el limite de registros (desde 50 hasta 50,000). El modo de carga puede tomar las primeras filas por ID o repartir el limite entre cinco bloques distribuidos por el recurso.
 2. **Descarga y Casteo Tipologico Inteligente**:
    - Al pulsar "Cargar y Analizar Datos", `services/api_service.py` consulta la API Socrata con `$limit` y orden estable por `:id`. El modo inicial usa `$offset=0`; la cobertura distribuida consulta el total y reparte el limite entre cinco offsets. Si se indica una busqueda, usa `$q` antes del limite.
@@ -119,6 +119,19 @@ Shiny APP Python/
    - Todos los modulos suscritos reciben la actualizacion y ejecutan sus calculos reactivos. La descarga se ejecuta fuera del hilo principal con `ExtendedTask`, para mantener la interfaz responsiva.
    - Tras descargar, el panel lateral permite elegir una columna y un periodo de fechas, y seleccionar una muestra aleatoria reproducible de las filas descargadas. El alcance elegido se aplica a todas las vistas y a la exportacion.
    - La cabecera integra el contexto del recurso: numero de filas analizadas, total conocido y alcance del periodo o muestra. Los creditos del autor y sus enlaces aparecen en texto pequeno junto al titulo. La carga distribuida mejora la cobertura por ID, pero sus bloques no constituyen una muestra aleatoria simple. Una muestra posterior corresponde solo a las filas descargadas, no al recurso completo.
+
+---
+
+## Colecciones sugeridas para EDA
+
+| Colección | Variables útiles | Recurso |
+| --- | --- | --- |
+| Saber 11 2020-2 | Puntajes, percentiles, género, ubicación y contexto escolar | [rnvb-vnyh](https://www.datos.gov.co/d/rnvb-vnyh) |
+| SECOP II - contratos electrónicos | Montos, pagos, sector, modalidad, estado y fechas | [jbjy-vk9h](https://www.datos.gov.co/d/jbjy-vk9h) |
+| SECOP II - procesos de contratación | Precio base, duración, participación, modalidad y fechas | [p6dx-8zbt](https://www.datos.gov.co/d/p6dx-8zbt) |
+| Casos positivos de COVID-19 | Edad, sexo, departamento, municipio y estado | [gt2j-8ykr](https://www.datos.gov.co/d/gt2j-8ykr) |
+
+Las colecciones pueden contener millones de registros. La app analiza únicamente las filas descargadas según el límite y el modo de selección elegidos; el selector no descarga el recurso completo.
 
 ---
 

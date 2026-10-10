@@ -91,7 +91,7 @@ def simulator_server(input, output, session, df_react):
                 class_="g-2 mb-2"
             ),
             ui.div(
-                ui.span("📌 Mecanismo Económico: ", class_="fw-bold text-primary"),
+                ui.span("Mecanismo Económico: ", class_="fw-bold text-primary"),
                 ui.span(
                     "Al sustituir convenios directos por licitaciones públicas de pliego tipo, la presión competitiva "
                     "reduce los sobrecostos de adjudicación (ahorro fiscal) y redistribuye los contratos hacia más competidores "

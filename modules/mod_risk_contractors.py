@@ -103,7 +103,7 @@ def risk_contractors_server(input, output, session, df_react):
                 f"{total_provs:,}",
                 ui.p(f"Top 50 auditados en detalle", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("👥", style="font-size: 1.4rem;"),
+                    ui.span("N", class_="fw-bold font-monospace text-primary", style="font-size: 1.1rem;"),
                     class_="kpi-icon-badge kpi-badge-blue"
                 ),
                 theme=None,
@@ -114,7 +114,7 @@ def risk_contractors_server(input, output, session, df_react):
                 str(top1["proveedor"])[:22],
                 ui.p(f"Monto: {format_cop_currency(top1['monto_total'])} ({top1['cuota_pct']:.1f}% cuota)", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("🏆", style="font-size: 1.4rem;"),
+                    ui.span("#1", class_="fw-bold font-monospace text-teal", style="font-size: 1.1rem;"),
                     class_="kpi-icon-badge kpi-badge-teal"
                 ),
                 theme=None,
@@ -125,7 +125,7 @@ def risk_contractors_server(input, output, session, df_react):
                 f"{cr4_sum:.1f}%",
                 ui.p("Cuota acumulada de los 4 mayores actores", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("🏛️", style="font-size: 1.4rem;"),
+                    ui.span("CR4", class_="fw-bold font-monospace text-secondary", style="font-size: 0.95rem;"),
                     class_="kpi-icon-badge kpi-badge-slate"
                 ),
                 theme=None,
@@ -136,7 +136,7 @@ def risk_contractors_server(input, output, session, df_react):
                 f"{direct_avg_top10:.1f}%",
                 ui.p("Promedio asignado a dedo a los líderes", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("⚡", style="font-size: 1.4rem;"),
+                    ui.span("%Dir", class_="fw-bold font-monospace text-warning", style="font-size: 0.95rem;"),
                     class_="kpi-icon-badge kpi-badge-semantic"
                 ),
                 theme=None,
@@ -206,9 +206,9 @@ def risk_contractors_server(input, output, session, df_react):
         plot_df = c_df.head(30).copy()
 
         color_map = {
-            "🔴 Predominio Directo (Sin Concurso)": "#dc2626",
-            "🟡 Mixto / Moderado": "#d97706",
-            "🟢 Concurso Competitivo": "#059669"
+            "Predominio Directo (Sin Concurso)": "#dc2626",
+            "Mixto / Moderado": "#d97706",
+            "Concurso Competitivo": "#059669"
         }
         marker_colors = [color_map.get(a, "#1d3190") for a in plot_df["alerta"]]
 

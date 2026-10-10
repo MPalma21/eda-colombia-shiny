@@ -528,7 +528,7 @@ def compute_procurement_risk_matrix(
     - HHI de contratistas (concentracion de adjudicaciones)
     - Cuota CR4 (% acaparado por los 4 mayores contratistas)
     - % de contratacion directa (en monto y volumen)
-    - Score compuesto de riesgo (0 - 100) y clasificacion semaforica (🔴, 🟡, 🟢)
+    - Score compuesto de riesgo (0 - 100) y clasificacion semaforica (Critico, Moderado, Competitivo)
     """
     if df.empty:
         return pd.DataFrame()
@@ -605,15 +605,15 @@ def compute_procurement_risk_matrix(
         
         if hhi > 2500 or pct_directa_monto > 65.0:
             nivel = "Alto Riesgo (Crítico)"
-            badge_icon = "🔴"
+            badge_icon = "CRÍTICO"
             badge_class = "badge-risk-high"
         elif (1500 <= hhi <= 2500) or (35.0 <= pct_directa_monto <= 65.0):
             nivel = "Riesgo Moderado"
-            badge_icon = "🟡"
+            badge_icon = "MODERADO"
             badge_class = "badge-risk-mid"
         else:
             nivel = "Bajo Riesgo (Competitivo)"
-            badge_icon = "🟢"
+            badge_icon = "COMPETITIVO"
             badge_class = "badge-risk-low"
             
         records.append({
@@ -730,11 +730,11 @@ def simulate_policy_procurement(
     # 3. Clasificaciones de riesgo
     def _clasificar(hhi_val, dir_pct):
         if hhi_val > 2500 or dir_pct > 65.0:
-            return "Alto Riesgo (Crítico)", "🔴", "badge-risk-high"
+            return "Alto Riesgo (Crítico)", "CRÍTICO", "badge-risk-high"
         elif (1500 <= hhi_val <= 2500) or (35.0 <= dir_pct <= 65.0):
-            return "Riesgo Moderado", "🟡", "badge-risk-mid"
+            return "Riesgo Moderado", "MODERADO", "badge-risk-mid"
         else:
-            return "Bajo Riesgo (Competitivo)", "🟢", "badge-risk-low"
+            return "Bajo Riesgo (Competitivo)", "COMPETITIVO", "badge-risk-low"
             
     nivel_base, icon_base, class_base = _clasificar(base_hhi, base_direct_pct)
     nivel_nuevo, icon_nuevo, class_nuevo = _clasificar(nuevo_hhi, nuevo_direct_pct)
@@ -820,13 +820,13 @@ def get_contractors_summary(
             
         # Alerta de contratista
         if pct_directa >= 65.0:
-            alerta = "🔴 Predominio Directo (Sin Concurso)"
+            alerta = "Predominio Directo (Sin Concurso)"
             alerta_class = "badge-risk-high"
         elif pct_directa >= 35.0:
-            alerta = "🟡 Mixto / Moderado"
+            alerta = "Mixto / Moderado"
             alerta_class = "badge-risk-mid"
         else:
-            alerta = "🟢 Concurso Competitivo"
+            alerta = "Concurso Competitivo"
             alerta_class = "badge-risk-low"
 
         records.append({
@@ -892,7 +892,7 @@ def get_department_atypical_contracts(
         obj = str(row[obj_c])[:80] if obj_c and obj_c in row and pd.notnull(row[obj_c]) else "Contrato de obra / prestación de servicios"
 
         is_direct = any(k in mod.lower() for k in ("direct", "urgencia", "especial", "sin concurso"))
-        flag = "🔴 Directa" if is_direct else "🟢 Concurso"
+        flag = "Directa" if is_direct else "Concurso"
         flag_class = "badge-risk-high" if is_direct else "badge-risk-low"
 
         records.append({
@@ -920,21 +920,21 @@ def get_department_diagnosis(dept_data: dict | pd.Series) -> dict:
 
     factores = []
     if hhi > 2500:
-        factores.append(f"🔴 Concentración crítica de mercado (HHI = {hhi:,.1f}), superando ampliamente el umbral oligopólico de 2,500 puntos.")
+        factores.append(f"[Crítico] Concentración crítica de mercado (HHI = {hhi:,.1f}), superando ampliamente el umbral oligopólico de 2,500 puntos.")
     elif hhi >= 1500:
-        factores.append(f"🟡 Concentración moderada (HHI = {hhi:,.1f}), indicando presencia de actores preponderantes.")
+        factores.append(f"[Moderado] Concentración moderada (HHI = {hhi:,.1f}), indicando presencia de actores preponderantes.")
     else:
-        factores.append(f"🟢 Mercado territorial competitivo y diversificado (HHI = {hhi:,.1f} < 1,500).")
+        factores.append(f"[Favorable] Mercado territorial competitivo y diversificado (HHI = {hhi:,.1f} < 1,500).")
 
     if pct_directa > 65.0:
-        factores.append(f"🔴 Abuso de contratación directa: {pct_directa:.1f}% de los recursos adjudicados sin proceso licitatorio abierto.")
+        factores.append(f"[Crítico] Abuso de contratación directa: {pct_directa:.1f}% de los recursos adjudicados sin proceso licitatorio abierto.")
     elif pct_directa >= 35.0:
-        factores.append(f"🟡 Tasa media de contratación directa ({pct_directa:.1f}%), susceptible de migración a pliegos tipo.")
+        factores.append(f"[Moderado] Tasa media de contratación directa ({pct_directa:.1f}%), susceptible de migración a pliegos tipo.")
     else:
-        factores.append(f"🟢 Baja tasa de contratación directa ({pct_directa:.1f}%), predominan mecanismos de concurrencia.")
+        factores.append(f"[Favorable] Baja tasa de contratación directa ({pct_directa:.1f}%), predominan mecanismos de concurrencia.")
 
     if top_cuota >= 40.0:
-        factores.append(f"⚠️ Monopolización de recursos: El contratista '{top_contratista}' acapara el {top_cuota:.1f}% del presupuesto departamental.")
+        factores.append(f"[Atención] Monopolización de recursos: El contratista '{top_contratista}' acapara el {top_cuota:.1f}% del presupuesto departamental.")
 
     if nivel == "Alto Riesgo (Crítico)":
         recomendacion = (
@@ -957,7 +957,7 @@ def get_department_diagnosis(dept_data: dict | pd.Series) -> dict:
         "departamento": dept_name,
         "score": score,
         "nivel": nivel,
-        "badge_icon": dept_data.get("badge_icon", "⚪"),
+        "badge_icon": dept_data.get("badge_icon", "N/A"),
         "badge_class": dept_data.get("badge_class", "badge-category"),
         "factores": factores,
         "recomendacion": recomendacion

@@ -208,7 +208,7 @@ def test_compute_procurement_risk_matrix():
     # Choco debe ser clasificado como Alto Riesgo (Crítico)
     choco_row = matrix[matrix["departamento"] == "Chocó"].iloc[0]
     assert choco_row["nivel_riesgo"] == "Alto Riesgo (Crítico)"
-    assert choco_row["badge_icon"] == "🔴"
+    assert choco_row["badge_icon"] == "CRÍTICO"
     assert choco_row["pct_directa_monto"] == 100.0
     assert choco_row["hhi"] == 10000.0
     assert choco_row["score_riesgo"] == 100.0
@@ -216,7 +216,7 @@ def test_compute_procurement_risk_matrix():
     # Cundinamarca debe ser clasificado como Bajo Riesgo (Competitivo)
     cund_row = matrix[matrix["departamento"] == "Cundinamarca"].iloc[0]
     assert cund_row["nivel_riesgo"] == "Bajo Riesgo (Competitivo)"
-    assert cund_row["badge_icon"] == "🟢"
+    assert cund_row["badge_icon"] == "COMPETITIVO"
     assert cund_row["pct_directa_monto"] == 0.0
     assert cund_row["hhi"] == 1000.0
 
@@ -290,7 +290,7 @@ def test_contractors_summary_atypical_and_diagnosis():
     assert top_c["monto_total"] == 800_000_000
     assert top_c["n_contratos"] == 2
     assert top_c["pct_directa"] == 100.0
-    assert "🔴" in top_c["alerta"]
+    assert "Predominio Directo" in top_c["alerta"]
 
     # Contratos atípicos de Boyacá
     atypical = get_department_atypical_contracts(df, "Boyacá")

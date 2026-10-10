@@ -1,7 +1,7 @@
 """Modulo de Radar Territorial y Semaforos de Riesgo en Contratacion Publica (SECOP II).
 
 Perspectiva 1 del Panel de Riesgo Territorial:
-- Semaforos y clasificacion de riesgo departamental (🔴 Critico, 🟡 Moderado, 🟢 Competitivo).
+- Semaforos y clasificacion de riesgo departamental (Critico, Moderado, Competitivo).
 - Filtros por nivel de alerta y volumen contractual.
 - Ranking territorial por indice HHI y tasa de contratacion directa.
 - Cuadrante analitico de dispersion (% Directa vs HHI de Concentracion).
@@ -94,9 +94,9 @@ def risk_radar_server(input, output, session, df_react):
             ui.layout_columns(
                 ui.input_select("radar_risk_filter", "Filtrar por Nivel de Riesgo:", choices=[
                     "Todos los Departamentos",
-                    "🔴 Solo Alto Riesgo (Críticos)",
-                    "🟡 Solo Riesgo Moderado",
-                    "🟢 Solo Bajo Riesgo (Competitivos)"
+                    "Solo Alto Riesgo (Críticos)",
+                    "Solo Riesgo Moderado",
+                    "Solo Bajo Riesgo (Competitivos)"
                 ], selected="Todos los Departamentos"),
                 ui.input_select("radar_dept_col", "Columna de Departamento:", choices=cat_cols or all_cols, selected=dept_c or (cat_cols[0] if cat_cols else all_cols[0])),
                 ui.input_select("radar_val_col", "Columna de Monto Contractual:", choices=["(Solo conteo de contratos)"] + num_cols, selected=val_c or (num_cols[0] if num_cols else "(Solo conteo de contratos)")),
@@ -105,8 +105,8 @@ def risk_radar_server(input, output, session, df_react):
                 class_="g-2 mb-2"
             ),
             ui.div(
-                ui.span("💡 Criterios Regulatorios de Semáforo: ", class_="fw-bold text-secondary"),
-                ui.span("🔴 Alto Riesgo: HHI > 2500 o Contratación Directa > 65% | 🟡 Moderado: HHI 1500-2500 o Directa 35%-65% | 🟢 Bajo Riesgo: HHI < 1500 y Directa < 35%.", class_="text-muted"),
+                ui.span("Criterios Regulatorios de Semáforo: ", class_="fw-bold text-secondary"),
+                ui.span("Alto Riesgo: HHI > 2500 o Contratación Directa > 65% | Moderado: HHI 1500-2500 o Directa 35%-65% | Bajo Riesgo: HHI < 1500 y Directa < 35%.", class_="text-muted"),
                 class_="small p-2 bg-light rounded border border-subtle mb-3"
             )
         )
@@ -139,11 +139,11 @@ def risk_radar_server(input, output, session, df_react):
             return matrix
 
         filt = input.radar_risk_filter() if hasattr(input, "radar_risk_filter") else "Todos los Departamentos"
-        if filt == "🔴 Solo Alto Riesgo (Críticos)":
+        if filt == "Solo Alto Riesgo (Críticos)":
             return matrix[matrix["nivel_riesgo"] == "Alto Riesgo (Crítico)"].copy()
-        elif filt == "🟡 Solo Riesgo Moderado":
+        elif filt == "Solo Riesgo Moderado":
             return matrix[matrix["nivel_riesgo"] == "Riesgo Moderado"].copy()
-        elif filt == "🟢 Solo Bajo Riesgo (Competitivos)":
+        elif filt == "Solo Bajo Riesgo (Competitivos)":
             return matrix[matrix["nivel_riesgo"] == "Bajo Riesgo (Competitivo)"].copy()
         return matrix
 
@@ -169,18 +169,18 @@ def risk_radar_server(input, output, session, df_react):
                 format_cop_currency(summary["monto_total"]),
                 ui.p(f"{summary['total_contratos']:,} contratos analizados", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("💰", style="font-size: 1.4rem;"),
+                    ui.span("COP", class_="fw-bold font-monospace text-primary", style="font-size: 0.95rem;"),
                     class_="kpi-icon-badge kpi-badge-blue"
                 ),
                 theme=None,
                 class_="bslib-value-box"
             ),
             ui.value_box(
-                "Alertas Críticas (🔴)",
+                "Alertas Críticas",
                 f"{summary['criticos']} / {summary['n_departamentos']}",
                 ui.p(f"Moderados: {summary['moderados']} | Competitivos: {summary['competitivos']}", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("🚨", style="font-size: 1.4rem;"),
+                    ui.span("!", class_="fw-bold text-danger", style="font-size: 1.4rem;"),
                     class_="kpi-icon-badge kpi-badge-semantic"
                 ),
                 theme=None,
@@ -191,7 +191,7 @@ def risk_radar_server(input, output, session, df_react):
                 f"{summary['pct_directa_promedio']:.1f}%",
                 ui.p("Tasa nacional ponderada", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("⚖️", style="font-size: 1.4rem;"),
+                    ui.span("%", class_="fw-bold text-info", style="font-size: 1.4rem;"),
                     class_="kpi-icon-badge kpi-badge-teal"
                 ),
                 theme=None,
@@ -202,7 +202,7 @@ def risk_radar_server(input, output, session, df_react):
                 f"{summary['hhi_promedio']:,.0f} pts",
                 ui.p(f"Mayor riesgo: {summary['depto_mayor_riesgo']}", class_="text-muted small mb-0"),
                 showcase=ui.div(
-                    ui.span("📊", style="font-size: 1.4rem;"),
+                    ui.span("HHI", class_="fw-bold font-monospace text-secondary", style="font-size: 0.95rem;"),
                     class_="kpi-icon-badge kpi-badge-slate"
                 ),
                 theme=None,
@@ -356,7 +356,7 @@ def risk_radar_server(input, output, session, df_react):
         criticos = matrix[matrix["nivel_riesgo"] == "Alto Riesgo (Crítico)"].head(6)
         if criticos.empty:
             return ui.div(
-                ui.span("🟢 No se detectaron departamentos en situación crítica bajo los umbrales seleccionados.", class_="text-success fw-bold"),
+                ui.span("No se detectaron departamentos en situación crítica bajo los umbrales seleccionados.", class_="text-success fw-bold"),
                 class_="p-3 bg-light rounded"
             )
 
@@ -365,7 +365,7 @@ def risk_radar_server(input, output, session, df_react):
             card = ui.div(
                 ui.div(
                     ui.div(
-                        ui.span(f"🔴 Alerta Roja: {row['departamento']}", class_="fw-bold text-danger fs-6"),
+                        ui.span(f"Alerta Crítica: {row['departamento']}", class_="fw-bold text-danger fs-6"),
                         ui.span(f"Score: {row['score_riesgo']:.1f} / 100", class_="badge-risk-high"),
                         class_="d-flex justify-content-between align-items-center mb-2"
                     ),

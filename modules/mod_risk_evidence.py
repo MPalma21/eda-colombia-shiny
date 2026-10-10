@@ -35,9 +35,9 @@ def risk_evidence_ui():
                         "Filtrar Matriz por Semáforo:",
                         choices=[
                             "Todos los Niveles",
-                            "🔴 Solo Alto Riesgo (Críticos)",
-                            "🟡 Solo Riesgo Moderado",
-                            "🟢 Solo Bajo Riesgo (Competitivos)"
+                            "Solo Alto Riesgo (Críticos)",
+                            "Solo Riesgo Moderado",
+                            "Solo Bajo Riesgo (Competitivos)"
                         ],
                         selected="Todos los Niveles"
                     ),
@@ -105,11 +105,11 @@ def risk_evidence_server(input, output, session, df_react):
             return matrix
 
         filt = input.evidence_risk_filter() if hasattr(input, "evidence_risk_filter") else "Todos los Niveles"
-        if filt == "🔴 Solo Alto Riesgo (Críticos)":
+        if filt == "Solo Alto Riesgo (Críticos)":
             return matrix[matrix["nivel_riesgo"] == "Alto Riesgo (Crítico)"].copy()
-        elif filt == "🟡 Solo Riesgo Moderado":
+        elif filt == "Solo Riesgo Moderado":
             return matrix[matrix["nivel_riesgo"] == "Riesgo Moderado"].copy()
-        elif filt == "🟢 Solo Bajo Riesgo (Competitivos)":
+        elif filt == "Solo Bajo Riesgo (Competitivos)":
             return matrix[matrix["nivel_riesgo"] == "Bajo Riesgo (Competitivo)"].copy()
         return matrix
 
@@ -179,11 +179,11 @@ def risk_evidence_server(input, output, session, df_react):
 
             is_direct = any(k in mod.lower() for k in ("direct", "urgencia", "especial", "sin concurso"))
             if is_direct and val >= q75 and q75 > 0:
-                flag = "🔴 Directa de Alto Monto"
+                flag = "Directa de Alto Monto"
             elif is_direct:
-                flag = "🟡 Contratación Directa"
+                flag = "Contratación Directa"
             else:
-                flag = "🟢 Proceso Abierto / Concurso"
+                flag = "Proceso Abierto / Concurso"
 
             records.append({
                 "alerta_contrato": flag,

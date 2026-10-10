@@ -310,7 +310,7 @@ def risk_drilldown_server(input, output, session, df_react):
             )
 
         return ui.div(
-            ui.div("🚨 Contratos de Mayor Cuantía Individual en la Jurisdicción", class_="fw-bold text-primary small mb-2 text-uppercase"),
+            ui.div("Contratos de Mayor Cuantía Individual en la Jurisdicción", class_="fw-bold text-primary small mb-2 text-uppercase"),
             *rows
         )
 
@@ -334,7 +334,7 @@ def risk_drilldown_server(input, output, session, df_react):
         factores_html = "".join([f"<li class='mb-2'>{f}</li>" for f in diag["factores"]])
 
         return ui.div(
-            ui.div("📋 Dictamen Automatizado de Veeduría y Control Fiscal", class_="fw-bold text-primary small mb-2 text-uppercase"),
+            ui.div("Dictamen Automatizado de Veeduría y Control Fiscal", class_="fw-bold text-primary small mb-2 text-uppercase"),
             ui.div(
                 ui.div("Factores Críticos Observados:", class_="fw-bold text-dark small mb-1"),
                 ui.HTML(f"<ul class='small text-secondary ps-3 mb-3'>{factores_html}</ul>"),

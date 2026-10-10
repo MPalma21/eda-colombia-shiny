@@ -23,7 +23,10 @@ from services.economic_service import (
     find_procurement_columns,
     compute_procurement_risk_matrix,
     get_procurement_risk_summary,
-    simulate_policy_procurement
+    simulate_policy_procurement,
+    get_contractors_summary,
+    get_department_atypical_contracts,
+    get_department_diagnosis
 )
 
 
@@ -267,5 +270,49 @@ def test_procurement_risk_matrix_edge_cases():
     empty_summary = get_procurement_risk_summary(pd.DataFrame())
     assert empty_summary["valido"] is False
     assert empty_summary["total_contratos"] == 0
+
+
+def test_contractors_summary_atypical_and_diagnosis():
+    """Valida ranking de contratistas, contratos atipicos y dictamen diagnostico."""
+    df = pd.DataFrame({
+        "departamento": ["Boyacá", "Boyacá", "Boyacá", "Santander"],
+        "valor_del_contrato": [500_000_000, 300_000_000, 200_000_000, 100_000_000],
+        "proveedor_adjudicado": ["MegaContratista SAS", "MegaContratista SAS", "Pyme B", "Pyme C"],
+        "modalidad_de_contratacion": ["Contratación Directa", "Contratación Directa", "Licitación Pública", "Selección Abreviada"],
+        "objeto": ["Pavimentación vía", "Mantenimiento escuela", "Suministro alimentos", "Estudios técnicos"]
+    })
+
+    # Ranking de contratistas
+    c_summary = get_contractors_summary(df)
+    assert not c_summary.empty
+    top_c = c_summary.iloc[0]
+    assert top_c["proveedor"] == "MegaContratista SAS"
+    assert top_c["monto_total"] == 800_000_000
+    assert top_c["n_contratos"] == 2
+    assert top_c["pct_directa"] == 100.0
+    assert "🔴" in top_c["alerta"]
+
+    # Contratos atípicos de Boyacá
+    atypical = get_department_atypical_contracts(df, "Boyacá")
+    assert len(atypical) == 3
+    assert atypical.iloc[0]["monto"] == 500_000_000
+    assert "Pavimentación vía" in atypical.iloc[0]["objeto"]
+
+    # Diagnostico de Boyacá
+    diag = get_department_diagnosis({
+        "departamento": "Boyacá",
+        "score_riesgo": 85.0,
+        "nivel_riesgo": "Alto Riesgo (Crítico)",
+        "hhi": 3200.0,
+        "pct_directa_monto": 80.0,
+        "top_contratista": "MegaContratista SAS",
+        "top_cuota": 80.0
+    })
+    assert diag["score"] == 85.0
+    assert diag["nivel"] == "Alto Riesgo (Crítico)"
+    assert any("Concentración crítica" in f for f in diag["factores"])
+    assert any("Abuso de contratación directa" in f for f in diag["factores"])
+    assert "veedurías ciudadanas" in diag["recomendacion"]
+
 
 

@@ -29,7 +29,7 @@
       "checksum": "696ab4715e023fce181f21d694f87ee0"
     },
     "app.py": {
-      "checksum": "2505c79586a7887b10e45be5e0948aba"
+      "checksum": "7b4e1b5769a42dede053cc533bea386b"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -38,7 +38,7 @@
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "config.py": {
-      "checksum": "4fcfacbeb2ab05427764c481b7e2ab5e"
+      "checksum": "97d559856d9e58943acd0b1b70a2706f"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
@@ -59,10 +59,19 @@
       "checksum": "0672e4b992999ea5cc7a7d05b73c885c"
     },
     "modules/mod_loader.py": {
-      "checksum": "73ca2414b2de463e49d4a9d9725dd2dc"
+      "checksum": "af436c943a6dd59425c29cea1b41e097"
     },
-    "modules/mod_risk_matrix.py": {
-      "checksum": "b5a5f31e54c2229920e05d3c2e140ebf"
+    "modules/mod_risk_contractors.py": {
+      "checksum": "b96a3962abb1227dcca9378ae9476d9f"
+    },
+    "modules/mod_risk_drilldown.py": {
+      "checksum": "68826b14fb9da9077e1311607eb454e3"
+    },
+    "modules/mod_risk_evidence.py": {
+      "checksum": "623ea639b8097b1133482d7a3caba6bf"
+    },
+    "modules/mod_risk_radar.py": {
+      "checksum": "ffd7a07cf58d672c0bd06bfd40c598c8"
     },
     "modules/mod_simulator.py": {
       "checksum": "8ba0b0b229648ca99d6b373b92f397c1"
@@ -89,7 +98,7 @@
       "checksum": "81f0687f1e7cd55efcc0b022f0d0af11"
     },
     "services/economic_service.py": {
-      "checksum": "a843c085b45ab129d83baa808fea0c3c"
+      "checksum": "d430cac94400130dff97da64e81ae384"
     },
     "services/scope_service.py": {
       "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
@@ -107,7 +116,7 @@
       "checksum": "5473953b73bb595ae4fcbf7ca1734e75"
     },
     "tests/test_economic_service.py": {
-      "checksum": "bb6e1b43cb9462f7f8d3a04df32f2a4f"
+      "checksum": "7fece350d19925b7ca6786ab3ba9e711"
     },
     "tests/test_services.py": {
       "checksum": "e567b83a831ab4b269f502513d443abb"

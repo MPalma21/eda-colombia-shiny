@@ -14,9 +14,9 @@ def loader_ui():
     return ui.div(
         # Grupo 1: Seleccion de dataset
         ui.div(
-            ui.span("Parametros de Consulta", class_="sidebar-section-title"),
+            ui.span("Parámetros de Consulta", class_="sidebar-section-title"),
             ui.p(
-                "Consulte colecciones abiertas publicadas por entidades oficiales del Estado colombiano via SODA API.",
+                "Consulte colecciones de contratación estatal (SECOP II) publicadas por Colombia Compra Eficiente via datos.gov.co.",
                 class_="sidebar-description"
             ),
             class_="mb-3"
@@ -25,7 +25,7 @@ def loader_ui():
         ui.div(
             ui.input_select(
                 "sample_ds",
-                "Colecciones verificadas:",
+                "Bases de Contratación (SECOP):",
                 choices=list(SAMPLE_DATASETS.keys()),
                 selected=list(SAMPLE_DATASETS.keys())[0]
             ),
@@ -36,12 +36,12 @@ def loader_ui():
                 value=DEFAULT_RESOURCE_ID
             ),
             ui.div(
-                "Indique el codigo alfanumerico (ej: mcec-87by) o la URL completa.",
+                "ID alfanumérico de SECOP II (ej: jbjy-vk9h) o URL completa.",
                 class_="form-text text-muted small mt-n2 mb-3"
             ),
             ui.input_numeric(
                 "n_rows",
-                "Limite de registros:",
+                "Límite de registros:",
                 value=DEFAULT_FETCH_ROWS,
                 min=50,
                 max=DEFAULT_MAX_ROWS,
@@ -51,12 +51,12 @@ def loader_ui():
                 "fetch_mode", "Selección del origen:",
                 choices={"first": "Primeros registros por ID", "spread": "Cobertura distribuida (5 bloques)"},
             ),
-            ui.input_text("source_query", "Filtrar antes de cargar (texto opcional):", placeholder="Buscar en el recurso completo"),
-            ui.p("La busqueda de texto del portal se aplica antes del limite de filas.", class_="form-text text-muted small"),
+            ui.input_text("source_query", "Filtrar antes de cargar (texto opcional):", placeholder="Ej. departamento, obra, etc."),
+            ui.p("La búsqueda en el portal se aplica antes del límite de filas.", class_="form-text text-muted small"),
             ui.input_task_button(
                 "btn_load",
-                "Cargar y Analizar Datos",
-                label_busy="Consultando datos...",
+                "Cargar y Auditar Contratos",
+                label_busy="Consultando SECOP...",
                 class_="btn btn-primary w-100 py-2 mt-2 mb-2 btn-load-dataset"
             ),
             ui.output_ui("status_feedback"),

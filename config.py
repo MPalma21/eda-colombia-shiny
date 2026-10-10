@@ -14,12 +14,11 @@ DEFAULT_FETCH_ROWS = 5_000
 API_TIMEOUT_SECONDS = 30
 DEFAULT_RESOURCE_ID = "jbjy-vk9h"
 
-# Colecciones tabulares verificadas para EDA y observatorio economico:
+# Colecciones tabulares verificadas de contratacion publica (SECOP / datos.gov.co):
 SAMPLE_DATASETS = {
-    "SECOP II · Contratos estatales, montos y departamentos (Recomendado)": "jbjy-vk9h",
-    "Saber 11 (ICFES) · Puntajes, departamentos y contexto socioeconomico": "rnvb-vnyh",
-    "SECOP II · Procesos de compra, precios y competencia": "p6dx-8zbt",
-    "COVID-19 · Demografia y salud publica territorial": "gt2j-8ykr",
-    "Ingresar otro ID o URL personalizada...": "",
+    "SECOP II · Contratos Electrónicos, Montos y Departamentos (Recomendado)": "jbjy-vk9h",
+    "SECOP II · Procesos de Compra, Licitaciones y Adjudicaciones": "p6dx-8zbt",
+    "SECOP I · Contratos Estatales Históricos": "xvdy-7kqu",
+    "Ingresar otro ID o URL personalizada de datos.gov.co...": "",
 }
 

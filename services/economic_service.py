@@ -762,3 +762,205 @@ def simulate_policy_procurement(
         "nuevos_oferentes_est": nuevos_oferentes_est,
     }
 
+
+def get_contractors_summary(
+    df: pd.DataFrame,
+    prov_col: str | None = None,
+    val_col: str | None = None,
+    mod_col: str | None = None,
+    dept_col: str | None = None,
+    top_n: int = 25
+) -> pd.DataFrame:
+    """Calcula el ranking y concentracion de los principales contratistas.
+    
+    Identifica poder de mercado, diversificacion territorial y tasa de contratacion a dedo.
+    """
+    if df.empty:
+        return pd.DataFrame()
+
+    dept_c, val_c, prov_c, mod_c = find_procurement_columns(df, dept_col, val_col, prov_col, mod_col)
+    if not prov_c or prov_c not in df.columns:
+        return pd.DataFrame()
+
+    grouped = df.groupby(prov_c)
+    records = []
+    
+    total_national_val = float(df[val_c].dropna().sum()) if val_c and val_c in df.columns and pd.api.types.is_numeric_dtype(df[val_c]) else 0.0
+    total_national_contracts = len(df)
+
+    for prov_name, group in grouped:
+        p_str = str(prov_name).strip()
+        if not p_str or p_str.lower() in ("nan", "none", "null", ""):
+            continue
+            
+        n_contracts = len(group)
+        if val_c and val_c in group.columns and pd.api.types.is_numeric_dtype(group[val_c]):
+            monto_prov = float(group[val_c].dropna().sum())
+        else:
+            monto_prov = 0.0
+            
+        n_deptos = int(group[dept_c].nunique()) if dept_c and dept_c in group.columns else 1
+        
+        # Tasa de contratacion directa
+        pct_directa = 0.0
+        if mod_c and mod_c in group.columns:
+            mod_s = group[mod_c].astype(str).str.lower()
+            direct_mask = mod_s.str.contains("direct|urgencia|especial|sin concurso", regex=True, na=False)
+            if monto_prov > 0 and val_c in group.columns:
+                monto_directo = float(group.loc[direct_mask, val_c].dropna().sum())
+                pct_directa = round((monto_directo / monto_prov) * 100.0, 1)
+            else:
+                pct_directa = round((direct_mask.sum() / n_contracts) * 100.0, 1) if n_contracts > 0 else 0.0
+                
+        # Cuota nacional
+        if total_national_val > 0:
+            cuota = round((monto_prov / total_national_val) * 100.0, 2)
+        else:
+            cuota = round((n_contracts / total_national_contracts) * 100.0, 2) if total_national_contracts > 0 else 0.0
+            
+        # Alerta de contratista
+        if pct_directa >= 65.0:
+            alerta = "🔴 Predominio Directo (Sin Concurso)"
+            alerta_class = "badge-risk-high"
+        elif pct_directa >= 35.0:
+            alerta = "🟡 Mixto / Moderado"
+            alerta_class = "badge-risk-mid"
+        else:
+            alerta = "🟢 Concurso Competitivo"
+            alerta_class = "badge-risk-low"
+
+        records.append({
+            "proveedor": p_str,
+            "monto_total": monto_prov,
+            "n_contratos": n_contracts,
+            "n_departamentos": n_deptos,
+            "cuota_pct": cuota,
+            "pct_directa": pct_directa,
+            "alerta": alerta,
+            "alerta_class": alerta_class
+        })
+
+    if not records:
+        return pd.DataFrame()
+
+    res_df = pd.DataFrame(records)
+    sort_key = "monto_total" if total_national_val > 0 else "n_contratos"
+    res_df = res_df.sort_values(by=sort_key, ascending=False).head(top_n).reset_index(drop=True)
+    return res_df
+
+
+def get_department_atypical_contracts(
+    df: pd.DataFrame,
+    dept_name: str,
+    dept_col: str | None = None,
+    val_col: str | None = None,
+    prov_col: str | None = None,
+    mod_col: str | None = None,
+    top_n: int = 8
+) -> pd.DataFrame:
+    """Extrae los contratos individuales de mayor cuantía en un departamento."""
+    if df.empty or not dept_name:
+        return pd.DataFrame()
+
+    dept_c, val_c, prov_c, mod_c = find_procurement_columns(df, dept_col, val_col, prov_col, mod_col)
+    if not dept_c or dept_c not in df.columns:
+        return pd.DataFrame()
+
+    sub = df[df[dept_c].astype(str).str.strip().str.lower() == str(dept_name).strip().lower()].copy()
+    if sub.empty:
+        return pd.DataFrame()
+
+    # Buscar columna de objeto o descripcion
+    obj_c = None
+    for c in sub.columns:
+        c_low = c.lower()
+        if any(k in c_low for k in ("objeto", "descripcion", "detalle", "nombre")):
+            obj_c = c
+            break
+
+    # Ordenar por valor si es numerico
+    if val_c and val_c in sub.columns and pd.api.types.is_numeric_dtype(sub[val_c]):
+        sub = sub.sort_values(by=val_c, ascending=False).head(top_n)
+    else:
+        sub = sub.head(top_n)
+
+    records = []
+    for _, row in sub.iterrows():
+        val = float(row[val_c]) if val_c and val_c in row and pd.notnull(row[val_c]) else 0.0
+        prov = str(row[prov_c]) if prov_c and prov_c in row and pd.notnull(row[prov_c]) else "Sin proveedor"
+        mod = str(row[mod_c]) if mod_c and mod_c in row and pd.notnull(row[mod_c]) else "No especificada"
+        obj = str(row[obj_c])[:80] if obj_c and obj_c in row and pd.notnull(row[obj_c]) else "Contrato de obra / prestación de servicios"
+
+        is_direct = any(k in mod.lower() for k in ("direct", "urgencia", "especial", "sin concurso"))
+        flag = "🔴 Directa" if is_direct else "🟢 Concurso"
+        flag_class = "badge-risk-high" if is_direct else "badge-risk-low"
+
+        records.append({
+            "alerta": flag,
+            "alerta_class": flag_class,
+            "proveedor": prov,
+            "monto": val,
+            "monto_str": format_cop_currency(val),
+            "modalidad": mod,
+            "objeto": obj
+        })
+
+    return pd.DataFrame(records)
+
+
+def get_department_diagnosis(dept_data: dict | pd.Series) -> dict:
+    """Genera un dictamen y auditoria automatizada de riesgo para un departamento."""
+    score = float(dept_data.get("score_riesgo", 0.0))
+    nivel = str(dept_data.get("nivel_riesgo", "Sin calificar"))
+    hhi = float(dept_data.get("hhi", 0.0))
+    pct_directa = float(dept_data.get("pct_directa_monto", 0.0))
+    top_contratista = str(dept_data.get("top_contratista", "N/A"))
+    top_cuota = float(dept_data.get("top_cuota", 0.0))
+    dept_name = str(dept_data.get("departamento", "Territorio"))
+
+    factores = []
+    if hhi > 2500:
+        factores.append(f"🔴 Concentración crítica de mercado (HHI = {hhi:,.1f}), superando ampliamente el umbral oligopólico de 2,500 puntos.")
+    elif hhi >= 1500:
+        factores.append(f"🟡 Concentración moderada (HHI = {hhi:,.1f}), indicando presencia de actores preponderantes.")
+    else:
+        factores.append(f"🟢 Mercado territorial competitivo y diversificado (HHI = {hhi:,.1f} < 1,500).")
+
+    if pct_directa > 65.0:
+        factores.append(f"🔴 Abuso de contratación directa: {pct_directa:.1f}% de los recursos adjudicados sin proceso licitatorio abierto.")
+    elif pct_directa >= 35.0:
+        factores.append(f"🟡 Tasa media de contratación directa ({pct_directa:.1f}%), susceptible de migración a pliegos tipo.")
+    else:
+        factores.append(f"🟢 Baja tasa de contratación directa ({pct_directa:.1f}%), predominan mecanismos de concurrencia.")
+
+    if top_cuota >= 40.0:
+        factores.append(f"⚠️ Monopolización de recursos: El contratista '{top_contratista}' acapara el {top_cuota:.1f}% del presupuesto departamental.")
+
+    if nivel == "Alto Riesgo (Crítico)":
+        recomendacion = (
+            f"Se sugiere intervención preventiva de veedurías ciudadanas y órganos de control (Contraloría / Procuraduría) "
+            f"en {dept_name}. Es prioritario suspender adjudicaciones directas recurrentes y forzar la adopción de Pliegos Tipo "
+            f"para incentivar la entrada de nuevos oferentes y MIPYMES."
+        )
+    elif nivel == "Riesgo Moderado":
+        recomendacion = (
+            f"En {dept_name} se recomienda auditar los convenios especiales e impulsar subastas electrónicas inversas "
+            f"para disminuir la concentración en el contratista principal ({top_contratista})."
+        )
+    else:
+        recomendacion = (
+            f"{dept_name} mantiene estándares saludables de concurrencia y pluralidad de oferentes. "
+            f"Mantener la veeduría sobre los contratos de mayor cuantía."
+        )
+
+    return {
+        "departamento": dept_name,
+        "score": score,
+        "nivel": nivel,
+        "badge_icon": dept_data.get("badge_icon", "⚪"),
+        "badge_class": dept_data.get("badge_class", "badge-category"),
+        "factores": factores,
+        "recomendacion": recomendacion
+    }
+
+

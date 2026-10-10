@@ -17,6 +17,7 @@ from services.economic_service import (
     simulate_policy_procurement,
     format_cop_currency
 )
+from components.plot_theme import apply_ggplot2_theme, GGPLOT2_PALETTE
 
 
 @module.ui
@@ -285,8 +286,11 @@ def simulator_server(input, output, session, df_react):
             name="Escenario Actual",
             x=categories,
             y=vals_base,
-            marker_color="#dc2626",
-            opacity=0.85,
+            marker=dict(
+                color="#dc2626",
+                line=dict(color="#ffffff", width=1)
+            ),
+            opacity=0.88,
             text=[f"{v:.1f}" for v in vals_base],
             textposition="auto"
         ))
@@ -295,23 +299,29 @@ def simulator_server(input, output, session, df_react):
             name="Escenario Simulado",
             x=categories,
             y=vals_sim,
-            marker_color="#059669",
-            opacity=0.85,
+            marker=dict(
+                color="#059669",
+                line=dict(color="#ffffff", width=1)
+            ),
+            opacity=0.88,
             text=[f"{v:.1f}" for v in vals_sim],
             textposition="auto"
         ))
 
-        fig.update_layout(
-            barmode="group",
+        fig.update_layout(barmode="group")
+        apply_ggplot2_theme(
+            fig,
             title=f"Impacto Regulatorio: {res['territorio']}",
+            subtitle="Comparativa de indicadores clave entre statu quo y política reformada",
             yaxis_title="Escala Normalizada (0 - 100)",
             height=360,
-            margin=dict(t=50, b=40, l=40, r=20),
-            plot_bgcolor="white",
-            paper_bgcolor="white",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            margin=dict(t=50, b=40, l=45, r=20),
+            show_legend=True,
+            legend_orientation="h",
+            x_grid=False,
+            y_grid=True
         )
-        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9", range=[0, max(110, max(vals_base) * 1.15)])
+        fig.update_yaxes(range=[0, max(110, max(vals_base) * 1.15)])
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
@@ -338,22 +348,29 @@ def simulator_server(input, output, session, df_react):
             "Otros Procesos Competitivos"
         ]
         values = [ahorro, competencia, directa_remanente, resto]
-        colors = ["#059669", "#3b82f6", "#dc2626", "#64748b"]
+        colors = ["#059669", "#1d3190", "#dc2626", "#64748b"]
 
         fig = go.Figure(data=[go.Pie(
             labels=labels,
             values=values,
-            hole=0.5,
-            marker=dict(colors=colors),
+            hole=0.48,
+            marker=dict(
+                colors=colors,
+                line=dict(color="#ffffff", width=2)
+            ),
             hovertemplate="<b>%{label}</b><br>Monto: %{value:$,.0f} COP<br>Proporción: %{percent}<extra></extra>"
         )])
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title="Estructura Presupuestal Contrafactual",
+            subtitle="Descomposición presupuestal proyectada tras aplicar la reforma",
             height=360,
             margin=dict(t=50, b=30, l=20, r=20),
-            paper_bgcolor="white",
-            legend=dict(orientation="v", yanchor="middle", y=0.5)
+            show_legend=True,
+            legend_orientation="v"
         )
+        fig.update_xaxes(showline=False, ticks="", showgrid=False)
+        fig.update_yaxes(showline=False, ticks="", showgrid=False)
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))

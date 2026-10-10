@@ -19,6 +19,7 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
+from components.plot_theme import apply_ggplot2_theme, GGPLOT_SEMAPHORE
 
 
 @module.ui
@@ -283,7 +284,10 @@ def risk_radar_server(input, output, session, df_react):
         fig.add_trace(go.Bar(
             x=top_matrix["departamento"],
             y=top_matrix["hhi"],
-            marker=dict(color=bar_colors),
+            marker=dict(
+                color=bar_colors,
+                line=dict(color="#ffffff", width=1)
+            ),
             customdata=np.stack((
                 top_matrix["nivel_riesgo"],
                 top_matrix["score_riesgo"],
@@ -306,17 +310,18 @@ def risk_radar_server(input, output, session, df_react):
         fig.add_hline(y=2500, line_dash="dash", line_color="#dc2626", annotation_text="Límite Crítico (2500)", annotation_position="top right")
         fig.add_hline(y=1500, line_dash="dot", line_color="#d97706", annotation_text="Límite Moderado (1500)", annotation_position="top right")
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title="Ranking Departamental por Concentración (HHI) y Semáforo",
+            subtitle="Índice Herfindahl-Hirschman (0 - 10,000) por jurisdicción territorial",
             xaxis_title="Departamento",
-            yaxis_title="Índice HHI (0 - 10,000)",
+            yaxis_title="Índice HHI",
             height=430,
-            margin=dict(t=50, b=80, l=40, r=30),
-            plot_bgcolor="white",
-            paper_bgcolor="white"
+            margin=dict(t=55, b=90, l=45, r=25),
+            x_grid=False,
+            y_grid=True
         )
-        fig.update_xaxes(tickangle=-40, showgrid=False)
-        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
+        fig.update_xaxes(tickangle=-40)
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
@@ -377,17 +382,19 @@ def risk_radar_server(input, output, session, df_react):
         fig.add_vline(x=65, line_dash="dash", line_color="#dc2626", annotation_text="Directa > 65%", annotation_position="top right")
         fig.add_hline(y=2500, line_dash="dash", line_color="#dc2626", annotation_text="HHI > 2500", annotation_position="top left")
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title="Cuadrante de Riesgo: Directa vs Concentración",
+            subtitle="Dispersión territorial · Tamaño de burbuja proporcional al presupuesto auditado",
             xaxis_title="% Contratación Directa (Monto)",
             yaxis_title="HHI de Concentración",
             height=430,
-            margin=dict(t=50, b=40, l=40, r=30),
-            plot_bgcolor="#fcfdfd",
-            paper_bgcolor="white"
+            margin=dict(t=55, b=45, l=45, r=25),
+            x_grid=True,
+            y_grid=True
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9", range=[0, 105])
-        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9", range=[0, max(3000, plot_df['hhi'].max() * 1.1)])
+        fig.update_xaxes(range=[0, 105])
+        fig.update_yaxes(range=[0, max(3000, plot_df['hhi'].max() * 1.1)])
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 

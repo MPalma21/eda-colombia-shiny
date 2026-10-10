@@ -17,6 +17,7 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
+from components.plot_theme import apply_ggplot2_theme, GGPLOT_SEMAPHORE
 
 
 @module.ui
@@ -182,7 +183,10 @@ def risk_contractors_server(input, output, session, df_react):
             x=top15["monto_total"],
             y=[str(p)[:30] for p in top15["proveedor"]],
             orientation="h",
-            marker=dict(color="#1d3190"),
+            marker=dict(
+                color="#1d3190",
+                line=dict(color="#ffffff", width=1)
+            ),
             customdata=np.stack((
                 top15["cuota_pct"],
                 top15["n_contratos"],
@@ -199,16 +203,16 @@ def risk_contractors_server(input, output, session, df_react):
             )
         ))
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title="Top 15 Contratistas por Presupuesto Acumulado",
+            subtitle="Ranking nacional consolidado en el ámbito de datos cargado",
             xaxis_title="Presupuesto Adjudicado (COP)",
             height=400,
-            margin=dict(t=50, b=40, l=170, r=20),
-            plot_bgcolor="white",
-            paper_bgcolor="white"
+            margin=dict(t=50, b=45, l=170, r=20),
+            x_grid=True,
+            y_grid=False
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9")
-        fig.update_yaxes(showgrid=False)
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
@@ -224,11 +228,7 @@ def risk_contractors_server(input, output, session, df_react):
 
         plot_df = c_df.head(30).copy()
 
-        color_map = {
-            "Predominio Directo (Sin Concurso)": "#dc2626",
-            "Mixto / Moderado": "#d97706",
-            "Concurso Competitivo": "#059669"
-        }
+        color_map = GGPLOT_SEMAPHORE
         marker_colors = [color_map.get(a, "#1d3190") for a in plot_df["alerta"]]
 
         sizes = 10 + (plot_df["n_departamentos"] / max(1, plot_df["n_departamentos"].max())) * 25
@@ -265,17 +265,18 @@ def risk_contractors_server(input, output, session, df_react):
 
         fig.add_vline(x=65, line_dash="dash", line_color="#dc2626", annotation_text="Directa > 65%", annotation_position="top right")
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title="Presupuesto Adjudicado vs Tasa de Asignación a Dedo",
+            subtitle="Dispersión de contratistas líderes · Tamaño proporcional a cobertura departamental",
             xaxis_title="% de Presupuesto Obtenido por Contratación Directa",
             yaxis_title="Presupuesto Total (COP)",
             height=400,
-            margin=dict(t=50, b=40, l=40, r=20),
-            plot_bgcolor="#fcfdfd",
-            paper_bgcolor="white"
+            margin=dict(t=50, b=45, l=45, r=20),
+            x_grid=True,
+            y_grid=True
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9", range=[0, 105])
-        fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
+        fig.update_xaxes(range=[0, 105])
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 

@@ -46,11 +46,23 @@
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
     },
+    "components/__pycache__/__init__.cpython-311.pyc": {
+      "checksum": "bd59fb59373f27c63a5b5e338de8bc66"
+    },
+    "components/__pycache__/banner.cpython-311.pyc": {
+      "checksum": "32e5c604e8db04bb55c8e88c09447d81"
+    },
+    "components/__pycache__/plot_theme.cpython-311.pyc": {
+      "checksum": "7d7b1a04033500ba5b62d83166a05556"
+    },
     "components/banner.py": {
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "components/guide_modal.py": {
       "checksum": "3abcee07410f2d9feeee82ca3a4276f2"
+    },
+    "components/plot_theme.py": {
+      "checksum": "36a97cec4e50945824f8fc2af52877e7"
     },
     "config.py": {
       "checksum": "5ba91ed0013ffa22ee4bbefbd77eedde"
@@ -65,37 +77,37 @@
       "checksum": "6d054750cddd6e5b0b8823c0fc60d5c7"
     },
     "modules/__pycache__/mod_risk_contractors.cpython-311.pyc": {
-      "checksum": "3e0171ff35d300b4995e5c245fbdcfd4"
+      "checksum": "3ee392e63aff97594064326f29c7950e"
     },
     "modules/__pycache__/mod_risk_drilldown.cpython-311.pyc": {
-      "checksum": "795e69a2ba0dde86852feec01c73f3e6"
+      "checksum": "c8e9a129faa97748278268408db73701"
     },
     "modules/__pycache__/mod_risk_evidence.cpython-311.pyc": {
       "checksum": "0a7c8f518b33f3f6122f42c68d34b820"
     },
     "modules/__pycache__/mod_risk_radar.cpython-311.pyc": {
-      "checksum": "8fab33eb936840e53a814292cda5560a"
+      "checksum": "514f9dfe5c7e7bfb5852271f306cee19"
     },
     "modules/__pycache__/mod_simulator.cpython-311.pyc": {
-      "checksum": "a1d34e682ea0fd8f9bc93fe79b5a04af"
+      "checksum": "8a4be5c7589a5a318bb041319dbad5be"
     },
     "modules/mod_loader.py": {
       "checksum": "65fd9247668b88f98c5236f81ef5d438"
     },
     "modules/mod_risk_contractors.py": {
-      "checksum": "3c96ed7669d1255e29a60cb372b2f483"
+      "checksum": "a8aa5d0c201115cc03e5291a22220f22"
     },
     "modules/mod_risk_drilldown.py": {
-      "checksum": "f9a5c96c6d1ee2bc0ff57ae1a9bf20bd"
+      "checksum": "be558b33d2ed90986e1c611d90e71747"
     },
     "modules/mod_risk_evidence.py": {
       "checksum": "6925441384a07c10d52257d359fcee40"
     },
     "modules/mod_risk_radar.py": {
-      "checksum": "cffd427037be8af033436ada978651bc"
+      "checksum": "56b437fca3cf0dc66084ac255bb9309c"
     },
     "modules/mod_simulator.py": {
-      "checksum": "24d6f98b082dd32c45dfe79016cc34c8"
+      "checksum": "e2027aabe5e8d64ad81f387d721fb60d"
     },
     "pyproject.toml": {
       "checksum": "0ece014e66715424b68bf5345cdaab7d"

@@ -19,6 +19,7 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
+from components.plot_theme import apply_ggplot2_theme, GGPLOT2_PALETTE
 
 
 @module.ui
@@ -252,20 +253,23 @@ def risk_drilldown_server(input, output, session, df_react):
             x=top7.values,
             y=[str(n)[:32] for n in top7.index],
             orientation="h",
-            marker=dict(color="#1d3190"),
+            marker=dict(
+                color="#1d3190",
+                line=dict(color="#ffffff", width=1)
+            ),
             hovertemplate="<b>%{y}</b><br>Cuota: %{x:.2f}%<extra></extra>"
         ))
 
-        fig.update_layout(
-            title=f"Principales Contratistas en {chosen} (% Cuota de Mercado)",
+        apply_ggplot2_theme(
+            fig,
+            title=f"Principales Contratistas en {chosen}",
+            subtitle="Cuota de mercado sobre el presupuesto total adjudicado (%)",
             xaxis_title="Cuota de Presupuesto (%)",
             height=340,
-            margin=dict(t=40, b=40, l=160, r=20),
-            plot_bgcolor="white",
-            paper_bgcolor="white"
+            margin=dict(t=50, b=40, l=160, r=20),
+            x_grid=True,
+            y_grid=False
         )
-        fig.update_xaxes(showgrid=True, gridcolor="#edf2e9")
-        fig.update_yaxes(showgrid=False)
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
@@ -294,22 +298,28 @@ def risk_drilldown_server(input, output, session, df_react):
         if mod_shares.empty:
             return ui.p("Sin modalidades registradas.", class_="text-muted")
 
-        brand_palette = ["#1d3190", "#dc2626", "#d97706", "#0284c7", "#3b82f6"]
-
         fig = go.Figure(data=[go.Pie(
             labels=[str(lbl)[:28] for lbl in mod_shares.index],
             values=mod_shares.values,
-            hole=0.45,
-            marker=dict(colors=brand_palette)
+            hole=0.48,
+            marker=dict(
+                colors=GGPLOT2_PALETTE[:len(mod_shares)],
+                line=dict(color="#ffffff", width=2)
+            ),
+            hovertemplate="<b>%{label}</b><br>Participación: %{percent}<extra></extra>"
         )])
 
-        fig.update_layout(
+        apply_ggplot2_theme(
+            fig,
             title=f"Vías de Adjudicación en {chosen}",
+            subtitle="Distribución por tipo de proceso y selección",
             height=340,
-            margin=dict(t=40, b=20, l=20, r=20),
-            showlegend=True,
-            paper_bgcolor="white"
+            margin=dict(t=50, b=25, l=20, r=20),
+            show_legend=True,
+            legend_orientation="v"
         )
+        fig.update_xaxes(showline=False, ticks="", showgrid=False)
+        fig.update_yaxes(showline=False, ticks="", showgrid=False)
 
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 

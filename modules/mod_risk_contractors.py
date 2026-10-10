@@ -20,6 +20,10 @@ from services.economic_service import (
 from components.plot_theme import (
     apply_ggplot2_theme,
     to_ggplot2_html,
+    BLUE_NAVY,
+    BLUE_SKY,
+    BLUE_COBALT,
+    GGPLOT2_FONT_FAMILY,
     GGPLOT_SEMAPHORE,
     THEME_PRIMARY,
     THEME_CRITICAL
@@ -43,18 +47,18 @@ def risk_contractors_ui():
             class_="mb-3"
         ),
 
-        # Tarjeta 2: Gráficos de Poder de Mercado y Dispersión
+        # Tarjeta 2: Gráficos de Poder de Mercado y Auditoría de Adjudicación
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Estructura de Mercado · Grandes Acaparadores vs Vía de Adjudicación", class_="fw-bold"),
-                    ui.span("Dispersión: Presupuesto Total vs Porcentaje Obtenido por Contratación Directa", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Estructura de Mercado · Grandes Acaparadores y Vía de Adjudicación", class_="fw-bold"),
+                    ui.div("Auditoría de concentración presupuestal y modalidad de contratación pública", class_="text-muted", style="font-size: 0.78rem;"),
+                    class_="d-flex flex-column gap-1"
+                )
             ),
             ui.layout_columns(
                 ui.output_ui("contractors_bar_container"),
-                ui.output_ui("contractors_scatter_container"),
+                ui.output_ui("contractors_breakdown_container"),
                 col_widths={"sm": 12, "lg": (6, 6)},
                 class_="g-3"
             ),
@@ -190,7 +194,7 @@ def risk_contractors_server(input, output, session, df_react):
             y=[str(p)[:30] for p in top15["proveedor"]],
             orientation="h",
             marker=dict(
-                color="#1d3190",
+                color=BLUE_COBALT,
                 line=dict(color="#ffffff", width=1)
             ),
             customdata=np.stack((
@@ -215,7 +219,7 @@ def risk_contractors_server(input, output, session, df_react):
             subtitle="Ranking nacional consolidado en el ámbito de datos cargado",
             xaxis_title="Presupuesto Adjudicado (COP)",
             height=410,
-            margin=dict(t=65, b=50, l=175, r=25),
+            margin=dict(t=65, b=85, l=175, r=25),
             x_grid=True,
             y_grid=False
         )
@@ -223,66 +227,111 @@ def risk_contractors_server(input, output, session, df_react):
         return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
-    # 3. GRÁFICO DE DISPERSIÓN: MONTO VS % DIRECTA
+    # 3. GRÁFICO DE COMPOSICIÓN: DIRECTA VS COMPETITIVA (TOP 15)
     # -------------------------------------------------------------
     @output
     @render.ui
-    def contractors_scatter_container():
+    def contractors_breakdown_container():
         c_df = contractors_df()
         if c_df.empty:
             return ui.span()
 
-        plot_df = c_df.head(30).copy()
+        top15 = c_df.head(15).iloc[::-1].copy()
+        pct_direct = top15["pct_directa"].to_numpy()
+        pct_comp = np.maximum(0.0, 100.0 - pct_direct)
 
-        color_map = GGPLOT_SEMAPHORE
-        marker_colors = [color_map.get(a, THEME_PRIMARY) for a in plot_df["alerta"]]
+        monto_total = top15["monto_total"].to_numpy()
+        monto_dir = monto_total * (pct_direct / 100.0)
+        monto_com = monto_total * (pct_comp / 100.0)
 
-        sizes = 10 + (plot_df["n_departamentos"] / max(1, plot_df["n_departamentos"].max())) * 25
+        # Etiquetas internas legibles solo cuando el segmento es >= 12% para evitar solapamientos
+        text_dir = [f"{p:.0f}%" if p >= 12 else "" for p in pct_direct]
+        text_com = [f"{p:.0f}%" if p >= 12 else "" for p in pct_comp]
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=plot_df["pct_directa"],
-            y=plot_df["monto_total"],
-            mode="markers+text",
-            text=[str(p)[:18] for p in plot_df["proveedor"]],
-            textposition="top center",
-            textfont=dict(size=8.5, color="#273766"),
+
+        # Segmento 1: Contratacion Directa (Azul Marino profundo - alerta / sin concurso)
+        fig.add_trace(go.Bar(
+            y=[str(p)[:30] for p in top15["proveedor"]],
+            x=pct_direct,
+            name="Contratación Directa (Sin Concurso)",
+            orientation="h",
             marker=dict(
-                size=sizes,
-                color=marker_colors,
-                opacity=0.85,
-                line=dict(color="#ffffff", width=1.5)
+                color=BLUE_NAVY,
+                line=dict(color="#ffffff", width=1)
             ),
+            text=text_dir,
+            textposition="inside",
+            insidetextanchor="middle",
+            textfont=dict(color="#ffffff", size=10, family=GGPLOT2_FONT_FAMILY),
             customdata=np.stack((
-                plot_df["alerta"],
-                plot_df["n_contratos"],
-                plot_df["n_departamentos"],
-                plot_df["monto_total"].apply(format_cop_currency)
+                [format_cop_currency(v) for v in monto_dir],
+                [format_cop_currency(v) for v in monto_total],
+                top15["n_contratos"]
             ), axis=-1),
             hovertemplate=(
-                "<b>%{text}</b><br>"
-                "Alerta: %{customdata[0]}<br>"
-                "Contratación Directa: %{x:.1f}%<br>"
-                "Presupuesto: %{customdata[3]}<br>"
-                "Contratos: %{customdata[1]:,}<br>"
-                "Departamentos de Presencia: %{customdata[2]}<extra></extra>"
+                "<b>%{y}</b><br>"
+                "Modalidad: <b>Contratación Directa</b><br>"
+                "Proporción: <b>%{x:.1f}%</b><br>"
+                "Monto Directo: %{customdata[0]}<br>"
+                "Monto Total: %{customdata[1]}<br>"
+                "Total Contratos: %{customdata[2]:,}<extra></extra>"
             )
         ))
 
-        fig.add_vline(x=65, line_dash="dash", line_color=THEME_CRITICAL, annotation_text="Directa > 65%", annotation_position="top right")
+        # Segmento 2: Concurso Competitivo / Licitacion (Azul Cielo luminoso)
+        fig.add_trace(go.Bar(
+            y=[str(p)[:30] for p in top15["proveedor"]],
+            x=pct_comp,
+            name="Concurso Público / Licitación",
+            orientation="h",
+            marker=dict(
+                color=BLUE_SKY,
+                line=dict(color="#ffffff", width=1)
+            ),
+            text=text_com,
+            textposition="inside",
+            insidetextanchor="middle",
+            textfont=dict(color="#080c42", size=10, family=GGPLOT2_FONT_FAMILY),
+            customdata=np.stack((
+                [format_cop_currency(v) for v in monto_com],
+                [format_cop_currency(v) for v in monto_total],
+                top15["n_contratos"]
+            ), axis=-1),
+            hovertemplate=(
+                "<b>%{y}</b><br>"
+                "Modalidad: <b>Concurso Público / Abierto</b><br>"
+                "Proporción: <b>%{x:.1f}%</b><br>"
+                "Monto Competitivo: %{customdata[0]}<br>"
+                "Monto Total: %{customdata[1]}<br>"
+                "Total Contratos: %{customdata[2]:,}<extra></extra>"
+            )
+        ))
+
+        fig.update_layout(barmode="stack")
+
+        fig.add_vline(
+            x=65,
+            line_dash="dash",
+            line_color=BLUE_COBALT,
+            annotation_text="Alerta Crítica (>65%)",
+            annotation_position="bottom right",
+            annotation_font=dict(size=10, color=BLUE_COBALT, family=GGPLOT2_FONT_FAMILY)
+        )
 
         apply_ggplot2_theme(
             fig,
-            title="Presupuesto Adjudicado vs Tasa de Asignación a Dedo",
-            subtitle="Dispersión de contratistas líderes · Tamaño proporcional a cobertura departamental",
-            xaxis_title="% de Presupuesto Obtenido por Contratación Directa",
-            yaxis_title="Presupuesto Total (COP)",
+            title="Desglose de Adjudicación: Directa vs Competitiva",
+            subtitle="Proporción asignada a dedo vs concurso abierto por contratista líder",
+            xaxis_title="% del Presupuesto del Contratista",
             height=410,
-            margin=dict(t=65, b=50, l=50, r=25),
+            margin=dict(t=65, b=85, l=175, r=25),
+            show_legend=True,
+            legend_orientation="h",
             x_grid=True,
-            y_grid=True
+            y_grid=False
         )
-        fig.update_xaxes(range=[0, 105])
+        fig.update_xaxes(range=[0, 100], ticksuffix="%")
 
         return ui.HTML(to_ggplot2_html(fig))
 

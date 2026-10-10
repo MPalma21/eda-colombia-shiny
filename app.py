@@ -68,7 +68,7 @@ app_ui = ui.page_navbar(
     sidebar=ui.sidebar(
         loader_ui("loader_mod"),
         width=310,
-        bg="#eef3ed",
+        bg="#f0f4fa",
         open="desktop"
     ),
     

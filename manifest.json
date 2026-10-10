@@ -29,7 +29,7 @@
       "checksum": "696ab4715e023fce181f21d694f87ee0"
     },
     "app.py": {
-      "checksum": "99e82ac143c3e776d1027a60610fda85"
+      "checksum": "0616e63d1123305f76f0455ff0a026b8"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -47,10 +47,10 @@
       "checksum": "03f99c29d45286251666a69f907812e4"
     },
     "modules/mod_correlations.py": {
-      "checksum": "2624a4bd85c3c64372517ea32e4bafbb"
+      "checksum": "a91fd345972602a73d70982bf2c1512d"
     },
     "modules/mod_distributions.py": {
-      "checksum": "4e886e4ab3e507e21a2eb43fd48085af"
+      "checksum": "acbd0b9dd1eb880cf2dbadab610cd87a"
     },
     "modules/mod_econometrics.py": {
       "checksum": "5be8bc2d9300d28e84a435895cbbfb82"
@@ -107,10 +107,10 @@
       "checksum": "e567b83a831ab4b269f502513d443abb"
     },
     "www/logo.svg": {
-      "checksum": "1a129661d141465136837d3c807ea1a4"
+      "checksum": "605903a8b61444d489c0f650eae56790"
     },
     "www/styles.css": {
-      "checksum": "6b1615f84df8416fd702e9d7a8c763d9"
+      "checksum": "8d51b6545cc1eed5517bee1d68616436"
     }
   }
 }

@@ -1,47 +1,50 @@
 /* ==========================================================================
    Diseno de UI para Shiny - Design System Oficial
-   Analisis Exploratorio en Datos Abiertos (datos.gov.co)
+   Analisis Exploratorio & Economico en Datos Abiertos (datos.gov.co)
    Desarrollado por Miguelangel Palma
+   Paleta inspirada en la marca personal: Royal Cobalt Blue & Midnight Navy
    ========================================================================== */
 
 :root {
-    --bs-primary: #176b5b;
-    --bs-primary-rgb: 23, 107, 91;
-    --bs-link-color: #176b5b;
-    --bs-link-hover-color: #105547;
-    /* Paleta Principal Corporativa */
-    --brand-primary: #176b5b;
-    --brand-primary-hover: #105547;
-    --brand-accent: #d3a454;
-    --brand-teal: #238a73;
-    --brand-indigo: #6a7f57;
+    --bs-primary: #1d3190;
+    --bs-primary-rgb: 29, 49, 144;
+    --bs-link-color: #1d3190;
+    --bs-link-hover-color: #15246e;
+    
+    /* Paleta Principal Corporativa (Banner Miguelangel Palma) */
+    --brand-primary: #1d3190;
+    --brand-primary-hover: #15246e;
+    --brand-accent: #60a5fa;
+    --brand-sky: #93c5fd;
+    --brand-navy: #080c42;
+    --brand-indigo: #3b5cb8;
     
     /* Superficies y Neutros */
-    --surface-bg: #f5f7f2;
-    --surface-card: #fffefa;
-    --surface-navbar: #183a33;
-    --surface-sidebar: #eef3ed;
+    --surface-bg: #f4f7fc;
+    --surface-card: #ffffff;
+    --surface-navbar: #0a0f44;
+    --surface-sidebar: #f0f4fa;
     
     /* Bordes y Divisiones */
-    --border-subtle: #dce6dc;
-    --border-muted: #bbcec0;
-    --border-focus: #2c997d;
+    --border-subtle: #e2e8f5;
+    --border-muted: #cad7eb;
+    --border-focus: #3b82f6;
     
     /* Tipografia y Jerarquia */
-    --text-primary: #1c342d;
-    --text-secondary: #435c50;
-    --text-muted: #687b70;
-    --text-subtle: #a6beb0;
+    --text-primary: #0a1138;
+    --text-secondary: #273766;
+    --text-muted: #576b94;
+    --text-subtle: #8fa3c7;
     
     /* Semantica de Estado */
-    --semantic-success: #147a61;
-    --semantic-success-bg: #e9f6ee;
-    --semantic-warning: #a56f22;
-    --semantic-warning-bg: #fff5e5;
-    --semantic-danger: #b94f46;
-    --semantic-danger-bg: #fff0eb;
-    --semantic-info: #397f70;
-    --semantic-info-bg: #edf6f0;
+    --semantic-success: #059669;
+    --semantic-success-bg: #ecfdf5;
+    --semantic-warning: #d97706;
+    --semantic-warning-bg: #fffbeb;
+    --semantic-danger: #dc2626;
+    --semantic-danger-bg: #fef2f2;
+    --semantic-info: #2563eb;
+    --semantic-info-bg: #eff6ff;
     
     /* Fuentes y Radios */
     --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -49,8 +52,8 @@
     --radius-card: 8px;
     --radius-sm: 6px;
     --radius-full: 9999px;
-    --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-    --shadow-elevated: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --shadow-card: 0 1px 3px 0 rgba(10, 17, 56, 0.04), 0 1px 2px -1px rgba(10, 17, 56, 0.04);
+    --shadow-elevated: 0 4px 6px -1px rgba(10, 17, 56, 0.07), 0 2px 4px -2px rgba(10, 17, 56, 0.07);
 }
 
 .btn-outline-primary {
@@ -77,10 +80,10 @@ body {
    1. NAVBAR & NAVEGACION SUPERIOR
    ========================================================================== */
 .navbar {
-    background-color: var(--surface-navbar) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(110deg, #1d3190 0%, #111a68 50%, #060840 100%) !important;
+    border-bottom: 1px solid rgba(147, 197, 253, 0.18);
     padding: 14px 24px !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 6px rgba(6, 8, 64, 0.22);
 }
 
 .navbar > .container-fluid {
@@ -128,7 +131,7 @@ body {
 }
 
 .navbar-app-subtitle {
-    color: #d4e6d9;
+    color: #b9ceef;
     font-size: 0.82rem;
     font-weight: 400;
     letter-spacing: 0.02em;
@@ -141,14 +144,15 @@ body {
     align-items: center;
     gap: 2px 10px;
     margin-top: 7px;
-    color: #b9d1c1;
+    color: #cbdcf8;
     font-size: 0.69rem;
     line-height: 1.25;
 }
 
 .navbar-credits a {
-    color: #e5c991;
+    color: #93c5fd;
     text-decoration: none;
+    transition: color 0.15s ease;
 }
 
 .navbar-credits a:hover,
@@ -159,7 +163,7 @@ body {
 
 /* Pestanas de navegacion en Navbar */
 .navbar .nav-link {
-    color: var(--text-subtle) !important;
+    color: #cbdcf8 !important;
     font-size: 0.88rem;
     font-weight: 500;
     padding: 8px 14px !important;
@@ -171,12 +175,12 @@ body {
 
 .navbar .nav-link:hover {
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.06) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .navbar .nav-link.active {
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.09) !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
     border-bottom: 2px solid var(--brand-accent) !important;
     border-radius: 6px 6px 0 0;
     font-weight: 600;
@@ -193,8 +197,8 @@ body {
     min-width: 0;
     margin-top: 9px;
     padding-top: 8px;
-    border-top: 1px solid rgba(218, 237, 220, 0.2);
-    color: #d4e6d9;
+    border-top: 1px solid rgba(185, 206, 239, 0.2);
+    color: #b9ceef;
     font-size: 0.83rem;
     line-height: 1.35;
     max-width: 760px;
@@ -202,7 +206,7 @@ body {
 
 .navbar-context-status {
     flex-shrink: 0;
-    color: #f1cf8b;
+    color: #93c5fd;
     font-weight: 700;
 }
 
@@ -214,7 +218,7 @@ body {
 
 .navbar-context-scope {
     flex-basis: 100%;
-    color: #b9d1c1;
+    color: #cbdcf8;
     font-size: 0.75rem;
     overflow-wrap: anywhere;
 }
@@ -268,18 +272,18 @@ body {
 }
 
 .kpi-badge-blue {
-    background-color: #e8f4ed;
-    color: #176b5b;
+    background-color: #eff6ff;
+    color: #1d3190;
 }
 
 .kpi-badge-slate {
-    background-color: #f0f3ea;
-    color: #61765c;
+    background-color: #f1f5f9;
+    color: #3b5cb8;
 }
 
 .kpi-badge-teal {
-    background-color: #e7f2ea;
-    color: #238a73;
+    background-color: #e0f2fe;
+    color: #0284c7;
 }
 
 .kpi-badge-semantic {
@@ -388,9 +392,9 @@ shiny-data-frame {
 }
 
 .badge-entity {
-    background-color: #e9f4ec;
-    color: #176b5b;
-    border: 1px solid #c3dccb;
+    background-color: #eff6ff;
+    color: #1d3190;
+    border: 1px solid #bfdbfe;
     font-size: 0.78rem;
     font-weight: 600;
     padding: 3px 8px;
@@ -398,8 +402,8 @@ shiny-data-frame {
 }
 
 .badge-category {
-    background-color: #f1f3e9;
-    color: #52674e;
+    background-color: #f1f5f9;
+    color: #273766;
     border: 1px solid var(--border-muted);
     font-size: 0.76rem;
     font-weight: 500;
@@ -411,7 +415,7 @@ shiny-data-frame {
     font-size: 0.83rem;
     color: var(--text-secondary);
     line-height: 1.5;
-    background-color: #f6f8f1;
+    background-color: #f8fafc;
     padding: 10px 14px;
     border-radius: 6px;
     border: 1px solid var(--border-subtle);
@@ -457,7 +461,7 @@ shiny-data-frame {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-secondary);
+    color: var(--brand-primary);
     display: block;
     margin-bottom: 4px;
 }
@@ -483,7 +487,7 @@ shiny-data-frame {
 .sidebar-controls-group input.form-control:focus,
 .sidebar-controls-group select.form-select:focus {
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.16);
+    box-shadow: 0 0 0 3px rgba(29, 49, 144, 0.16);
     outline: none;
 }
 
@@ -494,7 +498,7 @@ shiny-data-frame {
     font-weight: 600;
     font-size: 0.88rem;
     border-radius: var(--radius-sm);
-    box-shadow: 0 1px 2px rgba(23, 107, 91, 0.2);
+    box-shadow: 0 1px 2px rgba(29, 49, 144, 0.2);
     transition: all 0.15s ease-in-out;
 }
 
@@ -502,7 +506,7 @@ shiny-data-frame {
     background-color: var(--brand-primary-hover);
     border-color: var(--brand-primary-hover);
     color: #ffffff;
-    box-shadow: 0 2px 4px rgba(23, 107, 91, 0.3);
+    box-shadow: 0 2px 4px rgba(29, 49, 144, 0.3);
 }
 
 .status-success { color: var(--semantic-success); font-weight: 600; }
@@ -512,7 +516,7 @@ shiny-data-frame {
 .alert-status-box {
     padding: 8px 10px;
     border-radius: 6px;
-    background-color: #edf3eb;
+    background-color: #f0f4fa;
     border: 1px solid var(--border-subtle);
 }
 

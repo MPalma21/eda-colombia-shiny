@@ -19,14 +19,17 @@
     }
   },
   "files": {
+    "requirements.txt": {
+      "checksum": "c1eacc296b487f54ceb61f7f3afe0d6d"
+    },
     ".gitignore": {
       "checksum": "f590d545d242672c2a9fa4b9a5f2b358"
     },
     "README.md": {
-      "checksum": "a3ebbc3941f638dc17c9181746b943d6"
+      "checksum": "696ab4715e023fce181f21d694f87ee0"
     },
     "app.py": {
-      "checksum": "f0c4ad5d7bfadbf0b9c219b76f828844"
+      "checksum": "99e82ac143c3e776d1027a60610fda85"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -35,19 +38,25 @@
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "config.py": {
-      "checksum": "8e589806ace14682b0c487a9235a28c8"
+      "checksum": "3d345c26f2c682262dadf18d1d16ed80"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
     },
     "modules/mod_comparisons.py": {
-      "checksum": "5542b9f4a0c318d27248dd0690f7d2b1"
+      "checksum": "03f99c29d45286251666a69f907812e4"
     },
     "modules/mod_correlations.py": {
       "checksum": "2624a4bd85c3c64372517ea32e4bafbb"
     },
     "modules/mod_distributions.py": {
       "checksum": "4e886e4ab3e507e21a2eb43fd48085af"
+    },
+    "modules/mod_econometrics.py": {
+      "checksum": "2c036d94e1f9d09b2b8490fb1b7af7b0"
+    },
+    "modules/mod_inequality.py": {
+      "checksum": "0672e4b992999ea5cc7a7d05b73c885c"
     },
     "modules/mod_loader.py": {
       "checksum": "3ed66553be5182c606e166d30d4a9771"
@@ -62,19 +71,19 @@
       "checksum": "2f5dd1d91f859a3af452e72494e932f7"
     },
     "modules/mod_timeseries.py": {
-      "checksum": "9ab2ddc6b89cb7ab3f15cdecc2ba4d78"
+      "checksum": "45f3c6d050741734f05af2e998a007c8"
     },
     "pyproject.toml": {
       "checksum": "0ece014e66715424b68bf5345cdaab7d"
-    },
-    "requirements.txt": {
-      "checksum": "c1eacc296b487f54ceb61f7f3afe0d6d"
     },
     "services/__init__.py": {
       "checksum": "ff5eeeedd9fc663333d3b44837d71af0"
     },
     "services/api_service.py": {
-      "checksum": "9da282e017ff3bad0b9233969ce8b590"
+      "checksum": "81f0687f1e7cd55efcc0b022f0d0af11"
+    },
+    "services/economic_service.py": {
+      "checksum": "9ebbc259cbaf80a80aa3bbde81e7a9d6"
     },
     "services/scope_service.py": {
       "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
@@ -89,7 +98,10 @@
       "checksum": "405cba9fda0d1ab3e2973eb4f936c79d"
     },
     "tests/test_data_flow.py": {
-      "checksum": "360e51ec9a86f5a5dce9648b596afbbb"
+      "checksum": "5473953b73bb595ae4fcbf7ca1734e75"
+    },
+    "tests/test_economic_service.py": {
+      "checksum": "c8745307a4bd5c0b9cfd265763584a00"
     },
     "tests/test_services.py": {
       "checksum": "e567b83a831ab4b269f502513d443abb"

@@ -46,15 +46,6 @@
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
     },
-    "components/__pycache__/__init__.cpython-311.pyc": {
-      "checksum": "bd59fb59373f27c63a5b5e338de8bc66"
-    },
-    "components/__pycache__/banner.cpython-311.pyc": {
-      "checksum": "32e5c604e8db04bb55c8e88c09447d81"
-    },
-    "components/__pycache__/plot_theme.cpython-311.pyc": {
-      "checksum": "50d2408ef6ea50c78727d1b3cdef8a26"
-    },
     "components/banner.py": {
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
@@ -62,34 +53,13 @@
       "checksum": "3abcee07410f2d9feeee82ca3a4276f2"
     },
     "components/plot_theme.py": {
-      "checksum": "b578fea524c236704f2160fc6dbe0bb7"
+      "checksum": "b603769f65c63cb06d951934e48225e9"
     },
     "config.py": {
       "checksum": "5ba91ed0013ffa22ee4bbefbd77eedde"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
-    },
-    "modules/__pycache__/__init__.cpython-311.pyc": {
-      "checksum": "9ded907dd7375391f40839106ac7f472"
-    },
-    "modules/__pycache__/mod_loader.cpython-311.pyc": {
-      "checksum": "6d054750cddd6e5b0b8823c0fc60d5c7"
-    },
-    "modules/__pycache__/mod_risk_contractors.cpython-311.pyc": {
-      "checksum": "d330f22cbdd00302275e66679f305334"
-    },
-    "modules/__pycache__/mod_risk_drilldown.cpython-311.pyc": {
-      "checksum": "3b24e829cbadf46de98a59f683ae7db7"
-    },
-    "modules/__pycache__/mod_risk_evidence.cpython-311.pyc": {
-      "checksum": "0a7c8f518b33f3f6122f42c68d34b820"
-    },
-    "modules/__pycache__/mod_risk_radar.cpython-311.pyc": {
-      "checksum": "92794131930b89e1957d00aa307889c5"
-    },
-    "modules/__pycache__/mod_simulator.cpython-311.pyc": {
-      "checksum": "fcbb2de04f2465ab63bffd2f6b0046fc"
     },
     "modules/mod_loader.py": {
       "checksum": "65fd9247668b88f98c5236f81ef5d438"
@@ -104,34 +74,16 @@
       "checksum": "6925441384a07c10d52257d359fcee40"
     },
     "modules/mod_risk_radar.py": {
-      "checksum": "249d294f8eec8fd6d4012b20319a2e7b"
+      "checksum": "1226f66b34ac2ac3b1ff5cfbe11c7416"
     },
     "modules/mod_simulator.py": {
-      "checksum": "f8195458ddf9aa9a94cfb0c36af02357"
+      "checksum": "b7e1701fca06431d83095e66cadd3abc"
     },
     "pyproject.toml": {
       "checksum": "0ece014e66715424b68bf5345cdaab7d"
     },
     "services/__init__.py": {
       "checksum": "ff5eeeedd9fc663333d3b44837d71af0"
-    },
-    "services/__pycache__/__init__.cpython-311.pyc": {
-      "checksum": "7fc28e30f7692836a420f5e2190fad0d"
-    },
-    "services/__pycache__/api_service.cpython-311.pyc": {
-      "checksum": "6527f6ec2128456a927a714fb367aabc"
-    },
-    "services/__pycache__/economic_service.cpython-311.pyc": {
-      "checksum": "2186cce109860ac9fbc94274162d332f"
-    },
-    "services/__pycache__/scope_service.cpython-311.pyc": {
-      "checksum": "db9e1ef8078109de58a91f4619f3f497"
-    },
-    "services/__pycache__/stats_service.cpython-311.pyc": {
-      "checksum": "070075552786da63059d92ae1cdc46ef"
-    },
-    "services/__pycache__/table_service.cpython-311.pyc": {
-      "checksum": "689623e6f8f486d1fb805ddf9cb6ee5f"
     },
     "services/api_service.py": {
       "checksum": "561437b4c779f865c0165a15aaff019d"
@@ -147,18 +99,6 @@
     },
     "services/table_service.py": {
       "checksum": "0b8bed18859fc60e431eb65a49a8e5ba"
-    },
-    "tests/__pycache__/test_banner.cpython-311-pytest-9.1.1.pyc": {
-      "checksum": "cc469876807c60b9fd7132fc27bd6d2a"
-    },
-    "tests/__pycache__/test_data_flow.cpython-311-pytest-9.1.1.pyc": {
-      "checksum": "d86bc27d740edef8c8f4bcbd74136e17"
-    },
-    "tests/__pycache__/test_economic_service.cpython-311-pytest-9.1.1.pyc": {
-      "checksum": "c380660a4bfbea04e803c94b6430b165"
-    },
-    "tests/__pycache__/test_services.cpython-311-pytest-9.1.1.pyc": {
-      "checksum": "0194bd71def37e97561dab8152d4fb5c"
     },
     "tests/test_banner.py": {
       "checksum": "405cba9fda0d1ab3e2973eb4f936c79d"
@@ -176,7 +116,7 @@
       "checksum": "605903a8b61444d489c0f650eae56790"
     },
     "www/styles.css": {
-      "checksum": "896067901b3f8df67b9532358906a695"
+      "checksum": "09422a5253ee90b52133c091ab3f665b"
     }
   }
 }

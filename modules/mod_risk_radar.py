@@ -281,12 +281,8 @@ def risk_radar_server(input, output, session, df_react):
 
         top_matrix = matrix.head(22).copy()
 
-        color_map = {
-            "Alto Riesgo (Crítico)": "#dc2626",
-            "Riesgo Moderado": "#d97706",
-            "Bajo Riesgo (Competitivo)": "#059669"
-        }
-        bar_colors = [color_map.get(lvl, "#1d3190") for lvl in top_matrix["nivel_riesgo"]]
+        color_map = GGPLOT_SEMAPHORE
+        bar_colors = [color_map.get(lvl, THEME_PRIMARY) for lvl in top_matrix["nivel_riesgo"]]
 
         fig = go.Figure()
         fig.add_trace(go.Bar(
@@ -315,8 +311,8 @@ def risk_radar_server(input, output, session, df_react):
             )
         ))
 
-        fig.add_hline(y=2500, line_dash="dash", line_color="#dc2626", annotation_text="Límite Crítico (2500)", annotation_position="top right")
-        fig.add_hline(y=1500, line_dash="dot", line_color="#d97706", annotation_text="Límite Moderado (1500)", annotation_position="top right")
+        fig.add_hline(y=2500, line_dash="dash", line_color=THEME_CRITICAL, annotation_text="Límite Crítico (2500)", annotation_position="top right")
+        fig.add_hline(y=1500, line_dash="dot", line_color=THEME_MODERATE, annotation_text="Límite Moderado (1500)", annotation_position="top right")
 
         apply_ggplot2_theme(
             fig,

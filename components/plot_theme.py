@@ -1,61 +1,74 @@
-"""Estilo y plantilla visual unificada inspirada en ggplot2 (Grammar of Graphics) para Plotly.
+"""Estilo y plantilla visual unificada en tonalidades de azules para Plotly.
 
-Proporciona funciones para homologar la estetica visual de R (ggplot2 / theme_minimal / theme_bw):
-- Area de trazado con fondo suave y cuadricula tenue (#e2e8f0).
+Implementa una estetica monocromatica y analoga en gama de azules inspirada en
+la marca corporativa (Royal Cobalt & Midnight Navy) y la Gramatica de Graficos (ggplot2):
+- Fondo de trazado suave (#f8fafc) con cuadricula tenue (#e2e8f0).
 - Tipografia limpia (sans-serif), jerarquia de titulos y subtitulos alineados a la izquierda.
 - Ejes limpios con marcas exteriores y etiquetas legibles.
 - Diseno sin solapamiento: leyendas horizontales inferiores y verticales exteriores.
 - Sin modebar invasivo (displayModeBar=False para eliminar iconos flotantes sobre titulos).
-- Paleta semantica coordinada e integrada en toda la aplicacion.
+- Escala tonal de azules para diferenciar categorias, intensidades de riesgo y proyecciones.
 """
 from typing import Any
 import plotly.graph_objects as go
 
 GGPLOT2_FONT_FAMILY = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
-# Paleta unificada institucional y semantica de riesgo
-THEME_PRIMARY = "#1d3190"        # Azul Cobalto institucional (marca Miguelangel Palma)
-THEME_CRITICAL = "#dc2626"       # Rojo Carmesi (Riesgo Critico / Contratacion Directa)
-THEME_MODERATE = "#d97706"       # Ambar (Riesgo Moderado / Procesos Mixtos)
-THEME_COMPETITIVE = "#059669"    # Verde Esmeralda (Bajo Riesgo / Licitacion / Ahorro)
-THEME_SECONDARY_BLUE = "#0284c7" # Celeste (Seleccion Abreviada / Minima Cuantia)
-THEME_NAVY = "#080c42"           # Azul Marino profundo
-THEME_SLATE = "#64748b"          # Gris Neutro
+# Escala tonal de azules corporativos y analiticos (Monocromatico de alto contraste)
+BLUE_MIDNIGHT = "#080c42"   # Azul Marino Profundo / Midnight
+BLUE_NAVY = "#0f172a"       # Azul Tinta Oscuro / Maximo Riesgo / Asignacion Directa
+BLUE_COBALT = "#1d3190"     # Azul Cobalto Institucional (Marca Miguelangel Palma)
+BLUE_SAPPHIRE = "#1e40af"   # Azul Zafiro / Royal
+BLUE_ELECTRIC = "#2563eb"   # Azul Electrico Intenso / Riesgo Medio / Alerta Moderada
+BLUE_AZURE = "#3b82f6"      # Azul Real Brillante
+BLUE_SKY = "#38bdf8"        # Azul Cielo Luminoso / Apertura Concursada / Ahorro
+BLUE_ICE = "#93c5fd"        # Azul Hielo Suave
+BLUE_MIST = "#bfdbfe"       # Azul Claro Niebla
+BLUE_GHOST = "#eff6ff"      # Azul Superficie Tenue
 
-# Paleta discreta de categorias estilo ggplot2
+# Constantes semanticas retrocompatibles en gama azul
+THEME_PRIMARY = BLUE_COBALT
+THEME_CRITICAL = BLUE_NAVY
+THEME_MODERATE = BLUE_ELECTRIC
+THEME_COMPETITIVE = BLUE_SKY
+THEME_SECONDARY_BLUE = BLUE_AZURE
+THEME_NAVY = BLUE_MIDNIGHT
+THEME_SLATE = "#64748b"
+
+# Paleta discreta de categorias en gama de azules
 GGPLOT2_PALETTE = [
-    THEME_PRIMARY,
-    THEME_CRITICAL,
-    THEME_MODERATE,
-    THEME_COMPETITIVE,
-    THEME_SECONDARY_BLUE,
-    THEME_SLATE,
-    THEME_NAVY
+    BLUE_COBALT,
+    BLUE_NAVY,
+    BLUE_SKY,
+    BLUE_ELECTRIC,
+    BLUE_AZURE,
+    BLUE_ICE,
+    BLUE_MIDNIGHT
 ]
 
-# Mapa de semaforo de riesgo consistente en toda la aplicacion
+# Mapa de semaforo de riesgo en tonalidades de azul (jerarquia por densidad/luminancia)
 GGPLOT_SEMAPHORE = {
-    "Alto Riesgo (Crítico)": THEME_CRITICAL,
-    "Riesgo Moderado": THEME_MODERATE,
-    "Bajo Riesgo (Competitivo)": THEME_COMPETITIVE,
-    "Predominio Directo (Sin Concurso)": THEME_CRITICAL,
-    "Mixto / Moderado": THEME_MODERATE,
-    "Concurso Competitivo": THEME_COMPETITIVE
+    "Alto Riesgo (Crítico)": BLUE_NAVY,
+    "Riesgo Moderado": BLUE_ELECTRIC,
+    "Bajo Riesgo (Competitivo)": BLUE_SKY,
+    "Predominio Directo (Sin Concurso)": BLUE_NAVY,
+    "Mixto / Moderado": BLUE_ELECTRIC,
+    "Concurso Competitivo": BLUE_SKY
 }
 
 
 def get_modality_color(modality_name: str) -> str:
-    """Asigna un color semantico consistente segun el caracter de la modalidad."""
+    """Asigna un tono azul semantico segun la modalidad de contratacion."""
     m = str(modality_name).lower()
     if any(k in m for k in ("direct", "urgencia", "especial", "sin concurso")):
-        return THEME_CRITICAL
+        return BLUE_NAVY       # Asignacion directa: tono mas oscuro / concentrado
     if any(k in m for k in ("licitac", "concurso", "abierto")):
-        return THEME_COMPETITIVE
+        return BLUE_SKY        # Concurso publico abierto: azul cielo luminoso
     if any(k in m for k in ("abreviad", "subasta")):
-        return THEME_PRIMARY
+        return BLUE_COBALT     # Seleccion abreviada: cobalto institucional
     if any(k in m for k in ("minima", "mínima")):
-        return THEME_SECONDARY_BLUE
-    return THEME_MODERATE
+        return BLUE_ICE        # Minima cuantia: azul hielo
+    return BLUE_ELECTRIC       # Otros procesos: azul electrico
 
 
 def apply_ggplot2_theme(
@@ -71,7 +84,7 @@ def apply_ggplot2_theme(
     x_grid: bool = True,
     y_grid: bool = True,
 ) -> go.Figure:
-    """Aplica el tema visual de ggplot2 (Grammar of Graphics) a una figura de Plotly sin solapamientos."""
+    """Aplica el tema visual de ggplot2 (Grammar of Graphics) en gama de azules sin solapamientos."""
     top_margin = 72 if subtitle else (55 if title else 25)
     bottom_margin = 75 if (show_legend and legend_orientation == "h") else (50 if xaxis_title else 30)
 
@@ -86,22 +99,22 @@ def apply_ggplot2_theme(
     title_text = ""
     if title:
         if subtitle:
-            title_text = f"<b>{title}</b><br><span style='font-size:11px; font-weight:normal; color:#64748b;'>{subtitle}</span>"
+            title_text = f"<b>{title}</b><br><span style='font-size:11px; font-weight:normal; color:#475569;'>{subtitle}</span>"
         else:
             title_text = f"<b>{title}</b>"
 
     layout_updates: dict[str, Any] = {
-        "font": dict(family=GGPLOT2_FONT_FAMILY, size=11, color="#334155"),
+        "font": dict(family=GGPLOT2_FONT_FAMILY, size=11, color="#1e293b"),
         "plot_bgcolor": "#f8fafc",
         "paper_bgcolor": "#ffffff",
         "height": height,
         "margin": final_margin,
         "hoverlabel": dict(
             bgcolor="#ffffff",
-            bordercolor="#cbd5e1",
+            bordercolor="#93c5fd",
             font_size=11.5,
             font_family=GGPLOT2_FONT_FAMILY,
-            font_color="#0f172a"
+            font_color="#080c42"
         )
     }
 
@@ -112,7 +125,7 @@ def apply_ggplot2_theme(
             xanchor="left",
             y=0.97,
             yanchor="top",
-            font=dict(size=13, color="#0f172a"),
+            font=dict(size=13, color="#080c42"),
             pad=dict(b=8)
         )
 
@@ -125,9 +138,9 @@ def apply_ggplot2_theme(
                 xanchor="center",
                 x=0.5,
                 bgcolor="rgba(255, 255, 255, 0.95)",
-                bordercolor="#e2e8f0",
+                bordercolor="#bfdbfe",
                 borderwidth=1,
-                font=dict(size=10.5)
+                font=dict(size=10.5, color="#1e293b")
             )
         else:
             layout_updates["legend"] = dict(
@@ -137,9 +150,9 @@ def apply_ggplot2_theme(
                 xanchor="left",
                 x=1.02,
                 bgcolor="rgba(255, 255, 255, 0.95)",
-                bordercolor="#e2e8f0",
+                bordercolor="#bfdbfe",
                 borderwidth=1,
-                font=dict(size=10.5)
+                font=dict(size=10.5, color="#1e293b")
             )
     else:
         layout_updates["showlegend"] = False
@@ -159,7 +172,7 @@ def apply_ggplot2_theme(
         "gridwidth": 1
     }
     if xaxis_title:
-        x_axes_kwargs["title"] = dict(text=xaxis_title, font=dict(size=11, color="#475569"))
+        x_axes_kwargs["title"] = dict(text=xaxis_title, font=dict(size=11, color="#334155"))
     fig.update_xaxes(**x_axes_kwargs)
 
     # Eje Y estilo ggplot2: borde suave, marcas exteriores y cuadricula
@@ -175,7 +188,7 @@ def apply_ggplot2_theme(
         "gridwidth": 1
     }
     if yaxis_title:
-        y_axes_kwargs["title"] = dict(text=yaxis_title, font=dict(size=11, color="#475569"))
+        y_axes_kwargs["title"] = dict(text=yaxis_title, font=dict(size=11, color="#334155"))
     fig.update_yaxes(**y_axes_kwargs)
 
     return fig

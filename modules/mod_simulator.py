@@ -238,8 +238,8 @@ def simulator_server(input, output, session, df_react):
             # Tarjeta 2: Escenario Contrafactual Reformado
             ui.div(
                 ui.div(
-                    ui.span("ESCENARIO SIMULADO (CON REFORMA)", class_="text-success small fw-bold text-uppercase"),
-                    ui.span("Reforma Competitiva", class_="badge bg-success small"),
+                    ui.span("ESCENARIO SIMULADO (CON REFORMA)", class_="text-primary small fw-bold text-uppercase"),
+                    ui.span("Reforma Competitiva", class_="badge bg-primary small"),
                     class_="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2"
                 ),
                 ui.div(

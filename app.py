@@ -16,10 +16,12 @@ from config import WWW_DIR
 
 # Modulos analiticos
 from modules.mod_loader import loader_ui, loader_server
-from modules.mod_summary import summary_ui, summary_server
-from modules.mod_inequality import inequality_ui, inequality_server
+from modules.mod_risk_matrix import risk_ui, risk_server
+from modules.mod_simulator import simulator_ui, simulator_server
 from modules.mod_econometrics import econometrics_ui, econometrics_server
+from modules.mod_inequality import inequality_ui, inequality_server
 from modules.mod_comparisons import comparisons_ui, comparisons_server
+from modules.mod_summary import summary_ui, summary_server
 from modules.mod_timeseries import timeseries_ui, timeseries_server
 from modules.mod_distributions import distributions_ui, distributions_server
 from modules.mod_correlations import correlations_ui, correlations_server
@@ -32,15 +34,23 @@ from components.banner import render_context_banner
 # INTERFAZ DE USUARIO (UI ENSAMBLADA)
 # -------------------------------------------------------------
 app_ui = ui.page_navbar(
-    # Destinos principales de navegacion orientados a analisis economico
-    ui.nav_panel("Panorama", summary_ui("summary_mod")),
-    ui.nav_panel("Desigualdad & Concentracion", inequality_ui("inequality_mod")),
-    ui.nav_panel("Econometria & Elasticidades", econometrics_ui("econ_mod")),
-    ui.nav_panel("Brechas & Territorio", comparisons_ui("comp_mod")),
-    ui.nav_panel("Series & Precios", timeseries_ui("ts_mod")),
-    ui.nav_panel("Distribuciones", distributions_ui("dist_mod")),
-    ui.nav_panel("Correlaciones", correlations_ui("corr_mod")),
-    ui.nav_panel("Datos", table_ui("table_mod")),
+    # Destinos principales: Resolucion del problema economico de contratacion y competencia
+    ui.nav_panel("Semáforo de Riesgo", risk_ui("risk_mod")),
+    ui.nav_panel("Simulador de Políticas", simulator_ui("sim_mod")),
+    ui.nav_panel("Econometría & Elasticidades", econometrics_ui("econ_mod")),
+    ui.nav_panel("Concentración & Lorenz", inequality_ui("inequality_mod")),
+    ui.nav_panel("Brechas Territoriales", comparisons_ui("comp_mod")),
+    
+    # Submenu para exploracion estadistica general
+    ui.nav_menu(
+        "Análisis Exploratorio",
+        ui.nav_panel("Panorama General", summary_ui("summary_mod")),
+        ui.nav_panel("Series & Precios", timeseries_ui("ts_mod")),
+        ui.nav_panel("Distribuciones", distributions_ui("dist_mod")),
+        ui.nav_panel("Correlaciones", correlations_ui("corr_mod")),
+    ),
+    
+    ui.nav_panel("Microdatos", table_ui("table_mod")),
     
     # Identidad de marca, titulo y subtitulo en el navbar
     title=ui.div(
@@ -88,10 +98,13 @@ def server(input, output, session):
     def global_context_banner():
         return render_context_banner(df_react(), meta_react())
 
-    summary_server("summary_mod", df_react=df_react, meta_react=meta_react)
-    inequality_server("inequality_mod", df_react=df_react)
+    # Servidores de los modulos
+    risk_server("risk_mod", df_react=df_react)
+    simulator_server("sim_mod", df_react=df_react)
     econometrics_server("econ_mod", df_react=df_react)
+    inequality_server("inequality_mod", df_react=df_react)
     comparisons_server("comp_mod", df_react=df_react)
+    summary_server("summary_mod", df_react=df_react, meta_react=meta_react)
     timeseries_server("ts_mod", df_react=df_react)
     distributions_server("dist_mod", df_react=df_react)
     correlations_server("corr_mod", df_react=df_react)

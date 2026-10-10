@@ -29,7 +29,7 @@
       "checksum": "696ab4715e023fce181f21d694f87ee0"
     },
     "app.py": {
-      "checksum": "0616e63d1123305f76f0455ff0a026b8"
+      "checksum": "2505c79586a7887b10e45be5e0948aba"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -38,7 +38,7 @@
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "config.py": {
-      "checksum": "ce958c34e3ea792fe9f7e982a359d8ef"
+      "checksum": "4fcfacbeb2ab05427764c481b7e2ab5e"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
@@ -59,7 +59,13 @@
       "checksum": "0672e4b992999ea5cc7a7d05b73c885c"
     },
     "modules/mod_loader.py": {
-      "checksum": "3ed66553be5182c606e166d30d4a9771"
+      "checksum": "73ca2414b2de463e49d4a9d9725dd2dc"
+    },
+    "modules/mod_risk_matrix.py": {
+      "checksum": "b5a5f31e54c2229920e05d3c2e140ebf"
+    },
+    "modules/mod_simulator.py": {
+      "checksum": "8ba0b0b229648ca99d6b373b92f397c1"
     },
     "modules/mod_stats.py": {
       "checksum": "dc55e6a49e5822f2403bf9c5b6e82931"
@@ -83,7 +89,7 @@
       "checksum": "81f0687f1e7cd55efcc0b022f0d0af11"
     },
     "services/economic_service.py": {
-      "checksum": "109285d349258e6a01f636e6c79255c8"
+      "checksum": "a843c085b45ab129d83baa808fea0c3c"
     },
     "services/scope_service.py": {
       "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
@@ -101,7 +107,7 @@
       "checksum": "5473953b73bb595ae4fcbf7ca1734e75"
     },
     "tests/test_economic_service.py": {
-      "checksum": "f89bc36c21f754640d178c709b039785"
+      "checksum": "bb6e1b43cb9462f7f8d3a04df32f2a4f"
     },
     "tests/test_services.py": {
       "checksum": "e567b83a831ab4b269f502513d443abb"
@@ -110,7 +116,7 @@
       "checksum": "605903a8b61444d489c0f650eae56790"
     },
     "www/styles.css": {
-      "checksum": "8d51b6545cc1eed5517bee1d68616436"
+      "checksum": "4e2fff05efa1281072af2c97b233d6c6"
     }
   }
 }

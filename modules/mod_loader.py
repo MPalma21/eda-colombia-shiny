@@ -3,7 +3,7 @@ import asyncio
 from shiny import module, ui, render, reactive
 from shiny.types import SilentException, SilentCancelOutputException
 import pandas as pd
-from config import SAMPLE_DATASETS, DEFAULT_FETCH_ROWS, DEFAULT_MAX_ROWS
+from config import SAMPLE_DATASETS, DEFAULT_FETCH_ROWS, DEFAULT_MAX_ROWS, DEFAULT_RESOURCE_ID
 from services.api_service import fetch_dataset
 from services.scope_service import apply_analysis_scope
 from services.stats_service import classify_columns
@@ -27,12 +27,13 @@ def loader_ui():
                 "sample_ds",
                 "Colecciones verificadas:",
                 choices=list(SAMPLE_DATASETS.keys()),
+                selected=list(SAMPLE_DATASETS.keys())[0]
             ),
             ui.input_text(
                 "resource_id",
                 "ID o URL de datos.gov.co:",
-                placeholder="Ejemplo: mcec-87by",
-                value=""
+                placeholder="Ejemplo: jbjy-vk9h",
+                value=DEFAULT_RESOURCE_ID
             ),
             ui.div(
                 "Indique el codigo alfanumerico (ej: mcec-87by) o la URL completa.",

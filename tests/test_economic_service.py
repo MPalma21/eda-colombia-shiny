@@ -18,7 +18,12 @@ from services.economic_service import (
     estimate_econometric_model,
     compute_base_100_series,
     compute_economic_gaps,
-    estimate_econometric_by_groups
+    estimate_econometric_by_groups,
+    format_cop_currency,
+    find_procurement_columns,
+    compute_procurement_risk_matrix,
+    get_procurement_risk_summary,
+    simulate_policy_procurement
 )
 
 
@@ -140,3 +145,127 @@ def test_estimate_econometric_by_groups():
     assert "Elasticidad (β₁)" in res_df.columns
     assert "R²" in res_df.columns
     assert "p-valor" in res_df.columns
+
+
+def test_format_cop_currency():
+    """Valida el formateo de montos en pesos colombianos."""
+    assert format_cop_currency(0) == "$ 0 COP"
+    assert "Billones COP" in format_cop_currency(2.5e12)
+    assert "Mil Millones COP" in format_cop_currency(15e9)
+    assert "Millones COP" in format_cop_currency(850e6)
+    assert "$ 50,000 COP" in format_cop_currency(50000)
+
+
+def test_find_procurement_columns():
+    """Valida la detección automatica de nombres canonicos de SECOP."""
+    df_secop = pd.DataFrame({
+        "departamento": ["Antioquia"],
+        "valor_del_contrato": [1000],
+        "proveedor_adjudicado": ["Consorcio A"],
+        "modalidad_de_contratacion": ["Contratación directa"]
+    })
+    dept, val, prov, mod = find_procurement_columns(df_secop)
+    assert dept == "departamento"
+    assert val == "valor_del_contrato"
+    assert prov == "proveedor_adjudicado"
+    assert mod == "modalidad_de_contratacion"
+
+    # Caso dataframe vacio
+    assert find_procurement_columns(pd.DataFrame()) == (None, None, None, None)
+
+
+def test_compute_procurement_risk_matrix():
+    """Valida el semaforo de riesgo territorial y clasificaciones."""
+    # Creamos dos departamentos:
+    # Choco: Muy concentrado (un solo contratista) y alta contratacion directa -> Alto Riesgo
+    # Cundinamarca: Muchos contratistas y licitaciones competitivas -> Bajo Riesgo
+    data = []
+    # Choco: 10 contratos directos, 1 contratista acapara todo
+    for _ in range(10):
+        data.append({
+            "departamento": "Chocó",
+            "valor_del_contrato": 100_000_000,
+            "proveedor_adjudicado": "Monopolio Choco SAS",
+            "modalidad_de_contratacion": "Contratación Directa"
+        })
+    # Cundinamarca: 10 contratos, 10 contratistas distintos, licitacion publica
+    for i in range(10):
+        data.append({
+            "departamento": "Cundinamarca",
+            "valor_del_contrato": 100_000_000,
+            "proveedor_adjudicado": f"Proveedor Competitivo {i}",
+            "modalidad_de_contratacion": "Licitación Pública"
+        })
+    df = pd.DataFrame(data)
+
+    matrix = compute_procurement_risk_matrix(df)
+    assert not matrix.empty
+    assert len(matrix) == 2
+
+    # Choco debe ser clasificado como Alto Riesgo (Crítico)
+    choco_row = matrix[matrix["departamento"] == "Chocó"].iloc[0]
+    assert choco_row["nivel_riesgo"] == "Alto Riesgo (Crítico)"
+    assert choco_row["badge_icon"] == "🔴"
+    assert choco_row["pct_directa_monto"] == 100.0
+    assert choco_row["hhi"] == 10000.0
+    assert choco_row["score_riesgo"] == 100.0
+
+    # Cundinamarca debe ser clasificado como Bajo Riesgo (Competitivo)
+    cund_row = matrix[matrix["departamento"] == "Cundinamarca"].iloc[0]
+    assert cund_row["nivel_riesgo"] == "Bajo Riesgo (Competitivo)"
+    assert cund_row["badge_icon"] == "🟢"
+    assert cund_row["pct_directa_monto"] == 0.0
+    assert cund_row["hhi"] == 1000.0
+
+    # Resumen agregado
+    summary = get_procurement_risk_summary(matrix)
+    assert summary["valido"] is True
+    assert summary["criticos"] == 1
+    assert summary["competitivos"] == 1
+    assert summary["depto_mayor_riesgo"] == "Chocó"
+
+
+def test_simulate_policy_procurement():
+    """Valida el simulador contrafactual de politica publica."""
+    res = simulate_policy_procurement(
+        base_monto=10_000_000_000,
+        base_direct_pct=60.0,
+        base_hhi=3200.0,
+        reduction_direct_pct=30.0,
+        new_competitors_pct=25.0
+    )
+    # Verificaciones logicas
+    assert res["nuevo_direct_pct"] < res["base_direct_pct"]
+    assert res["nuevo_direct_pct"] == 42.0  # 60 * (1 - 0.3)
+    assert res["nuevo_hhi"] < res["base_hhi"]
+    assert res["monto_trasladado"] == 1_800_000_000  # 10B * 60% * 30%
+    assert res["ahorro_fiscal_estimado"] == 1_800_000_000 * 0.125
+    assert res["delta_hhi"] < 0
+    assert res["pct_reduccion_hhi"] > 0
+    assert res["nuevos_oferentes_est"] > 0
+
+
+def test_procurement_risk_matrix_edge_cases():
+    """Valida casos extremos: df sin montos, nulos y nombres extraños."""
+    # Dataframe con solo nombres y sin columna de valor ni modalidad
+    df_minimal = pd.DataFrame({
+        "departamento": ["Valle", "Valle", "Antioquia", None, "  "],
+        "proveedor": ["P1", "P2", "P3", "P4", "P5"]
+    })
+    matrix = compute_procurement_risk_matrix(df_minimal)
+    assert not matrix.empty
+    # Nulos y vacios deben ser excluidos
+    dept_names = matrix["departamento"].tolist()
+    assert "Valle" in dept_names
+    assert "Antioquia" in dept_names
+    assert None not in dept_names
+
+    # Dataframe vacio
+    assert compute_procurement_risk_matrix(pd.DataFrame()).empty
+
+    # Resumen con matriz vacia
+    empty_summary = get_procurement_risk_summary(pd.DataFrame())
+    assert empty_summary["valido"] is False
+    assert empty_summary["total_contratos"] == 0
+
+

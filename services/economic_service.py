@@ -423,3 +423,342 @@ def estimate_econometric_by_groups(
         
     res_df = pd.DataFrame(results).sort_values(by=param_col, ascending=False)
     return res_df
+
+
+def format_cop_currency(amount: float) -> str:
+    """Formatea montos en pesos colombianos (COP) a escalas legibles ejecutivas."""
+    if amount is None or np.isnan(amount) or amount == 0:
+        return "$ 0 COP"
+    abs_amt = abs(amount)
+    sign = "-" if amount < 0 else ""
+    if abs_amt >= 1e12:
+        return f"{sign}$ {abs_amt / 1e12:.2f} Billones COP"
+    elif abs_amt >= 1e9:
+        return f"{sign}$ {abs_amt / 1e9:.2f} Mil Millones COP"
+    elif abs_amt >= 1e6:
+        return f"{sign}$ {abs_amt / 1e6:.2f} Millones COP"
+    else:
+        return f"{sign}$ {abs_amt:,.0f} COP"
+
+
+def find_procurement_columns(
+    df: pd.DataFrame,
+    dept_col: str | None = None,
+    val_col: str | None = None,
+    prov_col: str | None = None,
+    mod_col: str | None = None
+) -> tuple[str | None, str | None, str | None, str | None]:
+    """Detecta automaticamente o valida las columnas requeridas para analisis de contratacion."""
+    if df.empty:
+        return None, None, None, None
+    
+    cols = list(df.columns)
+    cols_lower = {c.lower(): c for c in cols}
+    
+    # 1. Departamento / Territorio
+    final_dept = dept_col if dept_col and dept_col in df.columns else None
+    if not final_dept:
+        dept_candidates = ["departamento", "departamento_entidad", "departamento_ejecucion", "depto", "dpto", "region", "municipio"]
+        for cand in dept_candidates:
+            if cand in cols_lower:
+                final_dept = cols_lower[cand]
+                break
+        if not final_dept:
+            for c_low, orig in cols_lower.items():
+                if "depa" in c_low or "region" in c_low:
+                    final_dept = orig
+                    break
+
+    # 2. Valor / Monto contractual
+    final_val = val_col if val_col and val_col in df.columns else None
+    if not final_val:
+        val_candidates = ["valor_del_contrato", "cuantia_del_contrato", "valor_contrato", "cuantia", "valor", "monto", "presupuesto"]
+        for cand in val_candidates:
+            if cand in cols_lower:
+                final_val = cols_lower[cand]
+                break
+        if not final_val:
+            for c_low, orig in cols_lower.items():
+                if any(k in c_low for k in ("valor", "monto", "cuantia", "precio")) and pd.api.types.is_numeric_dtype(df[orig]):
+                    final_val = orig
+                    break
+
+    # 3. Proveedor / Contratista
+    final_prov = prov_col if prov_col and prov_col in df.columns else None
+    if not final_prov:
+        prov_candidates = ["proveedor_adjudicado", "nombre_del_proveedor", "nom_razon_social_contratista", "proveedor", "contratista", "adjudicatario"]
+        for cand in prov_candidates:
+            if cand in cols_lower:
+                final_prov = cols_lower[cand]
+                break
+        if not final_prov:
+            for c_low, orig in cols_lower.items():
+                if any(k in c_low for k in ("provee", "contrat", "adjudica")):
+                    final_prov = orig
+                    break
+
+    # 4. Modalidad de Contratacion
+    final_mod = mod_col if mod_col and mod_col in df.columns else None
+    if not final_mod:
+        mod_candidates = ["modalidad_de_contratacion", "modalidad", "tipo_de_proceso", "tipo_proceso", "tipo_contratacion"]
+        for cand in mod_candidates:
+            if cand in cols_lower:
+                final_mod = cols_lower[cand]
+                break
+        if not final_mod:
+            for c_low, orig in cols_lower.items():
+                if "modalid" in c_low or "tipo_proceso" in c_low:
+                    final_mod = orig
+                    break
+
+    return final_dept, final_val, final_prov, final_mod
+
+
+def compute_procurement_risk_matrix(
+    df: pd.DataFrame,
+    dept_col: str | None = None,
+    val_col: str | None = None,
+    prov_col: str | None = None,
+    mod_col: str | None = None,
+    min_contracts_per_dept: int = 1
+) -> pd.DataFrame:
+    """Calcula el semaforo y matriz de riesgo territorial de contratacion publica por departamento.
+    
+    Variables analizadas:
+    - HHI de contratistas (concentracion de adjudicaciones)
+    - Cuota CR4 (% acaparado por los 4 mayores contratistas)
+    - % de contratacion directa (en monto y volumen)
+    - Score compuesto de riesgo (0 - 100) y clasificacion semaforica (🔴, 🟡, 🟢)
+    """
+    if df.empty:
+        return pd.DataFrame()
+        
+    dept_c, val_c, prov_c, mod_c = find_procurement_columns(df, dept_col, val_col, prov_col, mod_col)
+    
+    if not dept_c:
+        return pd.DataFrame()
+        
+    records = []
+    grouped = df.groupby(dept_c)
+    
+    for dept_name, group in grouped:
+        n_contracts = len(group)
+        if n_contracts < min_contracts_per_dept:
+            continue
+            
+        dept_str = str(dept_name).strip()
+        if not dept_str or dept_str.lower() in ("nan", "none", "null", ""):
+            continue
+            
+        # 1. Monto total
+        if val_c and val_c in group.columns and pd.api.types.is_numeric_dtype(group[val_c]):
+            clean_vals = group[val_c].dropna()
+            monto_total = float(clean_vals[clean_vals >= 0].sum())
+        else:
+            monto_total = 0.0
+            
+        # 2. Contratacion directa
+        pct_directa_cant = 0.0
+        pct_directa_monto = 0.0
+        if mod_c and mod_c in group.columns:
+            mod_series = group[mod_c].astype(str).str.lower()
+            direct_mask = mod_series.str.contains("direct|urgencia|especial|sin postulante|sin concurso", regex=True, na=False)
+            direct_count = int(direct_mask.sum())
+            pct_directa_cant = round((direct_count / n_contracts) * 100.0, 1) if n_contracts > 0 else 0.0
+            
+            if val_c and val_c in group.columns and monto_total > 0:
+                direct_monto = float(group.loc[direct_mask, val_c].dropna().sum())
+                pct_directa_monto = round((direct_monto / monto_total) * 100.0, 1)
+            else:
+                pct_directa_monto = pct_directa_cant
+        
+        # 3. Concentracion HHI y contratistas
+        hhi = 0.0
+        cr4 = 0.0
+        top_contratista = "Sin datos"
+        top_cuota = 0.0
+        n_proveedores = 0
+        
+        if prov_c and prov_c in group.columns:
+            if val_c and val_c in group.columns and monto_total > 0:
+                valid_g = group[[prov_c, val_c]].dropna()
+                prov_totals = valid_g.groupby(prov_c)[val_c].sum()
+                tot = prov_totals.sum()
+                prov_shares = (prov_totals / tot * 100.0).sort_values(ascending=False) if tot > 0 else pd.Series(dtype=float)
+            else:
+                prov_shares = (group[prov_c].dropna().value_counts(normalize=True) * 100.0)
+                
+            n_proveedores = len(prov_shares)
+            if not prov_shares.empty:
+                hhi = float(np.sum(prov_shares.to_numpy() ** 2))
+                cr4 = float(prov_shares.iloc[:4].sum()) if len(prov_shares) >= 4 else float(prov_shares.sum())
+                top_contratista = str(prov_shares.index[0])
+                top_cuota = float(prov_shares.iloc[0])
+                
+        hhi = round(hhi, 1)
+        cr4 = round(cr4, 1)
+        top_cuota = round(top_cuota, 1)
+        
+        # 4. Clasificacion de Semaforo y Score (0 a 100)
+        hhi_score = min(100.0, hhi / 100.0)
+        score_riesgo = round(0.5 * hhi_score + 0.5 * pct_directa_monto, 1)
+        
+        if hhi > 2500 or pct_directa_monto > 65.0:
+            nivel = "Alto Riesgo (Crítico)"
+            badge_icon = "🔴"
+            badge_class = "badge-risk-high"
+        elif (1500 <= hhi <= 2500) or (35.0 <= pct_directa_monto <= 65.0):
+            nivel = "Riesgo Moderado"
+            badge_icon = "🟡"
+            badge_class = "badge-risk-mid"
+        else:
+            nivel = "Bajo Riesgo (Competitivo)"
+            badge_icon = "🟢"
+            badge_class = "badge-risk-low"
+            
+        records.append({
+            "departamento": dept_str,
+            "n_contratos": n_contracts,
+            "monto_total": monto_total,
+            "pct_directa_monto": pct_directa_monto,
+            "pct_directa_cant": pct_directa_cant,
+            "hhi": hhi,
+            "cr4": cr4,
+            "top_contratista": top_contratista,
+            "top_cuota": top_cuota,
+            "n_proveedores": n_proveedores,
+            "score_riesgo": score_riesgo,
+            "nivel_riesgo": nivel,
+            "badge_icon": badge_icon,
+            "badge_class": badge_class,
+        })
+        
+    if not records:
+        return pd.DataFrame()
+        
+    res_df = pd.DataFrame(records).sort_values(by="score_riesgo", ascending=False).reset_index(drop=True)
+    return res_df
+
+
+def get_procurement_risk_summary(risk_df: pd.DataFrame) -> dict:
+    """Calcula indicadores agregados nacionales para los Value Boxes de riesgo."""
+    if risk_df.empty:
+        return {
+            "valido": False,
+            "total_contratos": 0,
+            "monto_total": 0.0,
+            "n_departamentos": 0,
+            "criticos": 0,
+            "moderados": 0,
+            "competitivos": 0,
+            "pct_directa_promedio": 0.0,
+            "hhi_promedio": 0.0,
+            "depto_mayor_riesgo": "N/A",
+            "score_mayor_riesgo": 0.0
+        }
+        
+    total_contratos = int(risk_df["n_contratos"].sum())
+    monto_total = float(risk_df["monto_total"].sum())
+    n_deptos = len(risk_df)
+    
+    criticos = int((risk_df["nivel_riesgo"] == "Alto Riesgo (Crítico)").sum())
+    moderados = int((risk_df["nivel_riesgo"] == "Riesgo Moderado").sum())
+    competitivos = int((risk_df["nivel_riesgo"] == "Bajo Riesgo (Competitivo)").sum())
+    
+    if monto_total > 0:
+        weights = risk_df["monto_total"] / monto_total
+        pct_directa_ponderada = float(np.sum(risk_df["pct_directa_monto"] * weights))
+        hhi_ponderado = float(np.sum(risk_df["hhi"] * weights))
+    else:
+        pct_directa_ponderada = float(risk_df["pct_directa_monto"].mean())
+        hhi_ponderado = float(risk_df["hhi"].mean())
+        
+    top_critico = risk_df.iloc[0]
+    
+    return {
+        "valido": True,
+        "total_contratos": total_contratos,
+        "monto_total": monto_total,
+        "n_departamentos": n_deptos,
+        "criticos": criticos,
+        "moderados": moderados,
+        "competitivos": competitivos,
+        "pct_directa_promedio": round(pct_directa_ponderada, 1),
+        "hhi_promedio": round(hhi_ponderado, 1),
+        "depto_mayor_riesgo": str(top_critico["departamento"]),
+        "score_mayor_riesgo": float(top_critico["score_riesgo"])
+    }
+
+
+def simulate_policy_procurement(
+    base_monto: float,
+    base_direct_pct: float,
+    base_hhi: float,
+    reduction_direct_pct: float,
+    new_competitors_pct: float,
+    saving_benchmark_pct: float = 12.5
+) -> dict:
+    """Calcula escenario contrafactual de politica publica para contratacion.
+    
+    Parametros:
+    - base_monto: Monto total presupuestado en COP.
+    - base_direct_pct: % actual de contratacion directa.
+    - base_hhi: Indice HHI actual de concentracion de contratistas.
+    - reduction_direct_pct: Reduccion porcentual de la contratacion directa (0 - 80%).
+    - new_competitors_pct: Aumento porcentual de concurrencia/oferentes (0 - 100%).
+    - saving_benchmark_pct: Rendimiento de ahorro fiscal por licitacion abierta (benchmark OCDE 12.5%).
+    """
+    base_monto = max(0.0, float(base_monto))
+    base_direct_pct = max(0.0, min(100.0, float(base_direct_pct)))
+    base_hhi = max(0.0, min(10000.0, float(base_hhi)))
+    
+    r_direct = max(0.0, min(80.0, float(reduction_direct_pct))) / 100.0
+    r_comp = max(0.0, min(100.0, float(new_competitors_pct))) / 100.0
+    
+    # 1. Contratacion directa contrafactual
+    nuevo_direct_pct = max(0.0, base_direct_pct * (1.0 - r_direct))
+    monto_directo_base = base_monto * (base_direct_pct / 100.0)
+    monto_trasladado_competencia = monto_directo_base * r_direct
+    ahorro_fiscal_estimado = monto_trasladado_competencia * (saving_benchmark_pct / 100.0)
+    
+    # 2. Desconcentracion HHI
+    factor_desconcentracion = 1.0 - (0.45 * r_direct + 0.55 * r_comp * 0.70)
+    nuevo_hhi = max(100.0, base_hhi * max(0.20, factor_desconcentracion))
+    delta_hhi = nuevo_hhi - base_hhi
+    pct_reduccion_hhi = (abs(delta_hhi) / base_hhi * 100.0) if base_hhi > 0 else 0.0
+    
+    # 3. Clasificaciones de riesgo
+    def _clasificar(hhi_val, dir_pct):
+        if hhi_val > 2500 or dir_pct > 65.0:
+            return "Alto Riesgo (Crítico)", "🔴", "badge-risk-high"
+        elif (1500 <= hhi_val <= 2500) or (35.0 <= dir_pct <= 65.0):
+            return "Riesgo Moderado", "🟡", "badge-risk-mid"
+        else:
+            return "Bajo Riesgo (Competitivo)", "🟢", "badge-risk-low"
+            
+    nivel_base, icon_base, class_base = _clasificar(base_hhi, base_direct_pct)
+    nivel_nuevo, icon_nuevo, class_nuevo = _clasificar(nuevo_hhi, nuevo_direct_pct)
+    
+    nuevos_oferentes_est = int(np.round(15 * r_comp + 10 * r_direct))
+    
+    return {
+        "base_monto": base_monto,
+        "base_direct_pct": round(base_direct_pct, 1),
+        "nuevo_direct_pct": round(nuevo_direct_pct, 1),
+        "monto_directo_base": monto_directo_base,
+        "monto_trasladado": monto_trasladado_competencia,
+        "ahorro_fiscal_estimado": ahorro_fiscal_estimado,
+        "base_hhi": round(base_hhi, 1),
+        "nuevo_hhi": round(nuevo_hhi, 1),
+        "delta_hhi": round(delta_hhi, 1),
+        "pct_reduccion_hhi": round(pct_reduccion_hhi, 1),
+        "nivel_base": nivel_base,
+        "icon_base": icon_base,
+        "class_base": class_base,
+        "nivel_nuevo": nivel_nuevo,
+        "icon_nuevo": icon_nuevo,
+        "class_nuevo": class_nuevo,
+        "mejora_categoria": nivel_base != nivel_nuevo and (nivel_base == "Alto Riesgo (Crítico)" or nivel_nuevo == "Bajo Riesgo (Competitivo)"),
+        "nuevos_oferentes_est": nuevos_oferentes_est,
+    }
+

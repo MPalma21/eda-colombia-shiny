@@ -19,7 +19,12 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
-from components.plot_theme import apply_ggplot2_theme, GGPLOT2_PALETTE
+from components.plot_theme import (
+    apply_ggplot2_theme,
+    to_ggplot2_html,
+    get_modality_color,
+    THEME_PRIMARY
+)
 
 
 @module.ui
@@ -254,7 +259,7 @@ def risk_drilldown_server(input, output, session, df_react):
             y=[str(n)[:32] for n in top7.index],
             orientation="h",
             marker=dict(
-                color="#1d3190",
+                color=THEME_PRIMARY,
                 line=dict(color="#ffffff", width=1)
             ),
             hovertemplate="<b>%{y}</b><br>Cuota: %{x:.2f}%<extra></extra>"
@@ -265,13 +270,13 @@ def risk_drilldown_server(input, output, session, df_react):
             title=f"Principales Contratistas en {chosen}",
             subtitle="Cuota de mercado sobre el presupuesto total adjudicado (%)",
             xaxis_title="Cuota de Presupuesto (%)",
-            height=340,
-            margin=dict(t=50, b=40, l=160, r=20),
+            height=360,
+            margin=dict(t=65, b=45, l=170, r=25),
             x_grid=True,
             y_grid=False
         )
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 4. GRÁFICO DE MODALIDADES EN EL DEPARTAMENTO
@@ -298,12 +303,15 @@ def risk_drilldown_server(input, output, session, df_react):
         if mod_shares.empty:
             return ui.p("Sin modalidades registradas.", class_="text-muted")
 
+        slice_colors = [get_modality_color(lbl) for lbl in mod_shares.index]
+
         fig = go.Figure(data=[go.Pie(
             labels=[str(lbl)[:28] for lbl in mod_shares.index],
             values=mod_shares.values,
             hole=0.48,
+            domain=dict(x=[0.0, 0.60]),
             marker=dict(
-                colors=GGPLOT2_PALETTE[:len(mod_shares)],
+                colors=slice_colors,
                 line=dict(color="#ffffff", width=2)
             ),
             hovertemplate="<b>%{label}</b><br>Participación: %{percent}<extra></extra>"
@@ -313,15 +321,27 @@ def risk_drilldown_server(input, output, session, df_react):
             fig,
             title=f"Vías de Adjudicación en {chosen}",
             subtitle="Distribución por tipo de proceso y selección",
-            height=340,
-            margin=dict(t=50, b=25, l=20, r=20),
+            height=360,
+            margin=dict(t=65, b=30, l=15, r=15),
             show_legend=True,
             legend_orientation="v"
+        )
+        fig.update_layout(
+            legend=dict(
+                orientation="v",
+                x=0.64,
+                y=0.5,
+                yanchor="middle",
+                bgcolor="rgba(255, 255, 255, 0.95)",
+                bordercolor="#e2e8f0",
+                borderwidth=1,
+                font=dict(size=10)
+            )
         )
         fig.update_xaxes(showline=False, ticks="", showgrid=False)
         fig.update_yaxes(showline=False, ticks="", showgrid=False)
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 5. MEGACONTRATOS ATÍPICOS DE MAYOR CUANTÍA

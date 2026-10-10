@@ -17,7 +17,14 @@ from services.economic_service import (
     simulate_policy_procurement,
     format_cop_currency
 )
-from components.plot_theme import apply_ggplot2_theme, GGPLOT2_PALETTE
+from components.plot_theme import (
+    apply_ggplot2_theme,
+    to_ggplot2_html,
+    THEME_PRIMARY,
+    THEME_CRITICAL,
+    THEME_COMPETITIVE,
+    THEME_SECONDARY_BLUE
+)
 
 
 @module.ui
@@ -287,11 +294,11 @@ def simulator_server(input, output, session, df_react):
             x=categories,
             y=vals_base,
             marker=dict(
-                color="#dc2626",
+                color=THEME_CRITICAL,
                 line=dict(color="#ffffff", width=1)
             ),
-            opacity=0.88,
-            text=[f"{v:.1f}" for v in vals_base],
+            opacity=0.9,
+            text=[f"{v:.1f}%" if "%" in c else f"{v:.1f}" for v, c in zip(vals_base, categories)],
             textposition="auto"
         ))
 
@@ -300,11 +307,11 @@ def simulator_server(input, output, session, df_react):
             x=categories,
             y=vals_sim,
             marker=dict(
-                color="#059669",
+                color=THEME_COMPETITIVE,
                 line=dict(color="#ffffff", width=1)
             ),
-            opacity=0.88,
-            text=[f"{v:.1f}" for v in vals_sim],
+            opacity=0.9,
+            text=[f"{v:.1f}%" if "%" in c else f"{v:.1f}" for v, c in zip(vals_sim, categories)],
             textposition="auto"
         ))
 
@@ -314,8 +321,7 @@ def simulator_server(input, output, session, df_react):
             title=f"Impacto Regulatorio: {res['territorio']}",
             subtitle="Comparativa de indicadores clave entre statu quo y política reformada",
             yaxis_title="Escala Normalizada (0 - 100)",
-            height=360,
-            margin=dict(t=50, b=40, l=45, r=20),
+            height=370,
             show_legend=True,
             legend_orientation="h",
             x_grid=False,
@@ -323,7 +329,7 @@ def simulator_server(input, output, session, df_react):
         )
         fig.update_yaxes(range=[0, max(110, max(vals_base) * 1.15)])
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # GRÁFICO 2: DESCOMPOSICIÓN DEL PRESUPUESTO Y AHORRO
@@ -344,16 +350,17 @@ def simulator_server(input, output, session, df_react):
         labels = [
             "Ahorro Fiscal Neto (OCDE)",
             "Monto Concursado Efectivo",
-            "Contratación Directa Restante",
-            "Otros Procesos Competitivos"
+            "Otros Procesos Competitivos",
+            "Contratación Directa Restante"
         ]
-        values = [ahorro, competencia, directa_remanente, resto]
-        colors = ["#059669", "#1d3190", "#dc2626", "#64748b"]
+        values = [ahorro, competencia, resto, directa_remanente]
+        colors = [THEME_COMPETITIVE, THEME_PRIMARY, THEME_SECONDARY_BLUE, THEME_CRITICAL]
 
         fig = go.Figure(data=[go.Pie(
             labels=labels,
             values=values,
             hole=0.48,
+            domain=dict(x=[0.0, 0.60]),
             marker=dict(
                 colors=colors,
                 line=dict(color="#ffffff", width=2)
@@ -365,12 +372,24 @@ def simulator_server(input, output, session, df_react):
             fig,
             title="Estructura Presupuestal Contrafactual",
             subtitle="Descomposición presupuestal proyectada tras aplicar la reforma",
-            height=360,
-            margin=dict(t=50, b=30, l=20, r=20),
+            height=370,
+            margin=dict(t=72, b=30, l=15, r=15),
             show_legend=True,
             legend_orientation="v"
+        )
+        fig.update_layout(
+            legend=dict(
+                orientation="v",
+                x=0.64,
+                y=0.5,
+                yanchor="middle",
+                bgcolor="rgba(255, 255, 255, 0.95)",
+                bordercolor="#e2e8f0",
+                borderwidth=1,
+                font=dict(size=10)
+            )
         )
         fig.update_xaxes(showline=False, ticks="", showgrid=False)
         fig.update_yaxes(showline=False, ticks="", showgrid=False)
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))

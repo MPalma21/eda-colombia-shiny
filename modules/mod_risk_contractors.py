@@ -17,7 +17,13 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
-from components.plot_theme import apply_ggplot2_theme, GGPLOT_SEMAPHORE
+from components.plot_theme import (
+    apply_ggplot2_theme,
+    to_ggplot2_html,
+    GGPLOT_SEMAPHORE,
+    THEME_PRIMARY,
+    THEME_CRITICAL
+)
 
 
 @module.ui
@@ -208,13 +214,13 @@ def risk_contractors_server(input, output, session, df_react):
             title="Top 15 Contratistas por Presupuesto Acumulado",
             subtitle="Ranking nacional consolidado en el ámbito de datos cargado",
             xaxis_title="Presupuesto Adjudicado (COP)",
-            height=400,
-            margin=dict(t=50, b=45, l=170, r=20),
+            height=410,
+            margin=dict(t=65, b=50, l=175, r=25),
             x_grid=True,
             y_grid=False
         )
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 3. GRÁFICO DE DISPERSIÓN: MONTO VS % DIRECTA
@@ -229,7 +235,7 @@ def risk_contractors_server(input, output, session, df_react):
         plot_df = c_df.head(30).copy()
 
         color_map = GGPLOT_SEMAPHORE
-        marker_colors = [color_map.get(a, "#1d3190") for a in plot_df["alerta"]]
+        marker_colors = [color_map.get(a, THEME_PRIMARY) for a in plot_df["alerta"]]
 
         sizes = 10 + (plot_df["n_departamentos"] / max(1, plot_df["n_departamentos"].max())) * 25
 
@@ -263,7 +269,7 @@ def risk_contractors_server(input, output, session, df_react):
             )
         ))
 
-        fig.add_vline(x=65, line_dash="dash", line_color="#dc2626", annotation_text="Directa > 65%", annotation_position="top right")
+        fig.add_vline(x=65, line_dash="dash", line_color=THEME_CRITICAL, annotation_text="Directa > 65%", annotation_position="top right")
 
         apply_ggplot2_theme(
             fig,
@@ -271,14 +277,14 @@ def risk_contractors_server(input, output, session, df_react):
             subtitle="Dispersión de contratistas líderes · Tamaño proporcional a cobertura departamental",
             xaxis_title="% de Presupuesto Obtenido por Contratación Directa",
             yaxis_title="Presupuesto Total (COP)",
-            height=400,
-            margin=dict(t=50, b=45, l=45, r=20),
+            height=410,
+            margin=dict(t=65, b=50, l=50, r=25),
             x_grid=True,
             y_grid=True
         )
         fig.update_xaxes(range=[0, 105])
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 4. TABLA DE CONTRATISTAS

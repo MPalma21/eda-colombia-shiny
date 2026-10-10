@@ -19,7 +19,15 @@ from services.economic_service import (
     find_procurement_columns,
     format_cop_currency
 )
-from components.plot_theme import apply_ggplot2_theme, GGPLOT_SEMAPHORE
+from components.plot_theme import (
+    apply_ggplot2_theme,
+    to_ggplot2_html,
+    GGPLOT_SEMAPHORE,
+    THEME_PRIMARY,
+    THEME_CRITICAL,
+    THEME_MODERATE,
+    THEME_COMPETITIVE
+)
 
 
 @module.ui
@@ -317,13 +325,13 @@ def risk_radar_server(input, output, session, df_react):
             xaxis_title="Departamento",
             yaxis_title="Índice HHI",
             height=430,
-            margin=dict(t=55, b=90, l=45, r=25),
+            margin=dict(t=72, b=95, l=50, r=25),
             x_grid=False,
             y_grid=True
         )
         fig.update_xaxes(tickangle=-40)
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 5. CUADRANTE DE RIESGO (% DIRECTA VS HHI)
@@ -342,12 +350,8 @@ def risk_radar_server(input, output, session, df_react):
         else:
             sizes = [15] * len(plot_df)
 
-        color_map = {
-            "Alto Riesgo (Crítico)": "#dc2626",
-            "Riesgo Moderado": "#d97706",
-            "Bajo Riesgo (Competitivo)": "#059669"
-        }
-        marker_colors = [color_map.get(lvl, "#1d3190") for lvl in plot_df["nivel_riesgo"]]
+        color_map = GGPLOT_SEMAPHORE
+        marker_colors = [color_map.get(lvl, THEME_PRIMARY) for lvl in plot_df["nivel_riesgo"]]
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(
@@ -360,7 +364,7 @@ def risk_radar_server(input, output, session, df_react):
             marker=dict(
                 size=sizes,
                 color=marker_colors,
-                opacity=0.82,
+                opacity=0.85,
                 line=dict(color="#ffffff", width=1.5)
             ),
             customdata=np.stack((
@@ -379,8 +383,8 @@ def risk_radar_server(input, output, session, df_react):
             )
         ))
 
-        fig.add_vline(x=65, line_dash="dash", line_color="#dc2626", annotation_text="Directa > 65%", annotation_position="top right")
-        fig.add_hline(y=2500, line_dash="dash", line_color="#dc2626", annotation_text="HHI > 2500", annotation_position="top left")
+        fig.add_vline(x=65, line_dash="dash", line_color=THEME_CRITICAL, annotation_text="Directa > 65%", annotation_position="top right")
+        fig.add_hline(y=2500, line_dash="dash", line_color=THEME_CRITICAL, annotation_text="HHI > 2500", annotation_position="top left")
 
         apply_ggplot2_theme(
             fig,
@@ -389,14 +393,14 @@ def risk_radar_server(input, output, session, df_react):
             xaxis_title="% Contratación Directa (Monto)",
             yaxis_title="HHI de Concentración",
             height=430,
-            margin=dict(t=55, b=45, l=45, r=25),
+            margin=dict(t=72, b=50, l=50, r=25),
             x_grid=True,
             y_grid=True
         )
         fig.update_xaxes(range=[0, 105])
         fig.update_yaxes(range=[0, max(3000, plot_df['hhi'].max() * 1.1)])
 
-        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
+        return ui.HTML(to_ggplot2_html(fig))
 
     # -------------------------------------------------------------
     # 6. PANEL DE ALERTAS TEMPRANAS

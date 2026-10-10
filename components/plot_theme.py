@@ -14,61 +14,66 @@ import plotly.graph_objects as go
 
 GGPLOT2_FONT_FAMILY = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
-# Escala tonal de azules corporativos y analiticos (Monocromatico de alto contraste)
-BLUE_MIDNIGHT = "#080c42"   # Azul Marino Profundo / Midnight
-BLUE_NAVY = "#0f172a"       # Azul Tinta Oscuro / Maximo Riesgo / Asignacion Directa
+# Base Institucional (Azul Cobalto y Midnight Navy de la Marca)
+BLUE_MIDNIGHT = "#080c42"   # Azul Marino Profundo / Midnight Navbar
+BLUE_NAVY = "#0f172a"       # Azul Tinta Oscuro
 BLUE_COBALT = "#1d3190"     # Azul Cobalto Institucional (Marca Miguelangel Palma)
 BLUE_SAPPHIRE = "#1e40af"   # Azul Zafiro / Royal
-BLUE_ELECTRIC = "#2563eb"   # Azul Electrico Intenso / Riesgo Medio / Alerta Moderada
+BLUE_ELECTRIC = "#2563eb"   # Azul Electrico Intenso
 BLUE_AZURE = "#3b82f6"      # Azul Real Brillante
-BLUE_SKY = "#38bdf8"        # Azul Cielo Luminoso / Apertura Concursada / Ahorro
+BLUE_SKY = "#0284c7"        # Azul Cielo
 BLUE_ICE = "#93c5fd"        # Azul Hielo Suave
 BLUE_MIST = "#bfdbfe"       # Azul Claro Niebla
 BLUE_GHOST = "#eff6ff"      # Azul Superficie Tenue
 
-# Constantes semanticas retrocompatibles en gama azul
+# Semaforo Clasico Ejecutivo (Rojo Carmesi, Ambar Calido, Verde Esmeralda)
+SEMAPHORE_RED = "#dc2626"      # Alto Riesgo / Critico / Asignacion Directa
+SEMAPHORE_AMBER = "#d97706"    # Riesgo Moderado / Alerta Mixta
+SEMAPHORE_GREEN = "#059669"    # Bajo Riesgo / Competitivo / Licitacion Abierta
+
+# Constantes semanticas de color
 THEME_PRIMARY = BLUE_COBALT
-THEME_CRITICAL = BLUE_NAVY
-THEME_MODERATE = BLUE_ELECTRIC
-THEME_COMPETITIVE = BLUE_SKY
+THEME_CRITICAL = SEMAPHORE_RED
+THEME_MODERATE = SEMAPHORE_AMBER
+THEME_COMPETITIVE = SEMAPHORE_GREEN
 THEME_SECONDARY_BLUE = BLUE_AZURE
 THEME_NAVY = BLUE_MIDNIGHT
 THEME_SLATE = "#64748b"
 
-# Paleta discreta de categorias en gama de azules
+# Paleta discreta categorica
 GGPLOT2_PALETTE = [
-    BLUE_COBALT,
-    BLUE_NAVY,
-    BLUE_SKY,
-    BLUE_ELECTRIC,
-    BLUE_AZURE,
-    BLUE_ICE,
-    BLUE_MIDNIGHT
+    THEME_PRIMARY,        # #1d3190 (Azul Cobalto)
+    THEME_CRITICAL,       # #dc2626 (Rojo Carmesi)
+    THEME_COMPETITIVE,    # #059669 (Verde Esmeralda)
+    THEME_MODERATE,       # #d97706 (Ambar Calido)
+    BLUE_SKY,             # #0284c7 (Azul Cielo)
+    "#7c3aed",            # Purpura
+    BLUE_MIDNIGHT         # #080c42 (Midnight)
 ]
 
-# Mapa de semaforo de riesgo en tonalidades de azul (jerarquia por densidad/luminancia)
+# Mapa de semaforo de riesgo oficial
 GGPLOT_SEMAPHORE = {
-    "Alto Riesgo (Crítico)": BLUE_NAVY,
-    "Riesgo Moderado": BLUE_ELECTRIC,
-    "Bajo Riesgo (Competitivo)": BLUE_SKY,
-    "Predominio Directo (Sin Concurso)": BLUE_NAVY,
-    "Mixto / Moderado": BLUE_ELECTRIC,
-    "Concurso Competitivo": BLUE_SKY
+    "Alto Riesgo (Crítico)": THEME_CRITICAL,
+    "Riesgo Moderado": THEME_MODERATE,
+    "Bajo Riesgo (Competitivo)": THEME_COMPETITIVE,
+    "Predominio Directo (Sin Concurso)": THEME_CRITICAL,
+    "Mixto / Moderado": THEME_MODERATE,
+    "Concurso Competitivo": THEME_COMPETITIVE
 }
 
 
 def get_modality_color(modality_name: str) -> str:
-    """Asigna un tono azul semantico segun la modalidad de contratacion."""
+    """Asigna un color semantico intuitivo segun la modalidad de contratacion."""
     m = str(modality_name).lower()
     if any(k in m for k in ("direct", "urgencia", "especial", "sin concurso")):
-        return BLUE_NAVY       # Asignacion directa: tono mas oscuro / concentrado
+        return THEME_CRITICAL       # Asignacion a dedo / sin concurso: rojo carmesi
     if any(k in m for k in ("licitac", "concurso", "abierto")):
-        return BLUE_SKY        # Concurso publico abierto: azul cielo luminoso
+        return THEME_COMPETITIVE    # Concurso publico abierto: verde esmeralda
     if any(k in m for k in ("abreviad", "subasta")):
-        return BLUE_COBALT     # Seleccion abreviada: cobalto institucional
+        return THEME_PRIMARY        # Seleccion abreviada: azul cobalto institucional
     if any(k in m for k in ("minima", "mínima")):
-        return BLUE_ICE        # Minima cuantia: azul hielo
-    return BLUE_ELECTRIC       # Otros procesos: azul electrico
+        return BLUE_SKY             # Minima cuantia: azul cielo
+    return THEME_MODERATE           # Otros regimenes: ambar calido
 
 
 def apply_ggplot2_theme(

@@ -26,7 +26,8 @@ from components.plot_theme import (
     GGPLOT2_FONT_FAMILY,
     GGPLOT_SEMAPHORE,
     THEME_PRIMARY,
-    THEME_CRITICAL
+    THEME_CRITICAL,
+    THEME_COMPETITIVE
 )
 
 
@@ -250,14 +251,14 @@ def risk_contractors_server(input, output, session, df_react):
 
         fig = go.Figure()
 
-        # Segmento 1: Contratacion Directa (Azul Marino profundo - alerta / sin concurso)
+        # Segmento 1: Contratacion Directa (Rojo Carmesi - alerta / asignacion a dedo)
         fig.add_trace(go.Bar(
             y=[str(p)[:30] for p in top15["proveedor"]],
             x=pct_direct,
             name="Contratación Directa (Sin Concurso)",
             orientation="h",
             marker=dict(
-                color=BLUE_NAVY,
+                color=THEME_CRITICAL,
                 line=dict(color="#ffffff", width=1)
             ),
             text=text_dir,
@@ -279,20 +280,20 @@ def risk_contractors_server(input, output, session, df_react):
             )
         ))
 
-        # Segmento 2: Concurso Competitivo / Licitacion (Azul Cielo luminoso)
+        # Segmento 2: Concurso Competitivo / Licitacion (Verde Esmeralda - transparencia)
         fig.add_trace(go.Bar(
             y=[str(p)[:30] for p in top15["proveedor"]],
             x=pct_comp,
             name="Concurso Público / Licitación",
             orientation="h",
             marker=dict(
-                color=BLUE_SKY,
+                color=THEME_COMPETITIVE,
                 line=dict(color="#ffffff", width=1)
             ),
             text=text_com,
             textposition="inside",
             insidetextanchor="middle",
-            textfont=dict(color="#080c42", size=10, family=GGPLOT2_FONT_FAMILY),
+            textfont=dict(color="#ffffff", size=10, family=GGPLOT2_FONT_FAMILY),
             customdata=np.stack((
                 [format_cop_currency(v) for v in monto_com],
                 [format_cop_currency(v) for v in monto_total],
@@ -313,10 +314,10 @@ def risk_contractors_server(input, output, session, df_react):
         fig.add_vline(
             x=65,
             line_dash="dash",
-            line_color=BLUE_COBALT,
+            line_color=THEME_CRITICAL,
             annotation_text="Alerta Crítica (>65%)",
             annotation_position="bottom right",
-            annotation_font=dict(size=10, color=BLUE_COBALT, family=GGPLOT2_FONT_FAMILY)
+            annotation_font=dict(size=10, color=THEME_CRITICAL, family=GGPLOT2_FONT_FAMILY)
         )
 
         apply_ggplot2_theme(

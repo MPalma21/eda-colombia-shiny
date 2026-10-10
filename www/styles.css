@@ -36,13 +36,13 @@
     --text-muted: #576b94;
     --text-subtle: #8fa3c7;
     
-    /* Semantica de Estado (Escala Tonal de Azules) */
-    --semantic-success: #0284c7;
-    --semantic-success-bg: #f0f9ff;
-    --semantic-warning: #2563eb;
-    --semantic-warning-bg: #eff6ff;
-    --semantic-danger: #0f172a;
-    --semantic-danger-bg: #f1f5f9;
+    /* Semantica de Estado (Semaforo Clasico Ejecutivo) */
+    --semantic-success: #059669;
+    --semantic-success-bg: #ecfdf5;
+    --semantic-warning: #d97706;
+    --semantic-warning-bg: #fffbeb;
+    --semantic-danger: #dc2626;
+    --semantic-danger-bg: #fef2f2;
     --semantic-info: #1d4ed8;
     --semantic-info-bg: #eff6ff;
     
@@ -612,9 +612,9 @@ shiny-data-frame {
    8. SEMAFOROS DE RIESGO CONTRACTUAL & SIMULADOR DE POLITICA
    ========================================================================== */
 .badge-risk-high {
-    background-color: #0f172a;
-    color: #ffffff;
-    border: 1px solid #1e293b;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
     font-size: 0.76rem;
     font-weight: 700;
     padding: 3px 8px;
@@ -625,9 +625,9 @@ shiny-data-frame {
 }
 
 .badge-risk-mid {
-    background-color: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
     font-size: 0.76rem;
     font-weight: 700;
     padding: 3px 8px;
@@ -638,9 +638,9 @@ shiny-data-frame {
 }
 
 .badge-risk-low {
-    background-color: #f0f9ff;
-    color: #0284c7;
-    border: 1px solid #bae6fd;
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
     font-size: 0.76rem;
     font-weight: 700;
     padding: 3px 8px;
@@ -659,29 +659,29 @@ shiny-data-frame {
 }
 
 .sim-box-counterfactual {
-    background-color: #f0f7ff;
-    border: 1px solid #bfdbfe;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
     border-radius: 8px;
     padding: 16px;
     height: 100%;
 }
 
 .sim-kpi-diff-positive {
-    color: #0284c7;
+    color: #059669;
     font-weight: 700;
 }
 
 .sim-kpi-diff-negative {
-    color: #1e3a8a;
+    color: #dc2626;
     font-weight: 700;
 }
 
 .sim-saving-banner {
-    background: linear-gradient(135deg, #0a1138 0%, #1d3190 55%, #2563eb 100%);
+    background: linear-gradient(135deg, #064e3b 0%, #047857 55%, #059669 100%);
     color: #ffffff;
     border-radius: 8px;
     padding: 16px 20px;
-    box-shadow: 0 4px 10px -1px rgba(29, 49, 144, 0.25);
+    box-shadow: 0 4px 10px -1px rgba(6, 78, 59, 0.25);
 }
 
 /* ==========================================================================

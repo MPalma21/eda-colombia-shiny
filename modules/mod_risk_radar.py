@@ -133,7 +133,7 @@ def risk_radar_server(input, output, session, df_react):
                     ),
                     ui.div(
                         ui.span("Criterios de Semáforo de un Vistazo: ", class_="fw-bold text-primary small"),
-                        ui.span("Azul Marino (Crítico): HHI > 2,500 o Contratación Directa > 65% | Azul Eléctrico (Moderado): HHI 1,500-2,500 o Directa 35%-65% | Azul Celeste (Competitivo): HHI < 1,500 y Directa < 35%.", class_="small text-muted"),
+                        ui.span("Rojo (Crítico): HHI > 2,500 o Contratación Directa > 65% | Ámbar (Moderado): HHI 1,500-2,500 o Directa 35%-65% | Verde (Competitivo): HHI < 1,500 y Directa < 35%.", class_="small text-muted"),
                         class_="guide-callout"
                     ),
                     class_="guide-hero-card mb-2"

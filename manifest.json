@@ -65,19 +65,19 @@
       "checksum": "65fd9247668b88f98c5236f81ef5d438"
     },
     "modules/mod_risk_contractors.py": {
-      "checksum": "94ad90e783aac29d61c4b38caf9827b2"
+      "checksum": "8ad6a24df7f3a8210a58579b6359e986"
     },
     "modules/mod_risk_drilldown.py": {
-      "checksum": "8a45e25decaa4826bbd01003c0bbd521"
+      "checksum": "27f18fc0bed6f1a3fc3eda7c5d07a69e"
     },
     "modules/mod_risk_evidence.py": {
-      "checksum": "6925441384a07c10d52257d359fcee40"
+      "checksum": "4bc86e9884e2b8ac568d7fcff09fca8c"
     },
     "modules/mod_risk_radar.py": {
-      "checksum": "1226f66b34ac2ac3b1ff5cfbe11c7416"
+      "checksum": "26e105710a37861ceb42e5bb197c5ea0"
     },
     "modules/mod_simulator.py": {
-      "checksum": "b7e1701fca06431d83095e66cadd3abc"
+      "checksum": "5a243f08db6f40c0a462c7965055e825"
     },
     "pyproject.toml": {
       "checksum": "0ece014e66715424b68bf5345cdaab7d"
@@ -116,7 +116,7 @@
       "checksum": "605903a8b61444d489c0f650eae56790"
     },
     "www/styles.css": {
-      "checksum": "09422a5253ee90b52133c091ab3f665b"
+      "checksum": "3456d3283cf069254bcbea26f67e66f1"
     }
   }
 }

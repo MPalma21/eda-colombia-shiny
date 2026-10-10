@@ -24,10 +24,10 @@ def risk_evidence_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Matriz Consolidada de Riesgo Territorial · SECOP II", class_="fw-bold"),
-                    ui.span("Microdatos Agregados con Semáforos, HHI y Cuotas de Mercado", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Matriz Consolidada de Riesgo Territorial · SECOP II", class_="card-header-title"),
+                    ui.div("Microdatos Agregados con Semáforos, HHI y Cuotas de Mercado", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.div(
                 ui.span("Guía de Auditoría para Veedurías y Control Fiscal: ", class_="fw-bold text-primary small"),
@@ -68,10 +68,10 @@ def risk_evidence_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Expediente de Contratos Auditados con Banderas de Alerta", class_="fw-bold"),
-                    ui.span("Microdatos a Nivel de Contrato Individual para Veeduría Ciudadana", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Expediente de Contratos Auditados con Banderas de Alerta", class_="card-header-title"),
+                    ui.div("Microdatos a Nivel de Contrato Individual para Veeduría Ciudadana", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.div(
                 ui.span("Glosario de Banderas Contractuales: ", class_="fw-bold text-primary small"),

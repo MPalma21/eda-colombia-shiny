@@ -34,10 +34,10 @@ def simulator_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Simulador de Política Económica · Desconcentración y Ahorro Fiscal", class_="fw-bold"),
-                    ui.span("Modelo Contrafactual de Reforma a la Contratación Pública", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Simulador de Política Económica · Desconcentración y Ahorro Fiscal", class_="card-header-title"),
+                    ui.div("Modelo Contrafactual de Reforma a la Contratación Pública", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("sim_controls_ui"),
             full_screen=False,
@@ -48,10 +48,10 @@ def simulator_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Resultados del Escenario Simulado vs Línea Base Actual", class_="fw-bold"),
-                    ui.span("Benchmark OCDE: 12.5% de ahorro en compras migradas a concurso abierto", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Resultados del Escenario Simulado vs Línea Base Actual", class_="card-header-title"),
+                    ui.div("Benchmark OCDE: 12.5% de ahorro en compras migradas a concurso abierto", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("sim_saving_banner_ui"),
             ui.output_ui("sim_comparison_cards_ui"),

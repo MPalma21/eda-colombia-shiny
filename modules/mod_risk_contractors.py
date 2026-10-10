@@ -37,10 +37,10 @@ def risk_contractors_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Poder de Mercado & Concentración de Contratistas (SECOP II)", class_="fw-bold"),
-                    ui.span("Auditoría de Adjudicatarios, Ratios Oligopólicos y Tasa de Contratación a Dedo", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Poder de Mercado & Concentración de Contratistas (SECOP II)", class_="card-header-title"),
+                    ui.div("Auditoría de Adjudicatarios, Ratios Oligopólicos y Tasa de Contratación a Dedo", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("contractors_kpi_cards"),
             full_screen=False,
@@ -51,9 +51,9 @@ def risk_contractors_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.div("Estructura de Mercado · Grandes Acaparadores y Vía de Adjudicación", class_="fw-bold"),
-                    ui.div("Auditoría de concentración presupuestal y modalidad de contratación pública", class_="text-muted", style="font-size: 0.78rem;"),
-                    class_="d-flex flex-column gap-1"
+                    ui.div("Estructura de Mercado · Grandes Acaparadores y Vía de Adjudicación", class_="card-header-title"),
+                    ui.div("Auditoría de concentración presupuestal y modalidad de contratación pública", class_="card-header-subtitle"),
+                    class_="card-header-heading"
                 )
             ),
             ui.layout_columns(
@@ -70,10 +70,10 @@ def risk_contractors_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Directorio de Contratistas con Alertas de Riesgo Anticompetitivo", class_="fw-bold"),
-                    ui.span("Seguimiento a Proveedores y Tasa de Dependencia de Contratación Directa", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Directorio de Contratistas con Alertas de Riesgo Anticompetitivo", class_="card-header-title"),
+                    ui.div("Seguimiento a Proveedores y Tasa de Dependencia de Contratación Directa", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_data_frame("contractors_data_table"),
             full_screen=True

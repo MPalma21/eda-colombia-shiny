@@ -34,10 +34,10 @@ def risk_drilldown_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Auditoría Departamental a Profundidad · Expediente Territorial", class_="fw-bold"),
-                    ui.span("Inspección Detallada de Vulnerabilidades y Contratación por Jurisdicción", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Auditoría Departamental a Profundidad · Expediente Territorial", class_="card-header-title"),
+                    ui.div("Inspección Detallada de Vulnerabilidades y Contratación por Jurisdicción", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("drilldown_selector_ui"),
             ui.output_ui("drilldown_profile_ui"),
@@ -49,10 +49,10 @@ def risk_drilldown_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Estructura de Competencia Local · Contratistas y Vías de Adjudicación", class_="fw-bold"),
-                    ui.span("Cuotas de Mercado de los Mayores Adjudicatarios vs Modalidades Utilizadas", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Estructura de Competencia Local · Contratistas y Vías de Adjudicación", class_="card-header-title"),
+                    ui.div("Cuotas de Mercado de los Mayores Adjudicatarios vs Modalidades Utilizadas", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.layout_columns(
                 ui.output_ui("drilldown_contractors_chart"),
@@ -68,10 +68,10 @@ def risk_drilldown_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Megacontratos Atípicos & Dictamen Técnico para Control Fiscal", class_="fw-bold"),
-                    ui.span("Auditoría de Contratos de Mayor Cuantía y Recomendaciones de Política", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Megacontratos Atípicos & Dictamen Técnico para Control Fiscal", class_="card-header-title"),
+                    ui.div("Auditoría de Contratos de Mayor Cuantía y Recomendaciones de Política", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.layout_columns(
                 ui.output_ui("drilldown_atypical_container"),

@@ -37,10 +37,10 @@ def risk_radar_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Radar Territorial de Alertas y Semáforos de Contratación (SECOP II)", class_="fw-bold"),
-                    ui.span("Metodología: Concentración HHI de Oferentes & Tasa de Contratación Directa", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Radar Territorial de Alertas y Semáforos de Contratación (SECOP II)", class_="card-header-title"),
+                    ui.div("Metodología: Concentración HHI de Oferentes & Tasa de Contratación Directa", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("radar_controls_ui"),
             ui.output_ui("radar_summary_cards"),
@@ -52,10 +52,10 @@ def risk_radar_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Evaluación Comparativa Interdepartamental & Cuadrantes de Alerta", class_="fw-bold"),
-                    ui.span("Líneas de Umbral Normativo: HHI = 2,500 pts | Contratación Directa = 65%", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Evaluación Comparativa Interdepartamental & Cuadrantes de Alerta", class_="card-header-title"),
+                    ui.div("Líneas de Umbral Normativo: HHI = 2,500 pts | Contratación Directa = 65%", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.layout_columns(
                 ui.output_ui("radar_bars_container"),
@@ -71,10 +71,10 @@ def risk_radar_ui():
         ui.card(
             ui.card_header(
                 ui.div(
-                    ui.span("Panel de Alertas Tempranas · Departamentos en Situación Crítica", class_="fw-bold"),
-                    ui.span("Identificación de Factores Detonantes de Riesgo Fiscal y Anticompetitivo", class_="text-muted", style="font-size: 0.78rem;")
-                ),
-                class_="d-flex justify-content-between align-items-center"
+                    ui.div("Panel de Alertas Tempranas · Departamentos en Situación Crítica", class_="card-header-title"),
+                    ui.div("Identificación de Factores Detonantes de Riesgo Fiscal y Anticompetitivo", class_="card-header-subtitle"),
+                    class_="card-header-heading"
+                )
             ),
             ui.output_ui("radar_early_alerts_container"),
             full_screen=True
@@ -133,7 +133,7 @@ def risk_radar_server(input, output, session, df_react):
                     ),
                     ui.div(
                         ui.span("Criterios de Semáforo de un Vistazo: ", class_="fw-bold text-primary small"),
-                        ui.span("Rojo (Crítico): HHI > 2,500 o Contratación Directa > 65% | Amarillo (Moderado): HHI 1,500-2,500 o Directa 35%-65% | Verde (Competitivo): HHI < 1,500 y Directa < 35%.", class_="small text-muted"),
+                        ui.span("Azul Marino (Crítico): HHI > 2,500 o Contratación Directa > 65% | Azul Eléctrico (Moderado): HHI 1,500-2,500 o Directa 35%-65% | Azul Celeste (Competitivo): HHI < 1,500 y Directa < 35%.", class_="small text-muted"),
                         class_="guide-callout"
                     ),
                     class_="guide-hero-card mb-2"

@@ -7,6 +7,7 @@ Perspectiva 5 del Panel de Riesgo Territorial:
 - Exportacion segura de datos en CSV (RFC-4180 sanitizado) para entes de control.
 """
 from shiny import module, ui, render, reactive
+import numpy as np
 import pandas as pd
 from services.economic_service import (
     compute_procurement_risk_matrix,
@@ -174,38 +175,33 @@ def risk_evidence_server(input, output, session, df_react):
                 obj_c = c
                 break
 
-        records = []
-        val_series = df[val_c].dropna() if val_c and val_c in df.columns and pd.api.types.is_numeric_dtype(df[val_c]) else pd.Series(dtype=float)
-        q75 = val_series.quantile(0.75) if not val_series.empty else 0.0
+        val_series = pd.to_numeric(df[val_c], errors="coerce").dropna() if val_c and val_c in df.columns else pd.Series(dtype=float)
+        q75 = float(val_series.quantile(0.75)) if not val_series.empty else 0.0
 
-        sample_subset = df.head(1500).copy()
+        sample_subset = df.head(1500)
+        if sample_subset.empty:
+            return pd.DataFrame()
 
-        for _, row in sample_subset.iterrows():
-            dept = str(row[dept_c]) if dept_c and dept_c in row and pd.notnull(row[dept_c]) else "Territorio N/A"
-            prov = str(row[prov_c]) if prov_c and prov_c in row and pd.notnull(row[prov_c]) else "Sin proveedor"
-            val = float(row[val_c]) if val_c and val_c in row and pd.notnull(row[val_c]) else 0.0
-            mod = str(row[mod_c]) if mod_c and mod_c in row and pd.notnull(row[mod_c]) else "No especificada"
-            obj = str(row[obj_c])[:80] if obj_c and obj_c in row and pd.notnull(row[obj_c]) else "Contrato de obra / prestación de servicios"
+        depts = sample_subset[dept_c].fillna("Territorio N/A").astype(str) if dept_c and dept_c in sample_subset.columns else pd.Series("Territorio N/A", index=sample_subset.index)
+        provs = sample_subset[prov_c].fillna("Sin proveedor").astype(str) if prov_c and prov_c in sample_subset.columns else pd.Series("Sin proveedor", index=sample_subset.index)
+        vals = pd.to_numeric(sample_subset[val_c], errors="coerce").fillna(0.0) if val_c and val_c in sample_subset.columns else pd.Series(0.0, index=sample_subset.index)
+        mods = sample_subset[mod_c].fillna("No especificada").astype(str) if mod_c and mod_c in sample_subset.columns else pd.Series("No especificada", index=sample_subset.index)
+        objs = sample_subset[obj_c].fillna("Contrato de obra / prestación de servicios").astype(str).str.slice(0, 80) if obj_c and obj_c in sample_subset.columns else pd.Series("Contrato de obra / prestación de servicios", index=sample_subset.index)
 
-            is_direct = any(k in mod.lower() for k in ("direct", "urgencia", "especial", "sin concurso"))
-            if is_direct and val >= q75 and q75 > 0:
-                flag = "Directa de Alto Monto"
-            elif is_direct:
-                flag = "Contratación Directa"
-            else:
-                flag = "Proceso Abierto / Concurso"
+        is_direct = mods.str.lower().str.contains("direct|urgencia|especial|sin concurso", regex=True, na=False)
+        cond_high = is_direct & (vals >= q75) & (q75 > 0)
+        cond_dir = is_direct & (~cond_high)
+        flags = np.select([cond_high, cond_dir], ["Directa de Alto Monto", "Contratación Directa"], default="Proceso Abierto / Concurso")
 
-            records.append({
-                "alerta_contrato": flag,
-                "departamento": dept,
-                "proveedor": prov,
-                "monto_raw": val,
-                "monto": format_cop_currency(val),
-                "modalidad": mod,
-                "objeto": obj
-            })
-
-        res_df = pd.DataFrame(records)
+        res_df = pd.DataFrame({
+            "alerta_contrato": flags,
+            "departamento": depts,
+            "proveedor": provs,
+            "monto_raw": vals,
+            "monto": vals.map(format_cop_currency),
+            "modalidad": mods,
+            "objeto": objs
+        }, index=sample_subset.index)
 
         # Filtro de búsqueda textual
         query = input.contract_search().strip() if hasattr(input, "contract_search") else ""

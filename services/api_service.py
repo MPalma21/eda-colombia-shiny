@@ -47,27 +47,29 @@ def _convert_columns(df: pd.DataFrame, metadata: dict[str, Any]) -> pd.DataFrame
     for col in df.columns:
         # Socrata entrega campos URL y ubicacion como objetos. Las vistas de
         # Shiny y el diagnostico de cardinalidad requieren valores escalares.
-        if df[col].map(lambda value: isinstance(value, (dict, list))).any():
-            df[col] = df[col].map(_flatten_structured_value)
+        col_series = df[col]
+        if col_series.dtype == object and any(isinstance(v, (dict, list)) for v in col_series.dropna()):
+            df[col] = col_series.map(_flatten_structured_value)
+            col_series = df[col]
         kind = declared.get(col, "")
         if kind in {"number", "money", "percent", "double"}:
-            converted = pd.to_numeric(df[col], errors="coerce")
-            if not (converted.isna() & df[col].notna()).any():
+            converted = pd.to_numeric(col_series, errors="coerce")
+            if not (converted.isna() & col_series.notna()).any():
                 df[col] = converted
         elif kind in {"calendar_date", "date", "floating_timestamp", "fixed_timestamp"}:
-            converted = pd.to_datetime(df[col], errors="coerce")
-            if not (converted.isna() & df[col].notna()).any():
+            converted = pd.to_datetime(col_series, errors="coerce")
+            if not (converted.isna() & col_series.notna()).any():
                 df[col] = converted
         elif not kind:
-            values = df[col].dropna().astype(str)
+            values = col_series.dropna().astype(str)
             name = str(col).lower()
             if any(word in name for word in ("fecha", "date", "periodo", "tiempo")):
-                converted = pd.to_datetime(df[col], errors="coerce")
-                if not (converted.isna() & df[col].notna()).any():
+                converted = pd.to_datetime(col_series, errors="coerce")
+                if not (converted.isna() & col_series.notna()).any():
                     df[col] = converted
             elif not any(word in name for word in ("id", "codigo", "código", "nit", "telefono", "teléfono")) and not values.str.match(r"^0\d+").any():
-                converted = pd.to_numeric(df[col], errors="coerce")
-                if not (converted.isna() & df[col].notna()).any():
+                converted = pd.to_numeric(col_series, errors="coerce")
+                if not (converted.isna() & col_series.notna()).any():
                     df[col] = converted
     return df
 

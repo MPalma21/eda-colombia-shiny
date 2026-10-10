@@ -318,7 +318,7 @@ def risk_radar_server(input, output, session, df_react):
         fig.update_xaxes(tickangle=-40, showgrid=False)
         fig.update_yaxes(showgrid=True, gridcolor="#edf2e9")
 
-        return ui.HTML(fig.to_html(include_plotlyjs="cdn", full_html=False))
+        return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
     # -------------------------------------------------------------
     # 5. CUADRANTE DE RIESGO (% DIRECTA VS HHI)

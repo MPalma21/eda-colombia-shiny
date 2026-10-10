@@ -202,24 +202,39 @@ def risk_drilldown_server(input, output, session, df_react):
         )
 
     # -------------------------------------------------------------
+    # 2.5 DATAFRAME FILTRADO POR DEPARTAMENTO SELECCIONADO (REACTIVO MEMOIZADO)
+    # -------------------------------------------------------------
+    @reactive.calc
+    def selected_dept_sub_df():
+        df = df_react()
+        if df.empty or not hasattr(input, "selected_dept"):
+            return pd.DataFrame()
+        chosen = input.selected_dept()
+        if not chosen:
+            return pd.DataFrame()
+        dept_c, _, _, _ = find_procurement_columns(df)
+        if not dept_c or dept_c not in df.columns:
+            return pd.DataFrame()
+        target = str(chosen).strip().lower()
+        dept_clean = df[dept_c].astype(str).str.strip().str.lower()
+        return df[dept_clean == target]
+
+    # -------------------------------------------------------------
     # 3. GRÁFICO DE CONTRATISTAS EN EL DEPARTAMENTO
     # -------------------------------------------------------------
     @output
     @render.ui
     def drilldown_contractors_chart():
-        df = df_react()
+        sub = selected_dept_sub_df()
         matrix = matrix_df()
-        if df.empty or matrix.empty or not hasattr(input, "selected_dept"):
+        if sub.empty or matrix.empty or not hasattr(input, "selected_dept"):
             return ui.span()
 
-        dept_c, val_c, prov_c, _ = find_procurement_columns(df)
-        if not dept_c or not prov_c or dept_c not in df.columns or prov_c not in df.columns:
+        dept_c, val_c, prov_c, _ = find_procurement_columns(sub)
+        if not dept_c or not prov_c or dept_c not in sub.columns or prov_c not in sub.columns:
             return ui.p("Configure columnas válidas de departamento y proveedor.", class_="text-muted")
 
         chosen = input.selected_dept()
-        sub = df[df[dept_c].astype(str).str.strip().str.lower() == str(chosen).strip().lower()]
-        if sub.empty:
-            return ui.span()
 
         if val_c and val_c in sub.columns and pd.api.types.is_numeric_dtype(sub[val_c]):
             shares = sub.groupby(prov_c)[val_c].sum()
@@ -260,19 +275,16 @@ def risk_drilldown_server(input, output, session, df_react):
     @output
     @render.ui
     def drilldown_modalities_chart():
-        df = df_react()
+        sub = selected_dept_sub_df()
         matrix = matrix_df()
-        if df.empty or matrix.empty or not hasattr(input, "selected_dept"):
+        if sub.empty or matrix.empty or not hasattr(input, "selected_dept"):
             return ui.span()
 
-        dept_c, val_c, _, mod_c = find_procurement_columns(df)
-        if not dept_c or not mod_c or dept_c not in df.columns or mod_c not in df.columns:
+        dept_c, val_c, _, mod_c = find_procurement_columns(sub)
+        if not dept_c or not mod_c or dept_c not in sub.columns or mod_c not in sub.columns:
             return ui.p("Configure la columna de modalidad de contratación.", class_="text-muted")
 
         chosen = input.selected_dept()
-        sub = df[df[dept_c].astype(str).str.strip().str.lower() == str(chosen).strip().lower()]
-        if sub.empty:
-            return ui.span()
 
         if val_c and val_c in sub.columns and pd.api.types.is_numeric_dtype(sub[val_c]):
             mod_shares = sub.groupby(mod_c)[val_c].sum().sort_values(ascending=False).head(5)
@@ -307,12 +319,12 @@ def risk_drilldown_server(input, output, session, df_react):
     @output
     @render.ui
     def drilldown_atypical_container():
-        df = df_react()
-        if df.empty or not hasattr(input, "selected_dept"):
+        sub = selected_dept_sub_df()
+        if sub.empty or not hasattr(input, "selected_dept"):
             return ui.span()
 
         chosen = input.selected_dept()
-        atypical_df = get_department_atypical_contracts(df, chosen, top_n=6)
+        atypical_df = get_department_atypical_contracts(sub, chosen, top_n=6)
         if atypical_df.empty:
             return ui.p("No se registraron contratos individuales atípicos.", class_="text-muted")
 

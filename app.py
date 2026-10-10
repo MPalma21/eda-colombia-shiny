@@ -74,7 +74,10 @@ app_ui = ui.page_navbar(
         open="desktop"
     ),
     
-    header=ui.tags.head(ui.tags.link(rel="stylesheet", type="text/css", href="styles.css")),
+    header=ui.tags.head(
+        ui.tags.link(rel="stylesheet", type="text/css", href="styles.css"),
+        ui.tags.script(src="https://cdn.plot.ly/plotly-2.35.2.min.js")
+    ),
     fillable=False,
     id="main_navbar"
 )

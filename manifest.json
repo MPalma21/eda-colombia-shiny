@@ -25,11 +25,23 @@
     ".gitignore": {
       "checksum": "f590d545d242672c2a9fa4b9a5f2b358"
     },
+    ".pytest_cache/.gitignore": {
+      "checksum": "ae07caff09568018697eb6087d745223"
+    },
+    ".pytest_cache/CACHEDIR.TAG": {
+      "checksum": "f552fcc7d0ecdb6607533519d6898357"
+    },
+    ".pytest_cache/README.md": {
+      "checksum": "7cc7f8d7cb2f2f6ea48da17c4b42c097"
+    },
+    ".pytest_cache/v/cache/nodeids": {
+      "checksum": "f48d895b0d537afe278a7e168ea1d43b"
+    },
     "README.md": {
       "checksum": "696ab4715e023fce181f21d694f87ee0"
     },
     "app.py": {
-      "checksum": "8ac526bd0e41683e28740fce46d9cd47"
+      "checksum": "9938a85134d4e6848827f1dba861d1e1"
     },
     "components/__init__.py": {
       "checksum": "247c4978696affa2cfa556cf917d2ff7"
@@ -46,6 +58,27 @@
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
     },
+    "modules/__pycache__/__init__.cpython-311.pyc": {
+      "checksum": "9ded907dd7375391f40839106ac7f472"
+    },
+    "modules/__pycache__/mod_loader.cpython-311.pyc": {
+      "checksum": "6d054750cddd6e5b0b8823c0fc60d5c7"
+    },
+    "modules/__pycache__/mod_risk_contractors.cpython-311.pyc": {
+      "checksum": "3e0171ff35d300b4995e5c245fbdcfd4"
+    },
+    "modules/__pycache__/mod_risk_drilldown.cpython-311.pyc": {
+      "checksum": "795e69a2ba0dde86852feec01c73f3e6"
+    },
+    "modules/__pycache__/mod_risk_evidence.cpython-311.pyc": {
+      "checksum": "0a7c8f518b33f3f6122f42c68d34b820"
+    },
+    "modules/__pycache__/mod_risk_radar.cpython-311.pyc": {
+      "checksum": "8fab33eb936840e53a814292cda5560a"
+    },
+    "modules/__pycache__/mod_simulator.cpython-311.pyc": {
+      "checksum": "a1d34e682ea0fd8f9bc93fe79b5a04af"
+    },
     "modules/mod_loader.py": {
       "checksum": "65fd9247668b88f98c5236f81ef5d438"
     },
@@ -53,13 +86,13 @@
       "checksum": "3c96ed7669d1255e29a60cb372b2f483"
     },
     "modules/mod_risk_drilldown.py": {
-      "checksum": "e1fdf9c40a2efb6969a61f18b595a0ce"
+      "checksum": "f9a5c96c6d1ee2bc0ff57ae1a9bf20bd"
     },
     "modules/mod_risk_evidence.py": {
-      "checksum": "05401900a38b591106ba85db8c11f1cb"
+      "checksum": "6925441384a07c10d52257d359fcee40"
     },
     "modules/mod_risk_radar.py": {
-      "checksum": "097b88a845513d04c3b701a6783cb814"
+      "checksum": "cffd427037be8af033436ada978651bc"
     },
     "modules/mod_simulator.py": {
       "checksum": "24d6f98b082dd32c45dfe79016cc34c8"
@@ -70,11 +103,29 @@
     "services/__init__.py": {
       "checksum": "ff5eeeedd9fc663333d3b44837d71af0"
     },
+    "services/__pycache__/__init__.cpython-311.pyc": {
+      "checksum": "7fc28e30f7692836a420f5e2190fad0d"
+    },
+    "services/__pycache__/api_service.cpython-311.pyc": {
+      "checksum": "6527f6ec2128456a927a714fb367aabc"
+    },
+    "services/__pycache__/economic_service.cpython-311.pyc": {
+      "checksum": "2186cce109860ac9fbc94274162d332f"
+    },
+    "services/__pycache__/scope_service.cpython-311.pyc": {
+      "checksum": "db9e1ef8078109de58a91f4619f3f497"
+    },
+    "services/__pycache__/stats_service.cpython-311.pyc": {
+      "checksum": "070075552786da63059d92ae1cdc46ef"
+    },
+    "services/__pycache__/table_service.cpython-311.pyc": {
+      "checksum": "689623e6f8f486d1fb805ddf9cb6ee5f"
+    },
     "services/api_service.py": {
-      "checksum": "81f0687f1e7cd55efcc0b022f0d0af11"
+      "checksum": "561437b4c779f865c0165a15aaff019d"
     },
     "services/economic_service.py": {
-      "checksum": "f222564fb805f4134e4d7177508854a8"
+      "checksum": "00da742b4dac91156020e426fb2bfa1f"
     },
     "services/scope_service.py": {
       "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
@@ -84,6 +135,18 @@
     },
     "services/table_service.py": {
       "checksum": "0b8bed18859fc60e431eb65a49a8e5ba"
+    },
+    "tests/__pycache__/test_banner.cpython-311-pytest-9.1.1.pyc": {
+      "checksum": "cc469876807c60b9fd7132fc27bd6d2a"
+    },
+    "tests/__pycache__/test_data_flow.cpython-311-pytest-9.1.1.pyc": {
+      "checksum": "d86bc27d740edef8c8f4bcbd74136e17"
+    },
+    "tests/__pycache__/test_economic_service.cpython-311-pytest-9.1.1.pyc": {
+      "checksum": "c380660a4bfbea04e803c94b6430b165"
+    },
+    "tests/__pycache__/test_services.cpython-311-pytest-9.1.1.pyc": {
+      "checksum": "0194bd71def37e97561dab8152d4fb5c"
     },
     "tests/test_banner.py": {
       "checksum": "405cba9fda0d1ab3e2973eb4f936c79d"

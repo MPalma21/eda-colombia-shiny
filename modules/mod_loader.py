@@ -1,9 +1,16 @@
-"""Modulo para el control de carga y fuentes de datos abiertos."""
+"""Modulo para el control de carga y fuentes de datos abiertos (SECOP II).
+
+Depurado para enfocar exclusivamente la auditoria de contratacion publica:
+- Seleccion unificada de colecciones de contratacion sin duplicidad de campos.
+- Seleccion clara del volumen de contratos a auditar.
+- Filtro rapido por territorio o entidad.
+- Filtro temporal limpio por periodo de ejecucion o firma.
+"""
 import asyncio
 from shiny import module, ui, render, reactive
 from shiny.types import SilentException, SilentCancelOutputException
 import pandas as pd
-from config import SAMPLE_DATASETS, DEFAULT_FETCH_ROWS, DEFAULT_MAX_ROWS, DEFAULT_RESOURCE_ID
+from config import DEFAULT_FETCH_ROWS, DEFAULT_RESOURCE_ID, DATASET_OPTIONS
 from services.api_service import fetch_dataset
 from services.scope_service import apply_analysis_scope
 from services.stats_service import classify_columns
@@ -12,98 +19,104 @@ from services.stats_service import classify_columns
 @module.ui
 def loader_ui():
     return ui.div(
-        # Grupo 1: Seleccion de dataset
+        # Encabezado de la barra lateral
         ui.div(
             ui.span("Parámetros de Consulta", class_="sidebar-section-title"),
             ui.p(
-                "Consulte colecciones de contratación estatal (SECOP II) publicadas por Colombia Compra Eficiente via datos.gov.co.",
+                "Auditoría oficial de contratación estatal vía API de datos.gov.co.",
                 class_="sidebar-description"
             ),
             class_="mb-3"
         ),
         
+        # Controles depurados sin redundancia
         ui.div(
             ui.input_select(
-                "sample_ds",
-                "Bases de Contratación (SECOP):",
-                choices=list(SAMPLE_DATASETS.keys()),
-                selected=list(SAMPLE_DATASETS.keys())[0]
+                "dataset_source",
+                "Fuente de Contratación:",
+                choices=DATASET_OPTIONS,
+                selected=DEFAULT_RESOURCE_ID
+            ),
+            ui.output_ui("custom_resource_input_ui"),
+            ui.input_select(
+                "n_rows",
+                "Volumen de Contratos a Auditar:",
+                choices={
+                    "5000": "5,000 contratos (Rápido)",
+                    "10000": "10,000 contratos (Recomendado)",
+                    "25000": "25,000 contratos (Amplio)",
+                    "50000": "50,000 contratos (Máximo)"
+                },
+                selected=str(DEFAULT_FETCH_ROWS)
             ),
             ui.input_text(
-                "resource_id",
-                "ID o URL de datos.gov.co:",
-                placeholder="Ejemplo: jbjy-vk9h",
-                value=DEFAULT_RESOURCE_ID
+                "source_query",
+                "Filtrar por Territorio o Entidad (opcional):",
+                placeholder="Ej. Antioquia, Bogotá, Salud..."
             ),
-            ui.div(
-                "ID alfanumérico de SECOP II (ej: jbjy-vk9h) o URL completa.",
-                class_="form-text text-muted small mt-n2 mb-3"
-            ),
-            ui.input_numeric(
-                "n_rows",
-                "Límite de registros:",
-                value=DEFAULT_FETCH_ROWS,
-                min=50,
-                max=DEFAULT_MAX_ROWS,
-                step=500
-            ),
-            ui.input_select(
-                "fetch_mode", "Selección del origen:",
-                choices={"first": "Primeros registros por ID", "spread": "Cobertura distribuida (5 bloques)"},
-            ),
-            ui.input_text("source_query", "Filtrar antes de cargar (texto opcional):", placeholder="Ej. departamento, obra, etc."),
-            ui.p("La búsqueda en el portal se aplica antes del límite de filas.", class_="form-text text-muted small"),
             ui.input_task_button(
                 "btn_load",
                 "Cargar y Auditar Contratos",
-                label_busy="Consultando SECOP...",
+                label_busy="Descargando SECOP...",
                 class_="btn btn-primary w-100 py-2 mt-2 mb-2 btn-load-dataset"
             ),
             ui.output_ui("status_feedback"),
             class_="sidebar-controls-group"
         ),
-        ui.output_ui("analysis_scope_ui"),
+        ui.output_ui("temporal_filter_ui"),
     )
 
 
 @module.server
 def loader_server(input, output, session):
-    """Controlador del modulo de carga.
-    
-    Retorna tupla reactiva: (df_reactive, metadata_reactive).
-    """
+    """Controlador del modulo de carga simplificado."""
     rv_df = reactive.value(pd.DataFrame())
     rv_meta = reactive.value({})
     rv_msg = reactive.value("")
     rv_status = reactive.value("idle")
 
-    @reactive.effect
-    @reactive.event(input.sample_ds)
-    def _sync_sample():
-        chosen = input.sample_ds()
-        rid = SAMPLE_DATASETS.get(chosen, "")
-        if rid:
-            ui.update_text("resource_id", value=rid)
+    @output
+    @render.ui
+    def custom_resource_input_ui():
+        if input.dataset_source() == "custom":
+            return ui.div(
+                ui.input_text(
+                    "custom_resource_id",
+                    "ID o URL de datos.gov.co:",
+                    placeholder="Ejemplo: jbjy-vk9h",
+                    value=""
+                ),
+                class_="mb-2"
+            )
+        return ui.span()
 
     @ui.bind_task_button(button_id="btn_load")
     @reactive.extended_task
-    async def _fetch_task(res_id: str, limit: int, query: str, mode: str):
-        return await asyncio.to_thread(fetch_dataset, res_id, limit, query, mode)
+    async def _fetch_task(res_id: str, limit: int, query: str):
+        return await asyncio.to_thread(fetch_dataset, res_id, limit, query, "first")
 
     @reactive.effect
     @reactive.event(input.btn_load)
     def _execute_fetch():
-        res_id = input.resource_id().strip()
+        source = input.dataset_source()
+        if source == "custom":
+            res_id = input.custom_resource_id().strip() if hasattr(input, "custom_resource_id") else ""
+        else:
+            res_id = source
+
         if not res_id:
             rv_status.set("error")
-            rv_msg.set("Por favor ingrese un ID o URL valida.")
+            rv_msg.set("Por favor ingrese un ID o URL válida.")
             ui.update_task_button("btn_load", state="ready")
             return
 
         rv_status.set("loading")
-        rv_msg.set("Descargando y parseando datos desde API Socrata...")
-        limit = int(input.n_rows() or DEFAULT_FETCH_ROWS)
-        _fetch_task(res_id, limit, input.source_query() or "", input.fetch_mode())
+        rv_msg.set("Descargando contratos desde API Socrata...")
+        try:
+            limit = int(input.n_rows() or DEFAULT_FETCH_ROWS)
+        except Exception:
+            limit = DEFAULT_FETCH_ROWS
+        _fetch_task(res_id, limit, input.source_query() or "")
 
     @reactive.effect
     def _receive_fetch():
@@ -114,13 +127,13 @@ def loader_server(input, output, session):
                 rv_df.set(pd.DataFrame())
                 rv_meta.set(meta)
                 rv_status.set("error")
-                rv_msg.set("La consulta no devolvio registros. Revise el filtro o el recurso.")
+                rv_msg.set("La consulta no devolvió registros. Revise el filtro o el recurso.")
                 return
 
             rv_df.set(df)
             rv_meta.set(meta)
             rv_status.set("success")
-            rv_msg.set(f"Dataset cargado: {len(df):,} filas y {len(df.columns)} columnas.")
+            rv_msg.set(f"Dataset cargado: {len(df):,} contratos auditados.")
 
         except (SilentException, SilentCancelOutputException):
             return
@@ -149,18 +162,22 @@ def loader_server(input, output, session):
 
     @output
     @render.ui
-    def analysis_scope_ui():
+    def temporal_filter_ui():
         df = rv_df()
         if df.empty:
             return ui.span()
         _, date_cols, _ = classify_columns(df)
+        if not date_cols:
+            return ui.span()
+
+        pref_date = [c for c in date_cols if any(k in c.lower() for k in ("firma", "inicio", "crea", "fecha"))]
+        default_col = pref_date[0] if pref_date else date_cols[0]
+
         return ui.div(
-            ui.span("Alcance del análisis", class_="sidebar-section-title"),
-            ui.p("Estos ajustes se aplican a las filas descargadas y a todas las vistas.", class_="sidebar-description"),
-            ui.input_select("scope_date_column", "Variable de fecha:", choices={"": "Todas las fechas", **{col: col for col in date_cols}}),
+            ui.span("Filtro Temporal", class_="sidebar-section-title"),
+            ui.p("Acote la auditoría a un período específico:", class_="sidebar-description"),
+            ui.input_select("scope_date_column", "Variable de fecha:", choices={col: col for col in date_cols}, selected=default_col),
             ui.output_ui("scope_period_ui"),
-            ui.input_select("sample_mode", "Registros a analizar:", choices={"all": "Todos los descargados", "sample": "Muestra aleatoria de los descargados"}),
-            ui.input_numeric("sample_rows", "Tamaño de la muestra:", value=min(1000, len(df)), min=1, max=len(df)),
             class_="sidebar-controls-group border-top pt-3 mt-3",
         )
 
@@ -168,7 +185,7 @@ def loader_server(input, output, session):
     @render.ui
     def scope_period_ui():
         df = rv_df()
-        column = input.scope_date_column()
+        column = input.scope_date_column() if hasattr(input, "scope_date_column") else ""
         if df.empty or not column or column not in df.columns:
             return ui.span()
         dates = pd.to_datetime(df[column], errors="coerce").dropna()
@@ -186,12 +203,9 @@ def loader_server(input, output, session):
         df = rv_df()
         if df.empty:
             return df
-        column = input.scope_date_column() or ""
+        column = input.scope_date_column() if hasattr(input, "scope_date_column") else ""
         period = input.scope_period() if column and hasattr(input, "scope_period") else None
-        sample_rows = None
-        if input.sample_mode() == "sample":
-            sample_rows = max(1, min(int(input.sample_rows() or 1), len(df)))
-        return apply_analysis_scope(df, column, period, sample_rows)
+        return apply_analysis_scope(df, column, period, None)
 
     @reactive.calc
     def scoped_meta():
@@ -199,11 +213,11 @@ def loader_server(input, output, session):
         loaded = rv_df()
         meta["_eda_loaded_rows"] = len(loaded)
         if not loaded.empty:
-            column = input.scope_date_column() or ""
+            column = input.scope_date_column() if hasattr(input, "scope_date_column") else ""
             period = input.scope_period() if column and hasattr(input, "scope_period") else None
             if column and period:
                 meta["_eda_period_label"] = f"{column}: {period[0]} a {period[1]}"
-            meta["_eda_sample_active"] = input.sample_mode() == "sample"
+            meta["_eda_sample_active"] = False
         return meta
 
     return scoped_df, scoped_meta

@@ -15,10 +15,10 @@ API_TIMEOUT_SECONDS = 30
 DEFAULT_RESOURCE_ID = "jbjy-vk9h"
 
 # Colecciones tabulares verificadas de contratacion publica (SECOP / datos.gov.co):
-SAMPLE_DATASETS = {
-    "SECOP II · Contratos Electrónicos, Montos y Departamentos (Recomendado)": "jbjy-vk9h",
-    "SECOP II · Procesos de Compra, Licitaciones y Adjudicaciones": "p6dx-8zbt",
-    "SECOP I · Contratos Estatales Históricos": "xvdy-7kqu",
-    "Ingresar otro ID o URL personalizada de datos.gov.co...": "",
+DATASET_OPTIONS = {
+    "jbjy-vk9h": "SECOP II · Contratos Electrónicos (Recomendado)",
+    "p6dx-8zbt": "SECOP II · Procesos de Compra y Licitaciones",
+    "xvdy-7kqu": "SECOP I · Histórico de Contratos",
+    "custom": "Otro recurso (ID o URL personalizada)..."
 }
 

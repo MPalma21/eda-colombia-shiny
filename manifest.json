@@ -38,28 +38,13 @@
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "config.py": {
-      "checksum": "97d559856d9e58943acd0b1b70a2706f"
+      "checksum": "5ba91ed0013ffa22ee4bbefbd77eedde"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
     },
-    "modules/mod_comparisons.py": {
-      "checksum": "03f99c29d45286251666a69f907812e4"
-    },
-    "modules/mod_correlations.py": {
-      "checksum": "a91fd345972602a73d70982bf2c1512d"
-    },
-    "modules/mod_distributions.py": {
-      "checksum": "acbd0b9dd1eb880cf2dbadab610cd87a"
-    },
-    "modules/mod_econometrics.py": {
-      "checksum": "5be8bc2d9300d28e84a435895cbbfb82"
-    },
-    "modules/mod_inequality.py": {
-      "checksum": "0672e4b992999ea5cc7a7d05b73c885c"
-    },
     "modules/mod_loader.py": {
-      "checksum": "af436c943a6dd59425c29cea1b41e097"
+      "checksum": "d4bb04cd7173b045d81333dabc70b5f9"
     },
     "modules/mod_risk_contractors.py": {
       "checksum": "b96a3962abb1227dcca9378ae9476d9f"
@@ -75,18 +60,6 @@
     },
     "modules/mod_simulator.py": {
       "checksum": "8ba0b0b229648ca99d6b373b92f397c1"
-    },
-    "modules/mod_stats.py": {
-      "checksum": "dc55e6a49e5822f2403bf9c5b6e82931"
-    },
-    "modules/mod_summary.py": {
-      "checksum": "92e63eb61a5744389d93c2a7d42281e2"
-    },
-    "modules/mod_table.py": {
-      "checksum": "2f5dd1d91f859a3af452e72494e932f7"
-    },
-    "modules/mod_timeseries.py": {
-      "checksum": "45f3c6d050741734f05af2e998a007c8"
     },
     "pyproject.toml": {
       "checksum": "0ece014e66715424b68bf5345cdaab7d"

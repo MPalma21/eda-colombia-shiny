@@ -37,30 +37,56 @@ def loader_ui():
                 choices=DATASET_OPTIONS,
                 selected=DEFAULT_RESOURCE_ID
             ),
+            ui.p(
+                "SECOP II Electrónicos es la base transaccional más completa con oferentes, montos y modalidades.",
+                class_="text-muted",
+                style="font-size: 0.73rem; margin-top: -6px; margin-bottom: 10px;"
+            ),
             ui.output_ui("custom_resource_input_ui"),
             ui.input_select(
                 "n_rows",
                 "Volumen de Contratos a Auditar:",
                 choices={
-                    "5000": "5,000 contratos (Rápido)",
-                    "10000": "10,000 contratos (Recomendado)",
-                    "25000": "25,000 contratos (Amplio)",
-                    "50000": "50,000 contratos (Máximo)"
+                    "5000": "5,000 contratos (Rápido ~2s)",
+                    "10000": "10,000 contratos (Recomendado ~4s)",
+                    "25000": "25,000 contratos (Amplio ~8s)",
+                    "50000": "50,000 contratos (Máximo ~15s)"
                 },
                 selected=str(DEFAULT_FETCH_ROWS)
+            ),
+            ui.p(
+                "Un mayor volumen incrementa la cobertura y precisión de los semáforos territoriales.",
+                class_="text-muted",
+                style="font-size: 0.73rem; margin-top: -6px; margin-bottom: 10px;"
             ),
             ui.input_text(
                 "source_query",
                 "Filtrar por Territorio o Entidad (opcional):",
-                placeholder="Ej. Antioquia, Bogotá, Salud..."
+                placeholder="Ej. Antioquia, Valle, Salud, Alcaldia..."
+            ),
+            ui.p(
+                "Permite acotar la descarga a una región o entidad específica desde el servidor.",
+                class_="text-muted",
+                style="font-size: 0.73rem; margin-top: -6px; margin-bottom: 10px;"
             ),
             ui.input_task_button(
                 "btn_load",
                 "Cargar y Auditar Contratos",
                 label_busy="Descargando SECOP...",
-                class_="btn btn-primary w-100 py-2 mt-2 mb-2 btn-load-dataset"
+                class_="btn btn-primary w-100 py-2 mt-1 mb-2 btn-load-dataset"
             ),
             ui.output_ui("status_feedback"),
+            ui.div(
+                ui.span("Instrucciones Rápidas:", class_="fw-bold text-dark d-block mb-1", style="font-size: 0.78rem;"),
+                ui.tags.ol(
+                    ui.tags.li("Presione el botón azul para iniciar la consulta oficial vía API SODA.", class_="mb-1"),
+                    ui.tags.li("La descarga tardará unos segundos según el volumen seleccionado.", class_="mb-1"),
+                    ui.tags.li("Al completarse, todas las pestañas desplegarán el análisis automáticamente.", class_=""),
+                    class_="ps-3 mb-0 text-muted",
+                    style="font-size: 0.73rem;"
+                ),
+                class_="p-2 bg-white rounded border border-subtle mt-2 mb-1"
+            ),
             class_="sidebar-controls-group"
         ),
         ui.output_ui("temporal_filter_ui"),

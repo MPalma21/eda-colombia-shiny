@@ -84,7 +84,52 @@ def risk_radar_server(input, output, session, df_react):
     def radar_controls_ui():
         df = df_react()
         if df.empty:
-            return ui.p("Cargue un conjunto de datos (ej. SECOP II) en el panel lateral para activar el radar de riesgo.", class_="text-muted")
+            return ui.div(
+                ui.div(
+                    ui.h5("Bienvenido al Panel de Alertas y Semáforos de Riesgo Territorial", class_="fw-bold text-primary mb-2"),
+                    ui.p(
+                        "Herramienta especializada de analítica económica e industrial para auditar la contratación estatal en Colombia. "
+                        "Permite detectar concentración de mercado, falta de concurrencia y presunto direccionamiento de contratos públicos "
+                        "en los 32 departamentos y el Distrito Capital a partir de microdatos de SECOP II.",
+                        class_="text-secondary mb-3",
+                        style="font-size: 0.92rem; line-height: 1.5;"
+                    ),
+                    ui.layout_columns(
+                        ui.div(
+                            ui.div(
+                                ui.span("1", class_="guide-step-number"),
+                                ui.h6("Configure la Consulta", class_="fw-bold text-dark mb-1", style="font-size: 0.88rem;"),
+                                ui.p("En la barra lateral izquierda, seleccione la fuente (SECOP II recomendada) y el volumen de contratos a auditar.", class_="small text-muted mb-0"),
+                                class_="guide-step-card"
+                            )
+                        ),
+                        ui.div(
+                            ui.div(
+                                ui.span("2", class_="guide-step-number"),
+                                ui.h6("Presione Cargar y Auditar", class_="fw-bold text-dark mb-1", style="font-size: 0.88rem;"),
+                                ui.p("El sistema descargará los registros en tiempo real directamente desde la API oficial de datos.gov.co sin intermediarios.", class_="small text-muted mb-0"),
+                                class_="guide-step-card"
+                            )
+                        ),
+                        ui.div(
+                            ui.div(
+                                ui.span("3", class_="guide-step-number"),
+                                ui.h6("Explore los 5 Módulos", class_="fw-bold text-dark mb-1", style="font-size: 0.88rem;"),
+                                ui.p("Consulte el Radar Interdepartamental, audite contratos atípicos, analice oligopolios de proveedores y simule reformas fiscales.", class_="small text-muted mb-0"),
+                                class_="guide-step-card"
+                            )
+                        ),
+                        col_widths={"sm": 12, "md": 4},
+                        class_="g-3 mb-3"
+                    ),
+                    ui.div(
+                        ui.span("Criterios de Semáforo de un Vistazo: ", class_="fw-bold text-primary small"),
+                        ui.span("Rojo (Crítico): HHI > 2,500 o Contratación Directa > 65% | Amarillo (Moderado): HHI 1,500-2,500 o Directa 35%-65% | Verde (Competitivo): HHI < 1,500 y Directa < 35%.", class_="small text-muted"),
+                        class_="guide-callout"
+                    ),
+                    class_="guide-hero-card mb-2"
+                )
+            )
 
         num_cols, _, cat_cols = classify_columns(df)
         all_cols = list(df.columns)
@@ -105,9 +150,12 @@ def risk_radar_server(input, output, session, df_react):
                 class_="g-2 mb-2"
             ),
             ui.div(
-                ui.span("Criterios Regulatorios de Semáforo: ", class_="fw-bold text-secondary"),
-                ui.span("Alto Riesgo: HHI > 2500 o Contratación Directa > 65% | Moderado: HHI 1500-2500 o Directa 35%-65% | Bajo Riesgo: HHI < 1500 y Directa < 35%.", class_="text-muted"),
-                class_="small p-2 bg-light rounded border border-subtle mb-3"
+                ui.div(
+                    ui.span("Guía de Interpretación del Radar y Cuadrantes: ", class_="fw-bold text-primary small"),
+                    ui.span("Score de Riesgo Territorial = 0.55 × (% Directa) + 0.45 × (HHI / 100). ", class_="small text-secondary fw-semibold"),
+                    ui.span("Cuadrante Superior Derecho: Territorios críticos con alta contratación a dedo y monopolio de contratistas. Cuadrante Inferior Izquierdo: Territorios competitivos con pluralidad de oferentes.", class_="small text-muted"),
+                    class_="guide-callout mb-3"
+                )
             )
         )
 

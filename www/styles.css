@@ -657,3 +657,70 @@ shiny-data-frame {
     padding: 16px 20px;
     box-shadow: 0 4px 6px -1px rgba(6, 78, 59, 0.2);
 }
+
+/* ==========================================================================
+   9. COMPONENTES EDUCATIVOS, ONBOARDING & GUÍA DE USUARIO
+   ========================================================================== */
+.guide-hero-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f4f7fc 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 28px 24px;
+    box-shadow: 0 4px 12px rgba(29, 49, 144, 0.05);
+}
+
+.guide-step-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f5;
+    border-radius: 8px;
+    padding: 16px;
+    height: 100%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.guide-step-card:hover {
+    box-shadow: 0 4px 8px rgba(10, 17, 56, 0.06);
+    border-color: #93c5fd;
+}
+
+.guide-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+.guide-callout {
+    border-left: 4px solid var(--brand-primary);
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    border-top: 1px solid #edf2f7;
+    border-right: 1px solid #edf2f7;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.nav-guide-btn {
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    color: #ffffff !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-guide-btn:hover {
+    background-color: #ffffff !important;
+    color: var(--brand-primary) !important;
+    border-color: #ffffff !important;
+}
+

@@ -74,7 +74,19 @@ def simulator_server(input, output, session, df_react):
     def sim_controls_ui():
         df = df_react()
         if df.empty:
-            return ui.p("Cargue un conjunto de datos para habilitar el simulador de política.", class_="text-muted")
+            return ui.div(
+                ui.div(
+                    ui.h6("Simulador de Política Económica y Reforma a la Contratación", class_="fw-bold text-primary mb-2"),
+                    ui.p(
+                        "Este modelo econométrico contrafactual permite proyectar el impacto fiscal y competitivo de reformas públicas. "
+                        "Simula la sustitución de convenios directos por licitaciones abiertas con pliegos tipo, calcula el ahorro fiscal "
+                        "esperado (según benchmarks de la OCDE y Banco Mundial) y proyecta la desconcentración del índice HHI. "
+                        "Cargue contratos desde la barra lateral izquierda para activar el simulador.",
+                        class_="small text-secondary mb-0"
+                    ),
+                    class_="guide-callout mb-2"
+                )
+            )
 
         matrix = baseline_matrix()
         dept_choices = ["Nivel Nacional (Consolidado)"]
@@ -91,14 +103,14 @@ def simulator_server(input, output, session, df_react):
                 class_="g-2 mb-2"
             ),
             ui.div(
-                ui.span("Mecanismo Económico: ", class_="fw-bold text-primary"),
+                ui.span("Fundamento de Finanzas Públicas & Política Económica: ", class_="fw-bold text-primary small"),
                 ui.span(
-                    "Al sustituir convenios directos por licitaciones públicas de pliego tipo, la presión competitiva "
-                    "reduce los sobrecostos de adjudicación (ahorro fiscal) y redistribuye los contratos hacia más competidores "
-                    "(reducción sustancial del índice HHI).",
-                    class_="text-secondary"
+                    "Al sustituir convenios directos por licitaciones públicas de pliego tipo (Ley 2014 de 2019), la puja competitiva "
+                    "reduce los sobrecostos de adjudicación (ahorro fiscal entre 8% y 20% según el Banco Mundial) y distribuye los contratos "
+                    "entre más competidores, logrando una desconcentración estructural del índice HHI.",
+                    class_="small text-muted"
                 ),
-                class_="small p-2 bg-light rounded border border-subtle"
+                class_="guide-callout mb-1"
             )
         )
 

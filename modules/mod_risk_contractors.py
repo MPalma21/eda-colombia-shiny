@@ -89,7 +89,18 @@ def risk_contractors_server(input, output, session, df_react):
         df = df_react()
         c_df = contractors_df()
         if df.empty or c_df.empty:
-            return ui.p("Cargue datos para calcular la concentración empresarial.", class_="text-muted")
+            return ui.div(
+                ui.div(
+                    ui.h6("Auditoría de Poder de Mercado y Contratistas Dominantes", class_="fw-bold text-primary mb-2"),
+                    ui.p(
+                        "Este módulo identifica a los mayores acaparadores del presupuesto público, evalúa el ratio oligopólico CR4 "
+                        "(cuota acumulada de los 4 mayores contratistas) y analiza qué empresas dependen desproporcionadamente de contratos directos a dedo. "
+                        "Cargue contratos desde la barra lateral izquierda para activar este análisis.",
+                        class_="small text-secondary mb-0"
+                    ),
+                    class_="guide-callout mb-2"
+                )
+            )
 
         total_provs = df[find_procurement_columns(df)[2]].nunique() if find_procurement_columns(df)[2] in df.columns else len(c_df)
         top1 = c_df.iloc[0]
@@ -97,7 +108,14 @@ def risk_contractors_server(input, output, session, df_react):
         cr4_sum = float(c_df.head(4)["cuota_pct"].sum())
         direct_avg_top10 = float(c_df.head(10)["pct_directa"].mean())
 
-        return ui.layout_columns(
+        return ui.div(
+            ui.div(
+                ui.span("Marco de Análisis de Economía Industrial: ", class_="fw-bold text-primary small"),
+                ui.span("El Ratio CR4 mide el porcentaje del gasto público absorbido por los 4 mayores contratistas. ", class_="small text-secondary fw-semibold"),
+                ui.span("Según los estándares de la OCDE y la Superintendencia de Industria y Comercio, un CR4 superior al 50% indica riesgo de mercado oligopólico y posibles barreras artificiales de entrada.", class_="small text-muted"),
+                class_="guide-callout mb-3"
+            ),
+            ui.layout_columns(
             ui.value_box(
                 "Oferentes Registrados",
                 f"{total_provs:,}",
@@ -145,6 +163,7 @@ def risk_contractors_server(input, output, session, df_react):
             col_widths={"sm": 12, "md": 6, "lg": 3},
             class_="g-3 mb-2"
         )
+    )
 
     # -------------------------------------------------------------
     # 2. GRÁFICO DE BARRAS: TOP 15 CONTRATISTAS

@@ -96,17 +96,39 @@ def risk_drilldown_server(input, output, session, df_react):
     def drilldown_selector_ui():
         matrix = matrix_df()
         if matrix.empty:
-            return ui.p("Cargue datos abiertos para habilitar la auditoría departamental.", class_="text-muted")
+            return ui.div(
+                ui.div(
+                    ui.h6("Expediente de Auditoría Departamental Individual", class_="fw-bold text-primary mb-2"),
+                    ui.p(
+                        "Este módulo profundiza en una jurisdicción territorial específica para inspeccionar la estructura de sus oferentes locales, "
+                        "el reparto por modalidades de selección (licitaciones vs convenios directos), los contratos individuales de mayor monto "
+                        "y el dictamen automático de control fiscal. Cargue los datos en la barra lateral para habilitar este expediente.",
+                        class_="small text-secondary mb-0"
+                    ),
+                    class_="guide-callout mb-2"
+                )
+            )
 
         depts = matrix["departamento"].tolist()
         return ui.div(
-            ui.input_select(
-                "selected_dept",
-                "Seleccionar Departamento para Expediente de Auditoría:",
-                choices=depts,
-                selected=depts[0]
+            ui.div(
+                ui.input_select(
+                    "selected_dept",
+                    "Seleccionar Departamento para Expediente de Auditoría:",
+                    choices=depts,
+                    selected=depts[0]
+                ),
+                class_="col-12 col-md-6"
             ),
-            class_="mb-3"
+            ui.div(
+                ui.div(
+                    ui.span("Instrucciones de Auditoría: ", class_="fw-bold text-primary small"),
+                    ui.span("Cambie el departamento en el selector para refrescar automáticamente la ficha ejecutiva, la curva de contratación y el dictamen fiscal automatizado.", class_="small text-muted"),
+                    class_="guide-callout"
+                ),
+                class_="col-12 col-md-6"
+            ),
+            class_="row align-items-center g-2 mb-3"
         )
 
     # -------------------------------------------------------------

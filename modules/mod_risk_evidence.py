@@ -29,6 +29,11 @@ def risk_evidence_ui():
                 class_="d-flex justify-content-between align-items-center"
             ),
             ui.div(
+                ui.span("Guía de Auditoría para Veedurías y Control Fiscal: ", class_="fw-bold text-primary small"),
+                ui.span("Esta matriz consolida las variables analizadas por jurisdicción. Permite filtrar por semáforo y descargar el expediente completo en CSV para sustentar denuncias formales o informes técnicos de veeduría.", class_="small text-muted"),
+                class_="guide-callout mb-3"
+            ),
+            ui.div(
                 ui.div(
                     ui.input_select(
                         "evidence_risk_filter",
@@ -66,6 +71,11 @@ def risk_evidence_ui():
                     ui.span("Microdatos a Nivel de Contrato Individual para Veeduría Ciudadana", class_="text-muted", style="font-size: 0.78rem;")
                 ),
                 class_="d-flex justify-content-between align-items-center"
+            ),
+            ui.div(
+                ui.span("Glosario de Banderas Contractuales: ", class_="fw-bold text-primary small"),
+                ui.span("Directa de Alto Monto: Contrato asignado a dedo cuyo valor supera el percentil 75 del territorio (máxima prioridad de revisión). Contratación Directa: Convenio o contrato bajo causal directa ordinaria. Proceso Abierto / Concurso: Licitación pública o puja con pluralidad de oferentes.", class_="small text-muted"),
+                class_="guide-callout mb-3"
             ),
             ui.div(
                 ui.div(

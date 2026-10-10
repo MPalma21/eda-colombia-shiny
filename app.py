@@ -30,12 +30,19 @@ from components.banner import render_context_banner
 # INTERFAZ DE USUARIO (PANEL DE RIESGO TERRITORIAL)
 # -------------------------------------------------------------
 app_ui = ui.page_navbar(
-    # Las 5 perspectivas especializadas del Observatorio de Riesgo
     ui.nav_panel("Radar de Alertas", risk_radar_ui("risk_radar_mod")),
     ui.nav_panel("Auditoría Departamental", risk_drilldown_ui("risk_drill_mod")),
     ui.nav_panel("Contratistas Dominantes", risk_contractors_ui("risk_contractors_mod")),
     ui.nav_panel("Simulador de Reforma", simulator_ui("sim_mod")),
     ui.nav_panel("Matriz & Microdatos", risk_evidence_ui("risk_evidence_mod")),
+    ui.nav_spacer(),
+    ui.nav_control(
+        ui.input_action_button(
+            "btn_show_guide",
+            "Guía & Metodología",
+            class_="btn btn-sm btn-outline-light nav-guide-btn my-auto"
+        )
+    ),
     
     # Identidad de marca, titulo y subtitulo en el navbar
     title=ui.div(
@@ -89,6 +96,13 @@ def server(input, output, session):
     risk_contractors_server("risk_contractors_mod", df_react=df_react)
     simulator_server("sim_mod", df_react=df_react)
     risk_evidence_server("risk_evidence_mod", df_react=df_react)
+
+    # Modal interactivo de guia y metodologia
+    @reactive.effect
+    @reactive.event(input.btn_show_guide)
+    def _open_guide_modal():
+        from components.guide_modal import show_methodology_modal
+        show_methodology_modal()
 
 
 app = App(app_ui, server, static_assets=WWW_DIR)

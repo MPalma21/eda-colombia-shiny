@@ -17,7 +17,8 @@ from services.economic_service import (
     compute_hhi,
     estimate_econometric_model,
     compute_base_100_series,
-    compute_economic_gaps
+    compute_economic_gaps,
+    estimate_econometric_by_groups
 )
 
 
@@ -121,3 +122,21 @@ def test_compute_economic_gaps():
     assert gaps["grupo_lider"] == "Estrato 6"
     assert gaps["grupo_rezagado"] == "Estrato 1"
     assert np.isclose(gaps["ratio_brecha"], 2.0, atol=0.1)
+
+
+def test_estimate_econometric_by_groups():
+    """Valida la estimación de modelos por subgrupos o departamentos."""
+    np.random.seed(42)
+    n = 40
+    df = pd.DataFrame({
+        "departamento": ["Bogota"] * n + ["Antioquia"] * n,
+        "x": np.random.uniform(10, 50, 2 * n),
+        "y": np.random.uniform(20, 100, 2 * n)
+    })
+    res_df = estimate_econometric_by_groups(df, y_col="y", x_col="x", group_col="departamento", min_obs=15)
+    assert not res_df.empty
+    assert len(res_df) == 2
+    assert "Subgrupo / Departamento" in res_df.columns
+    assert "Elasticidad (β₁)" in res_df.columns
+    assert "R²" in res_df.columns
+    assert "p-valor" in res_df.columns

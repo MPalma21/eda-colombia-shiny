@@ -376,3 +376,50 @@ def compute_economic_gaps(
         "dif_absoluta": dif_absoluta,
         "tabla": display_df
     }
+
+
+def estimate_econometric_by_groups(
+    df: pd.DataFrame,
+    y_col: str,
+    x_col: str,
+    group_col: str,
+    model_type: Literal["log_log", "ols_linear", "log_lin"] = "log_log",
+    min_obs: int = 15,
+    top_n_groups: int = 25
+) -> pd.DataFrame:
+    """Estima especificaciones econometricas para cada subgrupo o departamento.
+    
+    Permite evaluar heterogeneidad territorial o sectorial en elasticidades y pendientes.
+    """
+    if df.empty or y_col not in df.columns or x_col not in df.columns or group_col not in df.columns:
+        return pd.DataFrame()
+        
+    group_counts = df[group_col].dropna().value_counts()
+    eligible_groups = group_counts[group_counts >= min_obs].head(top_n_groups).index.tolist()
+    
+    if not eligible_groups:
+        return pd.DataFrame()
+        
+    results = []
+    param_col = "Elasticidad (β₁)" if model_type == "log_log" else "Coeficiente (β₁)"
+    
+    for g_val in eligible_groups:
+        sub_df = df[df[group_col] == g_val]
+        res = estimate_econometric_model(sub_df, y_col, x_col, model_type=model_type)
+        if res.get("valido", False):
+            results.append({
+                "Subgrupo / Departamento": str(g_val),
+                param_col: res["beta_1"],
+                "Error Estándar (SE)": res["stderr"],
+                "Estadístico t": res["t_stat"],
+                "p-valor": res["p_val"],
+                "Significancia": res["sig_stars"],
+                "R²": res["r2"],
+                "Muestra (N)": res["n_obs"]
+            })
+            
+    if not results:
+        return pd.DataFrame()
+        
+    res_df = pd.DataFrame(results).sort_values(by=param_col, ascending=False)
+    return res_df

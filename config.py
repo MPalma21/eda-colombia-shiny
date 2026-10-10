@@ -17,8 +17,8 @@ API_TIMEOUT_SECONDS = 30
 # numericas con variables categoricas. El selector conserva la entrada manual.
 SAMPLE_DATASETS = {
     "Selecciona un dataset de ejemplo...": "",
-    "SECOP II · Contratos del Estado, montos y proveedores": "jbjy-vk9h",
-    "Saber 11 · Capital humano, puntajes y brechas socioeconomicas": "rnvb-vnyh",
+    "Saber 11 (ICFES) · Puntajes, departamentos y contexto socioeconomico": "rnvb-vnyh",
+    "SECOP II · Contratos estatales, montos, modalidades y departamentos": "jbjy-vk9h",
     "SECOP II · Procesos de compra, precios y competencia": "p6dx-8zbt",
-    "COVID-19 · Demografia, epidemiologia y salud publica": "gt2j-8ykr",
+    "COVID-19 · Demografia y salud publica territorial": "gt2j-8ykr",
 }

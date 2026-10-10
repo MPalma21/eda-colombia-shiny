@@ -38,7 +38,7 @@
       "checksum": "a93cdd95a985816a395f620cc8f53b0b"
     },
     "config.py": {
-      "checksum": "3d345c26f2c682262dadf18d1d16ed80"
+      "checksum": "ce958c34e3ea792fe9f7e982a359d8ef"
     },
     "modules/__init__.py": {
       "checksum": "446e1c13f6943fe2832c3cc07b375197"
@@ -53,7 +53,7 @@
       "checksum": "4e886e4ab3e507e21a2eb43fd48085af"
     },
     "modules/mod_econometrics.py": {
-      "checksum": "2c036d94e1f9d09b2b8490fb1b7af7b0"
+      "checksum": "5be8bc2d9300d28e84a435895cbbfb82"
     },
     "modules/mod_inequality.py": {
       "checksum": "0672e4b992999ea5cc7a7d05b73c885c"
@@ -83,7 +83,7 @@
       "checksum": "81f0687f1e7cd55efcc0b022f0d0af11"
     },
     "services/economic_service.py": {
-      "checksum": "9ebbc259cbaf80a80aa3bbde81e7a9d6"
+      "checksum": "109285d349258e6a01f636e6c79255c8"
     },
     "services/scope_service.py": {
       "checksum": "de06b2baa7c6250b47f0d7affe5fcadf"
@@ -101,7 +101,7 @@
       "checksum": "5473953b73bb595ae4fcbf7ca1734e75"
     },
     "tests/test_economic_service.py": {
-      "checksum": "c8745307a4bd5c0b9cfd265763584a00"
+      "checksum": "f89bc36c21f754640d178c709b039785"
     },
     "tests/test_services.py": {
       "checksum": "e567b83a831ab4b269f502513d443abb"

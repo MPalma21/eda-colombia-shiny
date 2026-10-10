@@ -10,7 +10,7 @@ Observatorio especializado en Contratacion Publica (SECOP II):
 Desarrollado por Miguelangel Palma siguiendo las guias oficiales de Posit y diseno corporativo.
 """
 from pathlib import Path
-from shiny import App, ui, render
+from shiny import App, ui, render, reactive
 from config import WWW_DIR
 
 # Modulo de carga de datos SODA / SECOP

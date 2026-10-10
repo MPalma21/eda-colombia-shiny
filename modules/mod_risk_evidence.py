@@ -149,7 +149,7 @@ def risk_evidence_server(input, output, session, df_react):
 
         return render.DataGrid(display_df, filters=True, selection_mode="none")
 
-    @render.download(filename="matriz_riesgo_territorial_secop.csv")
+    @render.download_button(filename="matriz_riesgo_territorial_secop.csv")
     def btn_download_matrix():
         matrix = filtered_matrix_df()
         if matrix.empty:
@@ -234,7 +234,7 @@ def risk_evidence_server(input, output, session, df_react):
 
         return render.DataGrid(display_df, filters=True, selection_mode="none")
 
-    @render.download(filename="microdatos_contratos_auditados_secop.csv")
+    @render.download_button(filename="microdatos_contratos_auditados_secop.csv")
     def btn_download_contracts():
         c_df = flagged_contracts_df()
         if c_df.empty:

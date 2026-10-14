@@ -1,267 +1,334 @@
-# Analisis Exploratorio en Datos Abiertos
+# Public Procurement Risk Observatory & Territorial Early Warning System
 
-> Plataforma analitica interactiva para el portal nacional [datos.gov.co](https://www.datos.gov.co/), desarrollada con **Shiny for Python** bajo los estandares oficiales de ingenieria de software y diseno de UI de **Posit PBC**.
+> **Observatorio de Contratación Pública & Panel de Alertas y Semáforos de Riesgo Territorial (SECOP II)**  
+> High-performance analytical web application built with **Shiny for Python**, engineered under **Posit PBC** software engineering guidelines, reactive design patterns, and ggplot2-inspired visual standards.
 
-**Autor:** Miguelangel Palma  
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Shiny for Python](https://img.shields.io/badge/Shiny%20for%20Python-v1.8%2B-1d3190.svg)](https://shiny.posit.co/py/)
+[![Tests](https://img.shields.io/badge/Tests-42%20Passed-059669.svg)](https://pytest.org/)
+[![Visual Style](https://img.shields.io/badge/Theme-Grammar%20of%20Graphics-0284c7.svg)](https://plotly.com/)
+[![Deployment](https://img.shields.io/badge/Deployment-Posit%20Connect%20Cloud-0f172a.svg)](https://connect.posit.cloud)
+
+**Author:** Miguelangel Palma  
 - **LinkedIn:** [miguelangelpr](https://www.linkedin.com/in/miguelangelpr)  
 - **GitHub:** [MPalma21](https://github.com/MPalma21)  
-- **Despliegue:** [Posit Connect Cloud](https://connect.posit.cloud)  
+- **Deployment Platform:** [Posit Connect Cloud](https://connect.posit.cloud)  
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
-1. [Arquitectura del Sistema](#arquitectura-del-sistema)
-2. [Estructura del Repositorio](#estructura-del-repositorio)
-3. [Flujo de Funcionamiento de la Aplicacion](#flujo-de-funcionamiento-de-la-aplicacion)
-4. [Modulos y Capacidades Analiticas](#modulos-y-capacidades-analiticas)
-5. [Integracion con la API de datos.gov.co](#integracion-con-la-api-de-datosgovco)
-6. [Patrones de Reactividad y Rendimiento](#patrones-de-reactividad-y-rendimiento)
-7. [Instalacion y Ejecucion](#instalacion-y-ejecucion)
-8. [Suite de Pruebas Automatizadas](#suite-de-pruebas-automatizadas)
-9. [Configuracion y Personalizacion](#configuracion-y-personalizacion)
+1. [Executive Summary](#executive-summary)
+2. [Key Capabilities & Analytical Perspectives](#key-capabilities--analytical-perspectives)
+3. [Econometric & Methodology Framework](#econometric--methodology-framework)
+4. [Visual Design System & Semaphore Hierarchy](#visual-design-system--semaphore-hierarchy)
+5. [System Architecture](#system-architecture)
+6. [Repository Structure](#repository-structure)
+7. [Data Source & API Ingestion](#data-source--api-ingestion)
+8. [Installation & Local Execution](#installation--local-execution)
+9. [Automated Test Suite](#automated-test-suite)
+10. [Deployment to Posit Connect Cloud](#deployment-to-posit-connect-cloud)
+11. [Git Commit Standards](#git-commit-standards)
 
 ---
 
-## Arquitectura del Sistema
+## Executive Summary
 
-La aplicacion implementa una estricta separacion de responsabilidades en 4 capas:
+The **Public Procurement Risk Observatory** is an econometric and institutional audit platform designed to monitor, detect, and quantify anti-competitive risk, market concentration, and discretionary single-source contracting across Colombian territorial jurisdictions.
+
+Powered by direct real-time integration with Colombia's national open data portal ([datos.gov.co](https://www.datos.gov.co/)) via the SODA REST API, the platform streams transactional public procurement records from **SECOP II** (`jbjy-vk9h`). It computes market power metrics, identifies oligopolistic supplier cartels, benchmarks jurisdictional vulnerability against OECD regulatory standards, and models counterfactual fiscal savings from anti-corruption and competitive procurement reforms.
+
+---
+
+## Key Capabilities & Analytical Perspectives
+
+The application is structured into five cohesive, specialized modules accessible via the top navigation interface:
 
 ```
-[ Navegador / Cliente ]
+[ Top Navigation Bar ]
+  ├── 1. Territorial Risk Radar     (mod_risk_radar.py)
+  ├── 2. Departmental Audit         (mod_risk_drilldown.py)
+  ├── 3. Dominant Contractors       (mod_risk_contractors.py)
+  ├── 4. Reform Policy Simulator    (mod_simulator.py)
+  └── 5. Evidence Matrix & Microdata (mod_risk_evidence.py)
+```
+
+### 1. Territorial Risk Radar (`mod_risk_radar.py`)
+- **Macro-Territorial Synthesis:** Aggregates procurement data across departments into an executive KPI dashboard (Total Audited Budget, Critical Jurisdictions, Weighted National Direct Rate, and Worst-Case Territory).
+- **HHI Departmental Ranking:** Horizontal bar chart color-coded with the executive semaphore highlighting jurisdictions exceeding DOJ/OECD concentration thresholds ($HHI > 2500$).
+- **Two-Dimensional Risk Quadrant:** Scatter plot mapping Direct Contracting Rate (%) against HHI Concentration with bubble sizes proportional to total audited budget and reference threshold lines.
+- **Early Warning Panel:** Automated warning cards isolating jurisdictions with critical risk detonators (e.g., direct contracting $> 65\%$, single supplier capturing $> 40\%$ of territorial expenditure).
+
+### 2. In-Depth Departmental Audit (`mod_risk_drilldown.py`)
+- **Jurisdictional Dossier:** Dynamic department selector with automatic executive profile breakdown (Total Contracts, HHI, Direct Rate, Top Contractor, and Modality Distribution).
+- **Local Supplier Structure:** Bar chart quantifying local market share among leading vendors in the selected territory.
+- **Modality Breakdown:** Donut chart categorizing procurement procedures (Direct Contracting, Open Public Bidding, Abbreviated Selection, and Minimum Value).
+- **Atypical Mega-Contracts Audit:** Detects individual contractual outliers exceeding the 75th and 90th expenditure percentiles.
+- **Automated Technical Diagnosis:** Generates fiscal oversight recommendations tailored to the specific irregularities found in the department.
+
+### 3. Market Power & Dominant Contractors (`mod_risk_contractors.py`)
+- **Industrial Concentration KPIs:** Computes the **CR4** (market share of the 4 largest contractors) and **CR8** oligopoly ratios, flagging markets where a small cartel controls $> 50\%$ of public spending.
+- **Top 15 Accumulated Budget Ranking:** Identifies national procurement conglomerates by total awarded capital.
+- **100% Stacked Allocation Breakdown:** Directly contrasts each leading contractor's revenue derived from **Direct Allocation (discretionary)** vs. **Open Competitive Bidding (transparent)**, exposing political dependency.
+- **Audited Contractor Directory:** Filterable data table classifying vendors into Critical Risk, Moderate Risk, and Competitive categories.
+
+### 4. Counterfactual Policy Simulator (`mod_simulator.py`)
+- **Interactive Policy Sliders:** Allows economists and policy analysts to simulate regulatory reforms by reducing direct contracting ($0\% - 80\%$) and fostering supplier concurrency ($0\% - 100\%$).
+- **OECD Fiscal Savings Benchmark:** Applies an empirical $12.5\%$ cost-reduction benchmark (OECD procurement literature) to all expenditures migrated from single-source direct allocation to open competitive bidding.
+- **Before-and-After Comparisons:** Side-by-side KPI cards showing projected reductions in direct allocation and market de-concentration ($\Delta HHI$).
+- **Comparative Impact Charts:** Grouped bar charts comparing baseline vs. counterfactual metrics and a budget decomposition pie chart.
+
+### 5. Evidence Matrix & Microdata (`mod_risk_evidence.py`)
+- **Territorial Evidence Table:** Consolidated matrix of all audited departments with integrated multi-level semaphore filters (All, High Risk Only, Moderate Risk Only, Competitive Only).
+- **Granular Contract-Level Flags:** Individual contract browser identifying high-value direct allocations, single-bidder processes, and extraordinary contract amendments.
+- **Secure CSV Export:** Exports sanitized datasets with automatic spreadsheet formula injection protection (neutralizing untrusted `=` or `+` prefixes).
+
+---
+
+## Econometric & Methodology Framework
+
+The platform's analytical core in `services/economic_service.py` is founded on Industrial Organization and Public Economics literature:
+
+1. **Herfindahl-Hirschman Index ($HHI$):**
+   $$\text{HHI} = \sum_{i=1}^{N} s_i^2$$
+   Where $s_i$ is the percentage market share of supplier $i$.
+   - **$HHI < 1,500$:** Competitive market structure (Low Risk).
+   - **$1,500 \le HHI \le 2,500$:** Moderate concentration (Medium Risk).
+   - **$HHI > 2,500$:** Highly concentrated / oligopolistic market structure (Critical Risk).
+
+2. **Direct Contracting Rate ($\% \text{ Direct}$):**
+   $$\% \text{ Direct} = \frac{\text{Budget awarded via single-source direct contracting}}{\text{Total procurement budget}} \times 100$$
+   - **$\% \text{ Direct} > 65\%$:** Critical Alert (potential evasion of open bidding mandates).
+   - **$35\% \le \% \text{ Direct} \le 65\%$:** Moderate Alert.
+   - **$\% \text{ Direct} < 35\%$:** Healthy Competitive Compliance.
+
+3. **Composite Territorial Risk Score:**
+   $$\text{Score} = 0.55 \times (\% \text{ Direct}) + 0.45 \times \left(\frac{\text{HHI}}{100}\right)$$
+
+4. **Concentration Ratios ($CR_k$):**
+   $$CR_k = \sum_{i=1}^{k} s_i$$
+   Measures the cumulative budget share absorbed by the top $k$ contractors (computed for $CR_4$ and $CR_8$).
+
+5. **Counterfactual Fiscal Savings Estimation:**
+   $$\text{Transferred Budget} = \text{Base Direct Budget} \times \text{Reduction Ratio}$$
+   $$\text{Fiscal Savings} = \text{Transferred Budget} \times 12.5\% \text{ (OECD Benchmark)}$$
+
+---
+
+## Visual Design System & Semaphore Hierarchy
+
+The platform implements an institutional design system ensuring maximum contrast, cognitive legibility, and zero visual overlap:
+
+### 1. Classic Executive Semaphore Palette
+| Alert Level | Hex Code | Visual Swatch | Semantic Function |
+| :--- | :--- | :--- | :--- |
+| **Critical Risk (High)** | `#dc2626` | Crimson Red | Direct allocation, $HHI > 2500$, direct contracting $> 65\%$, warning banners |
+| **Moderate Risk (Medium)** | `#d97706` | Warm Amber | Moderate concentration ($1500 - 2500$), transitional contracting |
+| **Competitive / Low Risk** | `#059669` | Emerald Green | Competitive public bidding, $HHI < 1500$, counterfactual fiscal savings |
+| **Institutional Corporate Base** | `#1d3190` | Royal Cobalt | Primary branding, neutral budget bars, card borders |
+| **Midnight Surface** | `#080c42` | Midnight Navy | Global navbar, executive headers, deep contrast elements |
+| **Secondary Accents** | `#0284c7` / `#93c5fd` | Sky / Ice Blue | Minimum-value contracting, informational badges |
+
+### 2. Layout & Typography Rules
+- **Vertical Card-Header Hierarchy:** Every card in the application strictly positions subtitles **underneath** the title using `.card-header-heading`, `.card-header-title`, and `.card-header-subtitle` block containers with CSS flex-column enforcement.
+- **Zero-Overlap Plot Engine (`components/plot_theme.py`):**
+  - Margins dynamically computed to prevent collisions between multi-line headers, subtitles, and axes.
+  - Horizontal legends placed exclusively at the bottom ($y = -0.22$, bottom margin $85\text{px}$).
+  - Plotly floating modebars permanently disabled (`displayModeBar: False`) to eliminate floating toolbars over chart titles.
+- **Strict Zero-Emoji Standard:** Pure executive typography, CSS badges, and SVG icons.
+
+---
+
+## System Architecture
+
+The application adheres to a clean 4-tier modular architecture:
+
+```
+[ Client / Browser ]
         │
-        ▼ (Peticiones HTTP / WebSockets)
-[ Capa de Presentacion: app.py + www/styles.css ]
+        ▼ (HTTP / WebSockets via Starlette ASGI)
+[ Presentation Layer: app.py + www/styles.css ]
         │
-        ├─ Ensambla el layout global (ui.page_sidebar)
-        ├─ Orquesta modulos con identificadores unicos
+        ├─ Assembles responsive navbar layout (ui.page_navbar)
+        ├─ Global contextual data banner (components/banner.py)
+        ├─ Interactive methodology modal (components/guide_modal.py)
         │
         ▼
-[ Capa de Controladores Reactivos: modules/ ]
+[ Reactive Controller Layer: modules/ ]
         │
-        ├─ mod_loader.py       -> Aislamiento de eventos y seleccion de datasets
-        ├─ mod_summary.py      -> Metricas globales e integridad de datos
-        ├─ mod_table.py        -> Filtrado reactivo en memoria
-        ├─ mod_distributions.py-> Computacion de densidades y boxplots
-        ├─ mod_correlations.py -> Matrices de asociacion lineal
-        ├─ mod_comparisons.py  -> Agrupacion categorica vs cuantitativa
-        ├─ mod_timeseries.py   -> Remuestreo temporal y medias moviles
-        └─ mod_stats.py        -> Pruebas de hipotesis (Shapiro-Wilk)
+        ├─ mod_loader.py          -> SODA ingestion trigger & volume parameters
+        ├─ mod_risk_radar.py       -> Macro risk ranking, quadrants & alerts
+        ├─ mod_risk_drilldown.py   -> Territorial dossier, modalities & outliers
+        ├─ mod_risk_contractors.py -> Market power, CR4 & 100% stacked bars
+        ├─ mod_simulator.py        -> Policy counterfactual & fiscal savings
+        └─ mod_risk_evidence.py    -> Microdata matrix & secure CSV export
         │
-        ▼ (Invocacion de funciones puras de Python)
-[ Capa de Servicios y Logica de Negocio: services/ ]
+        ▼ (Pure Python domain function calls)
+[ Domain Logic & Services Layer: services/ ]
         │
-        ├─ api_service.py   -> Conexion HTTP a Socrata, parseo y casteo de tipos
-        ├─ scope_service.py -> Filtro temporal y muestra reproducible de las filas cargadas
-        ├─ table_service.py -> Filtros tabulares y exportacion CSV segura
-        └─ stats_service.py -> Algoritmos matematicos y diagnostico estadistico
+        ├─ economic_service.py -> HHI, Gini, CR4, risk matrix, simulation algorithms
+        ├─ api_service.py      -> Socrata SODA REST client with type casting
+        ├─ scope_service.py    -> Territorial filtering & reproducible sampling
+        ├─ table_service.py    -> Search filtering & formula injection prevention
+        └─ stats_service.py    -> Statistical summaries, correlation & normality
 ```
-
-### Principios Fundamentales
-- **Desacoplamiento de la logica analitica**: Las transformaciones matematicas y las consultas HTTP no dependen del contexto reactivo de Shiny. Viven en `services/` y pueden ejecutarse de forma aislada en scripts, notebooks o pipelines CI/CD.
-- **Grafo reactivo no redundante**: Se utiliza `@reactive.calc` para memorizar calculos costosos (como matrices de correlacion o clasificaciones de columnas), evitando que multiples salidas computen la misma operacion repetidamente.
-- **Aislamiento con `@reactive.event`**: Las descargas de datos solo se activan cuando el usuario presiona explicitamente el boton "Cargar Dataset", previniendo peticiones innecesarias mientras se escribe en los campos de texto.
-- **Encapsulamiento de espacios de nombres (`@module.ui` y `@module.server`)**: Cada modulo aísla sus entradas y salidas, eliminando colisiones de identificadores y garantizando modularidad.
 
 ---
 
-## Estructura del Repositorio
+## Repository Structure
 
 ```text
 Shiny APP Python/
+├── app.py                         Application entry point and global layout assembly
+├── config.py                      Global configuration, endpoints, thresholds, and defaults
+├── pyproject.toml                 Project metadata, dependencies, and pytest configuration
+├── requirements.txt               Pinned dependencies for deployment environments
+├── manifest.json                  Posit Connect Cloud deployment manifest
+├── README.md                      Technical documentation and architecture guide
 │
-├── app.py                     Punto de entrada minimalista (< 75 lineas).
-├── config.py                  Constantes, endpoints, limites de filas y datasets muestra.
-├── pyproject.toml             Definicion formal del paquete, dependencias y pytest.
-├── requirements.txt           Dependencias fijadas para entornos pip tradicionales.
-├── README.md                  Documentacion tecnica del sistema.
-│
-├── services/                  Capa de logica pura no reactiva (100% testeable).
+├── components/                    Shared UI components and graphic themes
 │   ├── __init__.py
-│   ├── api_service.py         Cliente REST para la API Socrata con validacion de URLs y IDs.
-│   ├── scope_service.py       Periodo y muestra reproducible sobre datos descargados.
-│   ├── table_service.py       Filtros de tabla y exportacion CSV segura.
-│   └── stats_service.py       Funciones puras de diagnostico, clasificacion y estadistica.
+│   ├── banner.py                  Global context banner with dataset scope
+│   ├── guide_modal.py             Methodology modal with legal and econometric guidelines
+│   └── plot_theme.py              Grammar of Graphics Plotly theme & color constants
 │
-├── modules/                   Modulos Shiny (componentes UI + Server encapsulados).
+├── modules/                       Shiny for Python encapsulated reactive modules
 │   ├── __init__.py
-│   ├── mod_loader.py          Panel lateral: selector de datasets, input de ID y disparador.
-│   ├── mod_summary.py         Panel: Metricas del dataset, metadatos oficiales y nulos.
-│   ├── mod_table.py           Panel: Vista tabular con busqueda textual y filtro categorico.
-│   ├── mod_distributions.py   Panel: Histogramas con curva KDE, boxplots, violines y ECDF.
-│   ├── mod_correlations.py    Panel: Heatmap de correlacion y matriz de dispersion.
-│   ├── mod_comparisons.py     Panel: Comparaciones bivariadas cuantitativas vs categoricas.
-│   ├── mod_timeseries.py      Panel: Series de tiempo, remuestreo y tendencias suavizadas.
-│   └── mod_stats.py           Panel: Tablas descriptivas completas y prueba Shapiro-Wilk.
+│   ├── mod_loader.py              Sidebar controls: dataset source, volume & fetch trigger
+│   ├── mod_risk_radar.py          Perspective 1: Territorial risk radar, HHI & quadrants
+│   ├── mod_risk_drilldown.py      Perspective 2: In-depth departmental audit & outliers
+│   ├── mod_risk_contractors.py    Perspective 3: Market concentration, CR4 & 100% stacked bars
+│   ├── mod_simulator.py           Perspective 4: Policy counterfactual & OECD savings model
+│   └── mod_risk_evidence.py       Perspective 5: Microdata evidence matrix & CSV export
 │
-├── www/                       Recursos estaticos y estilos visuales.
-│   └── styles.css             Hoja de estilo profesional con paleta Positron IDE.
+├── services/                      Pure domain logic and algorithmic services (100% testable)
+│   ├── __init__.py
+│   ├── economic_service.py        Econometric engine: HHI, CR4/CR8, Gini, risk & simulations
+│   ├── api_service.py             SODA REST client with robust type casting & URL parsing
+│   ├── scope_service.py           Data scoping, temporal filters & reproducible sampling
+│   ├── table_service.py           Table search indexing & CSV export sanitization
+│   └── stats_service.py           General descriptive statistics, correlation & normality
 │
-└── tests/                     Suite de pruebas automatizadas con pytest.
-    ├── __init__.py
-    └── test_services.py       Pruebas unitarias sobre servicios sin dependencias de servidor.
+├── tests/                         Automated test suite (pytest)
+│   ├── __init__.py
+│   ├── test_banner.py             Tests for context banner formatting and author credits
+│   ├── test_data_flow.py          Tests for SODA client, parsing, sanitization & limits
+│   ├── test_economic_service.py   Tests for HHI, CR4, risk matrices & policy simulator
+│   └── test_services.py           Tests for URL extraction, column classification & stats
+│
+└── www/                           Static web assets served natively by ASGI
+    ├── styles.css                 Production stylesheet with Positron/Executive palette
+    └── logo.svg                   Vector logo for navigation branding
 ```
 
 ---
 
-## Flujo de Funcionamiento de la Aplicacion
+## Data Source & API Ingestion
 
-1. **Seleccion o Entrada del Recurso**:
-   - El usuario puede elegir una colección sugerida para EDA o pegar cualquier URL / ID de recurso de `datos.gov.co` (por ejemplo, `gt2j-8ykr`). Las sugerencias se eligieron por su volumen y por combinar medidas numéricas con categorías.
-   - Se puede aplicar una busqueda de texto en el recurso antes de descargar y especificar el limite de registros (desde 50 hasta 50,000). El modo de carga puede tomar las primeras filas por ID o repartir el limite entre cinco bloques distribuidos por el recurso.
-2. **Descarga y Casteo Tipologico Inteligente**:
-   - Al pulsar "Cargar y Analizar Datos", `services/api_service.py` consulta la API Socrata con `$limit` y orden estable por `:id`. El modo inicial usa `$offset=0`; la cobertura distribuida consulta el total y reparte el limite entre cinco offsets. Si se indica una busqueda, usa `$q` antes del limite.
-   - El servicio descarga simultaneamente los metadatos oficiales del recurso (nombre de entidad emisora, descripcion publica, fecha de corte).
-   - Se consultan los tipos declarados en los metadatos para convertir numeros y fechas sin perder codigos de texto ni sustituir fechas invalidas por nulos. Sin metadatos se aplica una inferencia conservadora.
-   - Una consulta separada intenta obtener el total de filas que cumplen el filtro. Si falla, la carga de datos continua y se informa que el total no esta disponible.
-3. **Distribucion Reactiva del Dataset**:
-   - `mod_loader.py` emite las variables reactivas `df_react` y `meta_react`.
-   - Todos los modulos suscritos reciben la actualizacion y ejecutan sus calculos reactivos. La descarga se ejecuta fuera del hilo principal con `ExtendedTask`, para mantener la interfaz responsiva.
-   - Tras descargar, el panel lateral permite elegir una columna y un periodo de fechas, y seleccionar una muestra aleatoria reproducible de las filas descargadas. El alcance elegido se aplica a todas las vistas y a la exportacion.
-   - La cabecera integra el contexto del recurso: numero de filas analizadas, total conocido y alcance del periodo o muestra. Los creditos del autor y sus enlaces aparecen en texto pequeno junto al titulo. La carga distribuida mejora la cobertura por ID, pero sus bloques no constituyen una muestra aleatoria simple. Una muestra posterior corresponde solo a las filas descargadas, no al recurso completo.
+The application queries Colombia's official open data portal ([datos.gov.co](https://www.datos.gov.co/)) via Socrata Open Data API (SODA):
+
+- **Default Endpoint:** `https://www.datos.gov.co/resource/jbjy-vk9h.json` (SECOP II Electronic Contracts).
+- **Protocol:** HTTPS REST with structured SQL-like parameters (`$limit`, `$offset`, `$order`, `$where`, `$q`).
+- **Resilience:** Automatic type inference for numeric values, dates, and currency fields with fallback mechanisms preserving leading zeros in territorial codes.
+- **Performance:** Ingestion is executed asynchronously via `ExtendedTask`, keeping the WebSocket event loop responsive.
 
 ---
 
-## Colecciones sugeridas para EDA
+## Installation & Local Execution
 
-| Colección | Variables útiles | Recurso |
-| --- | --- | --- |
-| Saber 11 2020-2 | Puntajes, percentiles, género, ubicación y contexto escolar | [rnvb-vnyh](https://www.datos.gov.co/d/rnvb-vnyh) |
-| SECOP II - contratos electrónicos | Montos, pagos, sector, modalidad, estado y fechas | [jbjy-vk9h](https://www.datos.gov.co/d/jbjy-vk9h) |
-| SECOP II - procesos de contratación | Precio base, duración, participación, modalidad y fechas | [p6dx-8zbt](https://www.datos.gov.co/d/p6dx-8zbt) |
-| Casos positivos de COVID-19 | Edad, sexo, departamento, municipio y estado | [gt2j-8ykr](https://www.datos.gov.co/d/gt2j-8ykr) |
+### Prerequisites
+- Python 3.10, 3.11, or 3.12 installed.
+- Git.
 
-Las colecciones pueden contener millones de registros. La app analiza únicamente las filas descargadas según el límite y el modo de selección elegidos; el selector no descarga el recurso completo.
-
----
-
-## Modulos y Capacidades Analiticas
-
-La navegacion sigue una secuencia de EDA: contexto y calidad del recurso, estadisticas descriptivas, comportamiento temporal, distribuciones y relaciones entre variables y, al final, inspeccion de los registros.
-
-### 1. Panel de Resumen (`mod_summary.py`)
-- **Tarjetas de diagnostico rapido**: Muestran el recuento total de registros, total de variables, numero de variables cuantitativas y porcentaje general de valores faltantes.
-- **Metadatos oficiales**: Informacion provista por la entidad que publica el dataset en `datos.gov.co`.
-- **Diagnostico por columna**: Tabla detallada con el tipo de dato inferido, recuento de valores unicos y porcentaje exacto de nulos por columna.
-- **Grafico de valores faltantes**: Grafica de barras en escala de grises/rojo que ordena visualmente que columnas presentan deficiencias de completitud.
-
-### 2. Estadisticas Descriptivas (`mod_stats.py`)
-- **Tabla Descriptiva Cuantitativa**: Conteo, media, desviacion, minimo, percentiles (5%, 25%, 50%, 75%, 95%) y maximo.
-- **Resumen Categorico**: Cardinalidad, moda y frecuencia relativa del elemento dominante.
-- **Diagnostico posterior de normalidad**: Prueba Shapiro-Wilk sobre hasta 5,000 registros, con estadistico W, p-valor y decision de rechazo de la hipotesis de normalidad. Un p-valor alto no demuestra que la distribucion sea normal.
-
-### 3. Series de Tiempo y Tendencias (`mod_timeseries.py`)
-- Deteccion automatica de columnas temporales.
-- Agregacion configurable: Suma, Promedio, Conteo o Maximo. La sugerencia inicial usa promedio para medidas generales y suma para nombres de magnitudes aditivas.
-- Remuestreo automatico segun la extension del periodo (diario o mensual).
-- Inclusion de **Media Movil Suavizada** para identificar tendencias subyacentes.
-
-### 4. Distribuciones Univariadas (`mod_distributions.py`)
-- Visualizaciones interactivas construidas con Plotly:
-  - **Histograma con curva KDE**: Estimacion de densidad Kernel sobrepuesta.
-  - **Diagrama de Caja (Box Plot)**: Deteccion de valores atipicos (outliers) y cuartiles.
-  - **Grafico de Violin**: Densidad bivariada combinada con dispersion interna.
-  - **Curva Empirica Acumulada (ECDF)**: Funcion de distribucion acumulada.
-- Tarjetas de momentos estadisticos al pie del grafico: Media, Mediana, Desviacion Estandar y Sesgo (Skewness).
-
-### 5. Matriz de Correlacion y Dispersion (`mod_correlations.py`)
-- Calculo parametrico de matrices de correlacion admitiendo metodos: **Pearson**, **Spearman** y **Kendall**.
-- **Mapa de Calor (Heatmap)** con escala de color centrada y valores numericos anotados.
-- **Matriz de Dispersion (Scatter Matrix)** para observar simultaneamente cruces bidimensionales entre variables continuas.
-- La matriz de dispersion usa hasta 1,500 filas completas seleccionadas de forma reproducible; la correlacion se calcula sobre todas las filas cargadas.
-
-### 6. Comparaciones por Categoria (`mod_comparisons.py`)
-- Cruce bivariado entre una variable cuantitativa continua y una variable cualitativa discreta.
-- Permite calcular promedios comparativos, conteos de frecuencia y distribuciones agrupadas en diagramas de caja o violin.
-- Incluye control de limite de categorias para no saturar el eje horizontal con variables de alta cardinalidad.
-
-### 7. Vista de Datos (`mod_table.py`)
-- **Busqueda textual instantanea**: Filtra dinamicamente filas que contengan el termino ingresado en cualquier columna.
-- **Descarga CSV**: Exporta las filas resultantes de la busqueda y el filtro categorico activos. Los textos que podrian interpretarse como formulas en hojas de calculo se exportan como texto.
-- **Filtro categórico**: Permite elegir cualquier columna categorica y buscar por texto entre todos sus valores, sin limitar el selector a las primeras 50 categorias.
-- **Control de paginacion**: Permite regular cuantas filas renderizar simultaneamente para optimizar la respuesta del navegador.
-
----
-
-## Integracion con la API de datos.gov.co
-
-La aplicacion utiliza el endpoint estandar de la API Socrata (SODA):
-```text
-GET https://www.datos.gov.co/resource/{resource_id}.json?$limit={n}&$offset=0&$order=:id
-```
-
-### Como encontrar un dataset:
-1. Ingrese a [datos.gov.co](https://www.datos.gov.co/).
-2. Localice cualquier conjunto de datos publico.
-3. El ID del recurso es el codigo alfanumerico de 8 o 9 caracteres (ejemplo: `gt2j-8ykr` o `cfw2-7bit`) que aparece en la URL del conjunto de datos o en el boton "API".
-4. Puede ingresar tanto el ID corto (`gt2j-8ykr`) como una URL HTTPS de `datos.gov.co` que termine en el identificador. El analizador valida el dominio y el formato del ID.
-
----
-
-## Patrones de Reactividad y Rendimiento
-
-1. **Cero trabajo pesado en el hilo de renderizado**:
-   Todas las transformaciones de Pandas, filtros y computos de SciPy se ejecutan en funciones de servicio independientes.
-2. **Memorizacion de calculos (`@reactive.calc`)**:
-   Los modulos que consumen agregaciones o matrices computan el resultado una unica vez por ciclo de actualizacion. Si el usuario cambia un filtro estetico que no altera los datos fuente, el calculo se reutiliza desde cache.
-3. **Manejo de memoria en sesion**:
-   El estado se mantiene en objetos `reactive.value()` pertenecientes al contexto de cada sesion individual, impidiendo la contaminacion de memoria entre diferentes usuarios.
-4. **Diseno CSS desacoplado**:
-   El archivo `www/styles.css` es servido como asset estatico nativo por el servidor ASGI, sin inyectar bloques pesados de HTML o strings embebidos en el codigo de Python.
-
----
-
-## Instalacion y Ejecucion
-
-### Requisitos previos
-- Python 3.10 o superior instalado.
-
-### 1. Clonar o acceder a la carpeta del proyecto
+### 1. Clone Repository
 ```bash
-cd "Shiny APP Python"
+git clone https://github.com/MPalma21/eda-colombia-shiny.git
+cd eda-colombia-shiny
 ```
 
-### 2. Instalar dependencias
-Puede instalar via `requirements.txt`:
+### 2. Create Virtual Environment
+```bash
+# On Windows PowerShell:
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+
+# On macOS/Linux:
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
-O utilizando el paquete editable configurado en `pyproject.toml`:
+
+Or install in editable mode via `pyproject.toml`:
 ```bash
 pip install -e .
 ```
 
-### 3. Iniciar la aplicacion
+### 4. Run the Application Locally
 ```bash
 shiny run app.py --port 8000 --reload
 ```
-Acceda en su navegador web a:
-[http://127.0.0.1:8000](http://127.0.0.1:8000)
+Open your browser at `http://127.0.0.1:8000`.
 
 ---
 
-## Suite de Pruebas Automatizadas
+## Automated Test Suite
 
-La arquitectura permite ejecutar pruebas de extremo a extremo sobre la logica de negocio en milisegundos mediante `pytest`, sin necesidad de simular navegadores web ni levantar servidores:
+The repository includes a comprehensive test suite with **42 automated unit and integration tests** executing in milliseconds without browser emulation:
 
 ```bash
 pytest -v
 ```
 
-Casos de prueba cubiertos en `tests/test_services.py`:
-- `test_extract_resource_id_from_url`: Verifica la extraccion de IDs desde URLs directas, URLs de vistas y cadenas simples.
-- `test_classify_columns_mixed_dataframe`: Verifica la correcta tipificacion de variables mixtas.
-- `test_compute_dataset_overview`: Verifica las metricas de completitud y recuento celular.
-- `test_compute_correlation_matrix`: Verifica la matriz de correlacion de Pearson.
-- `test_compute_normality_tests`: Valida la ejecucion de la prueba Shapiro-Wilk sobre distribuciones sinteticas.
-- `test_compute_categorical_summary`: Valida la identificacion de modas y conteos de frecuencia.
+### Test Coverage Highlights:
+- **`tests/test_economic_service.py`:** Validates $HHI$ calculations, Gini/Lorenz bounds, $CR_4$ concentration ratios, risk matrix edge cases, and the OECD policy counterfactual simulation algorithm.
+- **`tests/test_data_flow.py`:** Validates SODA API URL/resource ID parser, type sanitization, formula injection protection (`=SUM`, `@import`), distributed fetch offsets, and reproducible sampling.
+- **`tests/test_banner.py`:** Tests scope explanation, sample limitations, and author credits integrity.
+- **`tests/test_services.py`:** Tests column classification, correlation matrices, descriptive summaries, and Shapiro-Wilk normality tests.
 
 ---
 
-## Configuracion y Personalizacion
+## Deployment to Posit Connect Cloud
 
-Para modificar parametros globales, edite el archivo `config.py`:
-- `DEFAULT_FETCH_ROWS`: Numero predeterminado de filas a consultar (por defecto: 5,000).
-- `DEFAULT_MAX_ROWS`: Limite maximo de seguridad permitido para evitar saturar memoria (por defecto: 50,000).
-- `API_TIMEOUT_SECONDS`: Tiempo de espera en segundos para las peticiones HTTP a datos.gov.co (por defecto: 30 segundos).
-- `SAMPLE_DATASETS`: Diccionario con los conjuntos de datos sugeridos que aparecen en el selector inicial.
+The application is deployed to **Posit Connect Cloud**. To synchronize the deployment bundle:
+
+```bash
+# Generate / update the deployment manifest:
+rsconnect write-manifest shiny . --overwrite
+
+# Commit and push to main:
+git add manifest.json requirements.txt
+git commit -m "chore(deploy): sync manifest for Posit Connect Cloud"
+git push origin main
+```
+
+---
+
+## Git Commit Standards
+
+This repository strictly enforces **Conventional Commits** in **English**:
+
+```
+<type>(<scope>): <subject>
+
+Examples:
+feat(ui): implement classic executive semaphore palette with navy corporate base
+fix(charts): eliminate overlapping titles and legends across all Plotly figures
+feat(analytics): replace scatter plot with 100% stacked horizontal bar chart
+perf(app): vectorize dataframe operations and optimize cache utilization
+docs: update README with comprehensive architecture and methodology guide
+```
+
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
+
+---
+
+## Author & Contact
+
+**Developed by Miguelangel Palma**  
+- **LinkedIn:** [linkedin.com/in/miguelangelpr](https://www.linkedin.com/in/miguelangelpr)  
+- **GitHub:** [github.com/MPalma21](https://github.com/MPalma21)  
+- **Live Deployment:** [connect.posit.cloud](https://connect.posit.cloud)  
